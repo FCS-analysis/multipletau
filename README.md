@@ -1,11 +1,12 @@
 multipletau
 ===========
 
-This repo provides the multiple-tau algorithm for calculation of correlation curves.
+This repo provides the multiple-tau algorithm for calculation of correlation curves in Python.
 
 - **multipletauc.pyx**: multiple-tau algorithm in Cython language (compile with setup.py)
 - **binningc.pyx**: Convert 16 bit ~.dat file format to 32 bit ~.dat file format (See documentation of PyScanFCS at http://fcstools.dyndns.org/pyscanfcs)
 - **dat2csv.py**: Using a photon stream from a ~.dat file, calculate the correlation curve and save as a ~.csv file for PyCorrFit http://fcstools.dyndns.org/pycorrfit
+- **setup.py**: Compiles multipletauc.pyx and binningc.pyx using Cython
 
 Testing the module:
 - **TestMultiTau.py**: create exponentially correlated noise
