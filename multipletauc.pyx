@@ -404,9 +404,3 @@ def BinTracesFromFile(filename, double deltat, length, maxfilesize = 500):
 
 __version__ = "0.1.1"
 
-print "Module multipletau v."+__version__
-
-
-
-
-
