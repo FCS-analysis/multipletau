@@ -5,6 +5,7 @@ This repo provides the multiple-tau algorithm for Python using Cython (~.pyx).
 
 - **binningc.pyx**: converts 16 bit ~.dat file format to 32 bit ~.dat file format (For further information, see the documentation of PyScanFCS at http://fcstools.dyndns.org/pyscanfcs)
 - **multipletauc.pyx**: a module, providing auto- and cross-correlation of binned fluorescence siganl
+- **multipletau.py**: seems do be as fast as multipletauc.pyx using pure python. It is an incomplete copy though.
 - **dat2csv.py**: using a photon stream from a ~.dat file, it calculates the correlation curve and saves it as a ~.csv file for PyCorrFit http://fcstools.dyndns.org/pycorrfit
 - **setup.py**: compiles multipletauc.pyx and binningc.pyx using Cython
 

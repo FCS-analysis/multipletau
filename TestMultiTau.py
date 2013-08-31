@@ -50,6 +50,7 @@ def SaveCSV(G, trace, filename):
     openedfile = open(csvfile, 'wb')
     openedfile.write('# This file was created using testmultipletau.py\r\n')
     openedfile.write('# Channel (tau [s]) \t Correlation function  \r\n')
+    openedfile.write("# Type AC/CC \t Autocorrelation")
     dataWriter = csv.writer(openedfile, delimiter='\t')
     for i in np.arange(len(G)):
         dataWriter.writerow([ str("%.10e")%G[i,0], str("%.10e")%G[i,1] ])

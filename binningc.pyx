@@ -160,11 +160,7 @@ def BinData(np.ndarray[DTYPEuint32_t] data, double t_bin, filename):
                 phot_c = 0
                 # Empty bins between this and next event:
                 emptybins = int(time_c/t_bin)
-                #NewFile.write(dtype(np.zeros(emptybins)))
-                for bin in np.arange(emptybins):
-                    # Does not matter if emptybins is "0"
-                    #NewFile.write(dtype(0))
-                    TempTrace.append(0)
+                TempTrace += emptybins*[0]
                 time_c -=  emptybins*t_bin
                 # Equivalent to:
                 # time_c = int(time_c)%int(t_bin)
@@ -185,11 +181,7 @@ def BinData(np.ndarray[DTYPEuint32_t] data, double t_bin, filename):
             phot_c = 0
             # Empty bins between this and next event:
             emptybins = int(time_c/t_bin)
-           # NewFile.write(dtype(np.zeros(emptybins)))
-            for bin in range(emptybins):
-                # Does not matter if emptybins is "0"
-                #NewFile.write(dtype(0))
-                TempTrace.append(0)
+            TempTrace += emptybins*[0]
             time_c -=  emptybins*t_bin
             # Equivalent to:
             # time_c = int(time_c)%int(t_bin)
