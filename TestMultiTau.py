@@ -8,6 +8,7 @@
 import csv
 import numpy as np
 import matplotlib.pyplot as plt
+#import multipletau as multipletauc
 import multipletauc
 
 def GenerateExpNoise(N, taud=20., variance=1., deltat=1.):
@@ -48,20 +49,16 @@ def SaveCSV(G, trace, filename):
     csvfile = filename
     openedfile = open(csvfile, 'wb')
     openedfile.write('# This file was created using testmultipletau.py\r\n')
-    openedfile.write('# Channel (tau [s])'+" \t," 
-                                     'Correlation function'+" \r\n")
-    dataWriter = csv.writer(openedfile, delimiter=',')
+    openedfile.write('# Channel (tau [s]) \t Correlation function  \r\n')
+    dataWriter = csv.writer(openedfile, delimiter='\t')
     for i in np.arange(len(G)):
-        dataWriter.writerow([str(G[i,0])+" \t", str(G[i,1])])
+        dataWriter.writerow([ str("%.10e")%G[i,0], str("%.10e")%G[i,1] ])
 
     openedfile.write('# BEGIN TRACE \r\n')
-    openedfile.write('# Time ([s])'+" \t," 
-                                     'Intensity Trace [kHz]'+" \r\n")
-
+    openedfile.write('# Time ([s]) \t Intensity Trace [kHz]'+" \r\n")
 
     for i in np.arange(len(trace)):
-        dataWriter.writerow([str(trace[i,0])+" \t", str(trace[i,1])])
-
+        dataWriter.writerow([ str("%.10e")%trace[i,0], str("%.10e")%trace[i,1] ])
 
     openedfile.close()
             
