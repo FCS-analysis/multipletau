@@ -13,4 +13,4 @@ Testing the module:
 - **TestMultiTau.py**: create exponentially correlated noise in a ~.dat file
 - **TestMultiTauCC.py**: create exponentially cross-correlated noise in a ~.dat file
 - **MakeTestDat_SFCS.py**: create a exponentially correlated noise in a ~.dat file that can be loaded with [PyScanFCS](https://github.com/paulmueller/PyScanFCS) (http://fcstools.dyndns.org/pyscanfcs)
-- **ExampleFunc_Exp_correlated_noise.txt**: external model function for fitting of exponentially correlated noise using [PyCorrFit]https://github.com/paulmueller/PyCorrFit) (http://fcstools.dyndns.org/pycorrfit)
+- **ExampleFunc_Exp_correlated_noise.txt**: external model function for fitting of exponentially correlated noise using [PyCorrFit](https://github.com/paulmueller/PyCorrFit)
