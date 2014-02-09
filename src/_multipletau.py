@@ -1,18 +1,15 @@
 # -*- coding: utf-8 -*-
 """ Multiple Tau Algorithms
-    Paul Müller, Biotec - TU Dresden
+    
+    Author: Paul Müller
 """
 
 import numpy as np
 import platform
-if platform.system() == 'Linux':
-	from IPython.Shell import IPythonShellEmbed
-	ipshell = IPythonShellEmbed()
-   #ipshell()
 
-__all__ = ["autocorrelate"]
+__all__ = ["ac_bin"]
 
-def ACFromArray(trace, deltat, m=16, copy=False):
+def ac_bin(trace, deltat, m=16, copy=False):
     """ Apply the multiple tau algorithm to a float64 numpy array *trace*
         with time differences float *deltat*. Set copy to True to not
         manipulate the incoming *trace*. If set to False, this will
