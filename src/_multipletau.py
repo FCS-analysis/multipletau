@@ -4,10 +4,12 @@
     Author: Paul Müller
 """
 
+from __future__ import division
+
 import numpy as np
-import platform
 
 __all__ = ["ac_bin"]
+
 
 def ac_bin(trace, deltat, m=16, copy=False):
     """ Apply the multiple tau algorithm to a float64 numpy array *trace*
@@ -19,9 +21,14 @@ def ac_bin(trace, deltat, m=16, copy=False):
         (same dimension as deltat) and second element is autocorrelation
         function.
     """
+    ##
+    ## TODO:
+    ##   - Determine the total size of G beforehand and stop using lists
+    #
     # Code was adapted from a C script from Fabian Heinemann.
     #
     # Autocorrelation function is a list of tuples
+    #
     G = []
     N = len(trace)
     traceavg = trace.mean()
@@ -83,14 +90,6 @@ def ac_bin(trace, deltat, m=16, copy=False):
         trace = (trace[:N:2]+trace[1:N+1:2])/2.
         N = N/2
     return np.array(G)
-
-
-
-
-
-
-
-
 
 
 
