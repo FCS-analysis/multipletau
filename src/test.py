@@ -47,28 +47,41 @@ def GenerateExpNoise(N, taud=20., variance=1., deltat=1.):
 
 
 # Edit parameters
-N = 278000
+N = np.int(np.pi*10000)
 countrate = 250. # in kHz
 taudiff = 55. # in us
 deltat = 2e-6 # time discretization [s]
 
 print("Generating exponentially correlated noise.")
 # Do not edit
-taudiff *= 1e-6/deltat
-data, times = GenerateExpNoise(N, taud=taudiff, deltat=1.)
+#taudiff *= 1e-6/deltat
+data, times = GenerateExpNoise(N, taud=taudiff, deltat=1)
 countrate *= deltat*1000 # since we want kHz instead of Hz
 # We set one bin to 1e-6 s.
 print("Performing autocorrelation.")
-G = ac_bin(np.float32(data+countrate), deltat=deltat) 
+G = ac_bin(data, deltat=deltat, normalize=False) 
 
+
+# Use numpy.correlate for comparison
+Gd = np.correlate(data, data, mode="same")/len(data)
+Gd = Gd[len(Gd)/2:]
+xd = np.arange(len(Gd))*deltat
+#fig = plt.figure()
+#ax = fig.add_subplot(2,1,1)
+#ax.set_xscale('log')
+#plt.plot(np.arange(len(Gd)), Gd)
+
+av = np.average(data)
 # Calculate the expected curve
 x = G[:,0]
-y = 1.35*np.exp(-x/taudiff/deltat)
+y = np.exp(-x/taudiff/deltat)
+
 
 print("Plotting.")
 fig = plt.figure()
 ax = fig.add_subplot(2,1,1)
 ax.set_xscale('log')
-plt.plot(x, G[:,1] -1)
+plt.plot(xd, Gd)
+plt.plot(x, G[:,1])
 plt.plot(x, y)
 plt.show()
