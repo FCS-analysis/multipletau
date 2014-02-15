@@ -47,7 +47,9 @@ def GenerateExpNoise(N, taud=20., variance=1., deltat=1.):
 
 
 # Edit parameters
-N = np.int(np.pi*1e4)
+N = np.int(np.pi*1e6)
+#N= 2*16+8
+
 countrate = 250. # in kHz
 taudiff = 55. # in us
 deltat = 2e-6 # time discretization [s]
@@ -61,10 +63,13 @@ countrate *= deltat*1000 # since we want kHz instead of Hz
 print("Performing autocorrelation.")
 G = autocorrelate(data, deltat=deltat, normalize=False) 
 
+print("Performing numpy correlation.")
+avg = np.average(data)
 # Use numpy.correlate for comparison
-Gd = np.correlate(data, data, mode="same")/len(data)
-Gd = Gd[len(Gd)/2:]
-xd = np.arange(len(Gd))*deltat
+if len(data) < 1e4:
+    Gd = np.correlate(data-avg, data-avg, mode="full")/len(data)
+    Gd = Gd[len(Gd)/2:]
+    xd = np.arange(len(Gd))*deltat
 #fig = plt.figure()
 #ax = fig.add_subplot(2,1,1)
 #ax.set_xscale('log')
@@ -73,7 +78,7 @@ xd = np.arange(len(Gd))*deltat
 av = np.average(data)
 # Calculate the expected curve
 x = G[:,0]
-amp = np.correlate(data,data)
+amp = np.correlate(data-avg,data-avg)
 y = amp/len(data)*np.exp(-x/taudiff/deltat)
 
 
@@ -81,7 +86,11 @@ print("Plotting.")
 fig = plt.figure()
 ax = fig.add_subplot(2,1,1)
 ax.set_xscale('log')
-plt.plot(xd, Gd)
+if len(data) < 1e4:
+    plt.plot(xd, Gd)
 plt.plot(x, G[:,1])
 plt.plot(x, y)
 plt.show()
+
+import IPython
+IPython.embed()
