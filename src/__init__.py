@@ -34,3 +34,8 @@
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 from _multipletau import *
+
+__version__ = "0.1.3"
+__author__ = "Paul Mueller"
+__email__ = "paul.mueller@biotec.tu-dresden.de"
+__license__ = "OpenBSD"
