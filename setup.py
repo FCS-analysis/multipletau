@@ -1,19 +1,24 @@
-# This file is used to compile libraries from cython code.
-# Run "python setup.py build_ext --inplace" to create those
-# libraries.
-# For more information visit cython.org.
+#!/usr/bin/env python
+# To create a distribution package for pip or easy-install:
+# python setup.py sdist
+from setuptools import setup, find_packages
+from os.path import join, dirname, realpath
+from warnings import warn
 
-from distutils.core import setup
-from distutils.extension import Extension
-from Cython.Distutils import build_ext
-
-ext_modules = [
-               Extension("multipletauc", ["multipletauc.pyx"])
-              ]
+import src
 
 setup(
-  name = 'Binning Stuff',
-  cmdclass = {'build_ext': build_ext},
-  ext_modules = ext_modules
-)
+    name='multipletau',
+    author='Paul Mueller',
+    author_email='paul.mueller@biotec.tu-dresden.de',
+    url='https://github.com/paulmueller/multipletau',
+    version=src.__version__,
+    packages=['multipletau'],
+    package_dir={'multipletau': 'src'},
+    license="OpenBSD",
+    description='A multiple-tau algorithm using numpy arrays.',
+    long_description=open(join(dirname(__file__), 'README.txt')).read(),
+    install_requires=["NumPy >= 1.5.1"]
+    )
+
 
