@@ -1,0 +1,197 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>_multipletau &mdash; Multiple Tau 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Multiple Tau 0.1 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="../index.html"><img src="../_static/logo.png" border="0" alt="py4sci"/></a>
+</div>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">home</a>|&nbsp;</li>
+        <li><a href="../search.html">search</a>|&nbsp;</li>
+
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for _multipletau</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot; Multiple Tau Algorithms</span>
+<span class="sd">    </span>
+<span class="sd">    Author: Paul Müller</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;ac_bin&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="ac_bin"><a class="viewcode-back" href="../autodocs.html#_multipletau.ac_bin">[docs]</a><span class="k">def</span> <span class="nf">ac_bin</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="n">deltat</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Apply the multiple tau algorithm to a float64 numpy array *trace*</span>
+<span class="sd">        with time differences float *deltat*. Set copy to True to not</span>
+<span class="sd">        manipulate the incoming *trace*. If set to False, this will</span>
+<span class="sd">        help save memory. *m* is the number of bins to use for first</span>
+<span class="sd">        *m* values of the correlation function.</span>
+<span class="sd">        Returns an array of tuples. First element is the lagtime</span>
+<span class="sd">        (same dimension as deltat) and second element is autocorrelation</span>
+<span class="sd">        function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c">##</span>
+    <span class="c">## TODO:</span>
+    <span class="c">##   - Determine the total size of G beforehand and stop using lists</span>
+    <span class="c">#</span>
+    <span class="c"># Code was adapted from a C script from Fabian Heinemann.</span>
+    <span class="c">#</span>
+    <span class="c"># Autocorrelation function is a list of tuples</span>
+    <span class="c">#</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+    <span class="n">traceavg</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">N</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="o">*</span><span class="n">m</span><span class="p">:</span>
+        <span class="c"># Otherwise the following for-loop will fail:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;len(trace) must be larger than 2m&quot;</span><span class="p">)</span>
+    <span class="c">## Calculate autocorrelation function for first m bins</span>
+    <span class="c"># Discrete convolution of m elements</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+        <span class="n">Gtmp</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">Gtmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">trace</span><span class="p">[:</span><span class="n">N</span><span class="o">-</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span><span class="o">*</span><span class="n">trace</span><span class="p">[(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">):])</span>
+        <span class="c">#for j in np.arange(N-(n+1)):</span>
+        <span class="c">#    Gtmp += trace[j]*trace[j+n+1]</span>
+        <span class="c"># Normalize G(n)</span>
+        <span class="c"># Sutract 1, because we calculated G from signal,</span>
+        <span class="c"># not from signal deviations.</span>
+        <span class="n">Gtmp</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">*</span><span class="n">Gtmp</span><span class="o">/</span><span class="p">((</span><span class="n">N</span><span class="o">-</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">traceavg</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="c"># Append to array</span>
+        <span class="n">G</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">deltat</span><span class="o">*</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">Gtmp</span><span class="p">))</span>
+    <span class="c">## Now that we calculated the first m elements of G, let us</span>
+    <span class="c">## go on with the next few elements.</span>
+    <span class="k">if</span> <span class="n">copy</span> <span class="o">!=</span> <span class="bp">False</span><span class="p">:</span>
+        <span class="c"># Create a copy of the trace instead of binning the given one.</span>
+        <span class="n">trace</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">*</span><span class="n">trace</span>
+    <span class="c">## Calculate how many times we may perform binning migth increase </span>
+    <span class="c">## performance ? No, we bin less than 10000 times.</span>
+    <span class="n">step</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c">## Bin the countrate array.</span>
+    <span class="c"># Add up every second element</span>
+    <span class="c"># Check if len(trace) is even:</span>
+    <span class="k">if</span> <span class="n">N</span><span class="o">%</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">trace</span> <span class="o">=</span> <span class="p">(</span><span class="n">trace</span><span class="p">[:</span><span class="n">N</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="n">trace</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span><span class="o">/</span><span class="mf">2.</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">N</span><span class="o">/</span><span class="mi">2</span>
+    <span class="k">while</span> <span class="n">N</span> <span class="o">&gt;=</span> <span class="n">m</span><span class="p">:</span>
+        <span class="n">step</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="c"># Get the next m/2 values of the trace</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">m</span><span class="o">/</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">Gtmp</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c"># We only need elements from m/2 on.</span>
+            <span class="c"># This saves computing time.</span>
+            <span class="c">## Might be faster with arrays?</span>
+            <span class="n">Gtmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">trace</span><span class="p">[:</span><span class="n">N</span><span class="o">-</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="n">m</span><span class="o">/</span><span class="mi">2</span><span class="p">)]</span><span class="o">*</span><span class="n">trace</span><span class="p">[(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="n">m</span><span class="o">/</span><span class="mi">2</span><span class="p">):])</span>
+            <span class="c">#for j in np.arange(N-(n+1+m/2)):</span>
+            <span class="c">#    Gtmp += trace[j]*trace[j+n+1+m/2]</span>
+            <span class="c"># Normalize G(n)</span>
+            <span class="c"># Sutract 1, because we calculated G from signal,</span>
+            <span class="c"># not from signal deviations.</span>
+            <span class="n">Gtmp</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">*</span><span class="n">Gtmp</span><span class="o">/</span><span class="p">((</span><span class="n">N</span><span class="o">-</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">m</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">traceavg</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+            <span class="c"># Append to array</span>
+            <span class="n">G</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">deltat</span><span class="o">*</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="n">m</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="o">**</span><span class="n">step</span><span class="p">,</span> <span class="n">Gtmp</span><span class="p">))</span>
+        <span class="c"># We put this in the end, because we want to break the while</span>
+        <span class="c"># loop when we will not be able to perform it anymore.</span>
+        <span class="c">## Bin the countrate array.</span>
+        <span class="c"># Add up every second element</span>
+        <span class="c"># Check if len(trace) is even:</span>
+        <span class="k">if</span> <span class="n">N</span><span class="o">%</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">N</span> <span class="o">=</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span>
+        <span class="n">trace</span> <span class="o">=</span> <span class="p">(</span><span class="n">trace</span><span class="p">[:</span><span class="n">N</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="n">trace</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span><span class="o">/</span><span class="mf">2.</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="n">N</span><span class="o">/</span><span class="mi">2</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">home</a>|&nbsp;</li>
+        <li><a href="../search.html">search</a>|&nbsp;</li>
+
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Paul Müller.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
