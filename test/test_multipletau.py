@@ -42,9 +42,9 @@ import sys
 
 from matplotlib import pylab as plt
 
+sys.path.append(os.path.realpath("../"))
 
-sys.path.append(os.path.realpath("../src"))
-from _multipletau import *
+from multipletau import *
 
 
 def GenerateExpNoise(N, taud=20., variance=1., deltat=1.):
