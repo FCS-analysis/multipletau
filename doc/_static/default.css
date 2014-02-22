@@ -9,8 +9,7 @@ body {
     letter-spacing: -0.01em;
     line-height: 150%;
     text-align: center;
-    /*background-color: #AFC1C4; */
-    background-color: #BFD1D4;
+    background-color: #ECFFE0;
     color: black;
     padding: 0;
     border: 1px solid #aaa;
@@ -21,12 +20,12 @@ body {
 }
 
 a {
-    color: #CA7900;
+    color: #029800;
     text-decoration: none;
 }
 
 a:hover {
-    color: #2491CF;
+    color: #02B300;
 }
 
 pre {
@@ -60,7 +59,7 @@ cite, code, tt {
 }
 
 hr {
-    border: 1px solid #abc;
+    border: 1px solid #D0DFC3;
     margin: 2em;
 }
 
@@ -123,7 +122,7 @@ dd {
 
 dt:target,
 .highlight {
-    background-color: #fbe54e;
+    background-color: #FFF5B1;
 }
 
 dl.class, dl.function {
@@ -199,7 +198,7 @@ div.related ul li a {
     margin: 0;
     padding: 0 5px 0 5px;
     line-height: 1.75em;
-    color: #EE9816;
+    color: #029800;
 }
 
 div.related ul li a:hover {
@@ -234,8 +233,8 @@ div.sphinxsidebar h4, div.sphinxsidebar h3 {
     font-size: 0.9em;
     padding: 0.1em 0 0.1em 0.5em;
     color: white;
-    border: 1px solid #86989B;
-    background-color: #AFC1C4;
+    border: 1px solid #909090;
+    background-color: #A2C393;
 }
 
 div.sphinxsidebar ul {
@@ -309,8 +308,8 @@ table td, table th {
 }
 
 div.footer {
-    background-color: #E3EFF1;
-    color: #86989B;
+    background-color: #E5F1E3;
+    color: #909090;
     padding: 3px 8px 3px 0;
     clear: both;
     font-size: 0.8em;
@@ -318,7 +317,7 @@ div.footer {
 }
 
 div.footer a {
-    color: #86989B;
+    color: #909090;
     text-decoration: underline;
 }
 
@@ -358,7 +357,7 @@ div.sphinxsidebar ul.toc ul li {
 div.admonition, div.warning {
     font-size: 0.9em;
     margin: 1em 0 0 0;
-    border: 1px solid #86989B;
+    border: 1px solid #909090;
     background-color: #f7f7f7;
 }
 
@@ -376,9 +375,9 @@ div.warning p.admonition-title {
     margin: 0;
     padding: 0.1em 0 0.1em 0.5em;
     color: white;
-    border-bottom: 1px solid #86989B;
+    border-bottom: 1px solid #909090;
     font-weight: bold;
-    background-color: #AFC1C4;
+    background-color: #A2C393;
 }
 
 div.warning {

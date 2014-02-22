@@ -1,23 +1,16 @@
-.. sampledoc documentation master file
+.. multipletau documentation master file, created by
+   sphinx-quickstart on Sat Feb 22 09:35:49 2014.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-#################
-Table of Contents
-#################
-
-.. toctree::
-   :maxdepth: 2   
-   
-   readme
-   autodocs
-   
+functions in multipletau
+========================
+.. automodule:: _multipletau
+   :members:
 
 
-##################
-Indices and tables
-##################
+testing multipletau
+===================
+.. automodule:: test
+   :members:
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
