@@ -5,8 +5,8 @@
 
 functions in multipletau
 ========================
-.. automodule:: _multipletau
-   :members:
+.. automodule:: multipletau
+   :members: autocorrelate, correlate, correlate_numpy
 
 
 testing multipletau

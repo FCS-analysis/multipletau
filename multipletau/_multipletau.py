@@ -3,10 +3,35 @@
 """ 
     A multiple-tau algorithm for python
     
-    Multipe-tau correlation are computed on a logarithmic scale and are thus
-    much faster than convnetional correlation on a linear scale such as 
-    numpy.correlate.
-    
+    Copyright (c) 2014 Paul Müller
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are
+    met:
+
+      1. Redistributions of source code must retain the above copyright
+         notice, this list of conditions and the following disclaimer.
+       
+      2. Redistributions in binary form must reproduce the above copyright
+         notice, this list of conditions and the following disclaimer in
+         the documentation and/or other materials provided with the
+         distribution.
+
+      3. Neither the name of multipletau nor the names of its contributors
+         may be used to endorse or promote products derived from this
+         software without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+    A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL INFRAE OR
+    CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
 from __future__ import division
@@ -17,9 +42,8 @@ import warnings
 __all__ = ["autocorrelate", "correlate", "correlate_numpy"]
 
 
-
-def autocorrelate(binned_array, m=16, deltat=1, normalize=False,
-                  copy=True, dtype=np.float64):
+def autocorrelate(a, m=16, deltat=1, normalize=False,
+                  copy=True, dtype=None):
     """ Autocorrelation of a 1-dimensional sequence on a log2-scale.
         
         This computes the correlation according to
@@ -33,22 +57,32 @@ def autocorrelate(binned_array, m=16, deltat=1, normalize=False,
         
         Parameters
         ----------
-        - binned_array  1-dimensional array of length N
-        - m             defines the number of points on one level,
-                        must be an even integer
-        - deltat        distance between bins
-        - normalize normalize the result to the square of the average
-                    input signal and the factor (M-k). The resulting
-                    curve follows the convention of decaying to zero
-                    for large lag times.
-        - copy      copy input array, set to False to save memory
-        - dtype     what dtype should be used for the output array
+        binned_array : ndarray
+           1-dimensional array of length N
+        m : even integer
+            defines the number of points on one level, must be an
+            even integer
+        deltat : float
+            distance between bins
+        normalize : bool
+            normalize the result to the square of the average input
+            signal and the factor (M-k). The resulting curve follows
+            the convention of decaying to zero for large lag times.
+        copy : bool
+            copy input array, set to False to save memory
+        dtype : dtype, optional
+            The type of the returned array and of the accumulator in 
+            which the elements are summed.  By default, the dtype of 
+            `a` is used.
+
+        Returns
+        -------
+        autocorrelation : ndarray
+            Nx2 array containing lag time and autocorrelation
 
 
-        Returns:
-        Nx2 array containing lag time and correlation
-
-
+        Notes
+        -----
         For FCS, with the convention of the curve decaying to zero use:
             
                normalize = True
@@ -59,15 +93,18 @@ def autocorrelate(binned_array, m=16, deltat=1, normalize=False,
                normalize = False
         
     """
-    traceavg = np.average(binned_array)
+    traceavg = np.average(a)
     if normalize and traceavg == 0:
         raise ZeroDivisionError("Normalization not possible. "+
                      "The average of the input *binned_array* is zero.")
     if copy:
         # Create a copy of the trace instead of binning the given one.
-        trace = binned_array.copy()
+        trace = a.copy()
     else:
-        trace = binned_array
+        trace = a
+   
+    if dtype is None:
+        dtype = a.dtype
    
     # Check parameters
     if np.around(m/2) != m/2:
@@ -155,7 +192,7 @@ def autocorrelate(binned_array, m=16, deltat=1, normalize=False,
 
 
 def correlate(a, v, m=16, deltat=1, normalize=False,
-              copy=True, dtype=np.float64):
+              copy=True, dtype=None):
     """ Cross-correlation of two 1-dimensional sequences
         on a log2-scale.
         
@@ -171,23 +208,32 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
         
         Parameters
         ----------
-        - a         1-dimensional array of length N
-        - v         1-dimensional array of length N
-        - m         defines the number of points on one level,
-                    must be an even integer
-        - deltat    distance between bins
-        - normalize normalize the result to the square of the average
-                    input signal and the factor (N-k). The resulting
-                    curve follows the convention of decaying to zero
-                    for large lag times.
-        - copy      copy input arrays, set to False to save memory
-        - dtype     what dtype should be used for the output array
+        a, v : ndarrays
+            Input sequences
+        m : even integer
+            defines the number of points on one level, must be an
+            even integer
+        deltat : float
+            distance between bins
+        normalize : bool
+            normalize the result to the square of the average input
+            signal and the factor (M-k). The resulting curve follows
+            the convention of decaying to zero for large lag times.
+        copy : bool
+            copy input array, set to False to save memory
+        dtype : dtype, optional
+            The type of the returned array and of the accumulator in 
+            which the elements are summed.  By default, the dtype of 
+            `a` is used.
 
-
-        Returns:
-        Nx2 array containing lag time and correlation
+        Returns
+        -------
+        crosscorrelation : ndarray
+            Nx2 array containing lag time and cross-correlation
+            
         
-        
+        Notes
+        -----
         For FCS, with the convention of the curve decaying to zero use:
             
                normalize = True
@@ -209,6 +255,10 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     else:
         trace = a
         trace = v
+    
+    if dtype is None:
+        dtype = a.dtype
+   
    
     # Check parameters
     if np.around(m/2) != m/2:
@@ -304,10 +354,24 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
 
 def correlate_numpy(a, v, deltat=1, normalize=False, dtype=np.float64):
     """
-        Convenience function that wraps around numpy.correlate and
-        returns the data as multipletau.correlate does.
+    Convenience function that wraps around numpy.correlate and
+    returns the data as multipletau.correlate does.
         
-        For parameter explanation see multipletau.correlate.
+    Parameters
+    ----------
+    a, v : array_like
+        Input sequences
+    deltat : float
+        distance between bins
+    normalize : bool
+        normalize the result to the square of the average input
+        signal and the factor (M-k). The resulting curve follows
+        the convention of decaying to zero for large lag times.
+
+    Returns
+    -------
+    crosscorrelation : ndarray
+        Nx2 array containing lag time and cross-correlation
     """
     
     avg = np.average(a)
