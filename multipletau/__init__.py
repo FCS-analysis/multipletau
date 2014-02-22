@@ -3,9 +3,9 @@
 """ 
     A multiple-tau algorithm for python
     
-    Multipe-tau correlation are computed on a logarithmic scale and are thus
-    much faster than convnetional correlation on a linear scale such as 
-    numpy.correlate.
+    Multipe-tau correlation are computed on a logarithmic scale and are 
+    thus much faster than convnetional correlation on a linear scale 
+    such as  :py:func:`numpy.correlate`.
 """
 from _multipletau import *
 

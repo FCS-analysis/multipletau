@@ -44,54 +44,58 @@ __all__ = ["autocorrelate", "correlate", "correlate_numpy"]
 
 def autocorrelate(a, m=16, deltat=1, normalize=False,
                   copy=True, dtype=None):
-    """ Autocorrelation of a 1-dimensional sequence on a log2-scale.
+    """ 
+    Autocorrelation of a 1-dimensional sequence on a log2-scale.
+    
+    This computes the correlation according to 
+    :py:func:`numpy.correlate` for positive :math:`k`  on a base 2
+    logarithmic scale.
+    
+        numpy.correlate(a, a, mode="full")[len(a)-1:]  
         
-        This computes the correlation according to
-        
-            numpy.correlate(a, a, mode="full")[len(a)-1:]
-            
-            z[k] = sum_n a[n] * a[n+k]
-        
-        on a base 2 logarithmic scale. Note that only the correlation
-        in the positive direction is computed.
-        
-        Parameters
-        ----------
-        binned_array : ndarray
-           1-dimensional array of length N
-        m : even integer
-            defines the number of points on one level, must be an
-            even integer
-        deltat : float
-            distance between bins
-        normalize : bool
-            normalize the result to the square of the average input
-            signal and the factor (M-k). The resulting curve follows
-            the convention of decaying to zero for large lag times.
-        copy : bool
-            copy input array, set to False to save memory
-        dtype : dtype, optional
-            The type of the returned array and of the accumulator in 
-            which the elements are summed.  By default, the dtype of 
-            `a` is used.
+        :math:`z_k = \Sigma_n a_n a_{n+k}`
 
-        Returns
-        -------
-        autocorrelation : ndarray
-            Nx2 array containing lag time and autocorrelation
+    
+    Note that only the correlation in the positive direction is
+    computed.
+    
+    Parameters
+    ----------
+    a : ndarray
+       1-dimensional array of length N
+    m : even integer
+        defines the number of points on one level, must be an
+        even integer
+    deltat : float
+        distance between bins
+    normalize : bool
+        normalize the result to the square of the average input
+        signal and the factor (M-k). The resulting curve follows
+        the convention of decaying to zero for large lag times.
+    copy : bool
+        copy input array, set to False to save memory
+    dtype : dtype, optional
+        The type of the returned array and of the accumulator in 
+        which the elements are summed.  By default, the dtype of 
+        `a` is used.
+
+    Returns
+    -------
+    autocorrelation : ndarray
+        Nx2 array containing lag time and autocorrelation
 
 
-        Notes
-        -----
-        For FCS, with the convention of the curve decaying to zero use:
-            
-               normalize = True
+    Notes
+    -----
+    For FCS, with the convention of the curve decaying to zero use:
         
-        For emulating the numpy.correlate behavior on a logarithmic
-        scale (default behavior) use:
+           normalize = True
+    
+    For emulating the numpy.correlate behavior on a logarithmic
+    scale (default behavior) use:
 
-               normalize = False
-        
+           normalize = False
+    
     """
     traceavg = np.average(a)
     if normalize and traceavg == 0:
@@ -193,55 +197,58 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
 
 def correlate(a, v, m=16, deltat=1, normalize=False,
               copy=True, dtype=None):
-    """ Cross-correlation of two 1-dimensional sequences
-        on a log2-scale.
+    """ 
+    Cross-correlation of two 1-dimensional sequences
+    on a log2-scale.
+    
+    This computes the cross-correlation according to
+    :py:func:`numpy.correlate` for positive :math:`k`  on a base 2
+    logarithmic scale.
+    
+        numpy.correlate(a, v, mode="full")[len(a)-1:]
         
-        This computes the cross-correlation according to
-        
-            numpy.correlate(a, v, mode="full")[len(a)-1:]
-            
-            z[k] = sum_n a[n] * v[n+k]
-        
-        on a base 2 logarithmic scale. Note that only the correlation
-        in the positive direction is computed.
-        
-        
-        Parameters
-        ----------
-        a, v : ndarrays
-            Input sequences
-        m : even integer
-            defines the number of points on one level, must be an
-            even integer
-        deltat : float
-            distance between bins
-        normalize : bool
-            normalize the result to the square of the average input
-            signal and the factor (M-k). The resulting curve follows
-            the convention of decaying to zero for large lag times.
-        copy : bool
-            copy input array, set to False to save memory
-        dtype : dtype, optional
-            The type of the returned array and of the accumulator in 
-            which the elements are summed.  By default, the dtype of 
-            `a` is used.
+        :math:`z_k = \Sigma_n a_n v_{n+k}`
+    
+    Note that only the correlation
+    in the positive direction is computed.
+    
+    
+    Parameters
+    ----------
+    a, v : ndarrays
+        Input sequences
+    m : even integer
+        defines the number of points on one level, must be an
+        even integer
+    deltat : float
+        distance between bins
+    normalize : bool
+        normalize the result to the square of the average input
+        signal and the factor (M-k). The resulting curve follows
+        the convention of decaying to zero for large lag times.
+    copy : bool
+        copy input array, set to False to save memory
+    dtype : dtype, optional
+        The type of the returned array and of the accumulator in 
+        which the elements are summed.  By default, the dtype of 
+        `a` is used.
 
-        Returns
-        -------
-        crosscorrelation : ndarray
-            Nx2 array containing lag time and cross-correlation
-            
+    Returns
+    -------
+    crosscorrelation : ndarray
+        Nx2 array containing lag time and cross-correlation
         
-        Notes
-        -----
-        For FCS, with the convention of the curve decaying to zero use:
-            
-               normalize = True
+    
+    Notes
+    -----
+    For FCS, with the convention of the curve decaying to zero use:
         
-        For emulating the numpy.correlate behavior on a logarithmic
-        scale (default behavior) use:
+           normalize = True
+    
+    For emulating the numpy.correlate behavior on a logarithmic
+    scale (default behavior) use:
 
-               normalize = False
+           normalize = False
     """
     traceavg1 = np.average(a)
     traceavg2 = np.average(v)
@@ -352,7 +359,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
 
 
 
-def correlate_numpy(a, v, deltat=1, normalize=False, dtype=np.float64):
+def correlate_numpy(a, v, deltat=1, normalize=False, dtype=None):
     """
     Convenience function that wraps around numpy.correlate and
     returns the data as multipletau.correlate does.
@@ -367,6 +374,10 @@ def correlate_numpy(a, v, deltat=1, normalize=False, dtype=np.float64):
         normalize the result to the square of the average input
         signal and the factor (M-k). The resulting curve follows
         the convention of decaying to zero for large lag times.
+    dtype : dtype, optional
+        The type of the returned array and of the accumulator in 
+        which the elements are summed.  By default, the dtype of 
+        `a` is used.
 
     Returns
     -------
@@ -376,6 +387,9 @@ def correlate_numpy(a, v, deltat=1, normalize=False, dtype=np.float64):
     
     avg = np.average(a)
     vvg = np.average(v)
+    
+    if dtype is None:
+        dtype = a.dtype
     
     if len(a) != len(v):
         raise ValueError("Arrays must be of same length.")

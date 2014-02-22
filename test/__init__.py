@@ -14,11 +14,27 @@ from __future__ import print_function
 
 import numpy as np
 
-__all__=["GenerateExpNoise"]
+__all__=["noise_exponential"]
 
-def GenerateExpNoise(N, taud=20., variance=1., deltat=1.):
+def noise_exponential(N, tau=20., variance=1., deltat=1.):
     """
        Generate exponentially correlated noise.
+       
+       Parameters
+       ----------
+       N : integer
+          Total number of samples
+       tau : float
+          Correlation time of the exponential in `deltat`
+       variance : float
+          Variance of the noise
+       deltat : float
+          Bin size of output array, defines the time scale of `tau`
+       
+       Returns
+       -------
+       exp_noise : ndarray
+          Exponentially correlated noise
     """
     # length of mean0 trace
     N_steps = N
@@ -26,8 +42,8 @@ def GenerateExpNoise(N, taud=20., variance=1., deltat=1.):
     # time trace
     t = np.arange(N_steps)
     # AR-1 processes - what does that mean?
-    # time constant (inverse of correlationtime taud)
-    g = 1./taud
+    # time constant (inverse of correlationtime tau)
+    g = 1./tau
     # variance
     s0 = variance
     
@@ -70,7 +86,7 @@ if __name__ == "__main__":
     print("Generating exponentially correlated noise.")
     # Do not edit
     #taudiff *= 1e-6/deltat
-    data, times = GenerateExpNoise(N, taud=taudiff, deltat=1)
+    data, times = noise_exponential(N, taudiff, deltat=1)
     countrate *= deltat*5000 # since we want kHz instead of Hz
     # We set one bin to 1e-6 s.
 
