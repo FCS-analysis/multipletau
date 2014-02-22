@@ -57,7 +57,8 @@ extensions = ['matplotlib.sphinxext.mathmpl',
               'sphinx.ext.todo',
 #             'inheritance_diagram',
               'numpydoc',
-              'hidden_code_block']
+              'hidden_code_block'
+              'sphinx.ext.autosummary']
 
 
 
