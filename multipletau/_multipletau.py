@@ -43,7 +43,7 @@ __all__ = ["autocorrelate", "correlate", "correlate_numpy"]
 
 
 def autocorrelate(a, m=16, deltat=1, normalize=False,
-                  copy=True, dtype=None):
+                  copy=True, dtype=None, mode='full'):
     """ 
     Autocorrelation of a 1-dimensional sequence on a log2-scale.
     
@@ -78,6 +78,13 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
         The type of the returned array and of the accumulator in 
         which the elements are summed.  By default, the dtype of 
         `a` is used.
+    mode : {'full', 'base2'}
+        'full': 
+          By default, mode is 'full'.  This also returns the convolution
+          for the last step. Boundary effects may be seen.
+        'base2':
+          This only returns the correlation for all levels of sample
+          size m.
 
     Returns
     -------
@@ -118,19 +125,27 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
                       .format(mold,m))
     else:
         m = int(m)
+        
+    if mode not in ["full", "base2"]:
+        raise NotImplementedError("Unknonw mode {}!".format(mode))
+    
     N = N0 = len(trace)
     # Find out the length of the correlation function
     k = int(np.floor(np.log2(N/m)))
     # Initialize correlation array
     
+  
+    lenG = np.int(np.floor(m+k*m/2))
+    
     # Too many statistical errors and we would have to discard last
     # element of the correlation function:
     # additional data in the end if length of the input is not pow of 2
-    #number = np.int(np.floor(N/2**(k+1)) - m/2 )
-    # lenG = np.int(m+k*m/2) + number
-    
-    
-    lenG = np.int(m+k*m/2)
+    if mode == "full":
+        number = np.int(np.floor(N/2**(k+1)) - m/2) - 1
+        if number == -1:
+            number = 0
+        lenG += number
+        
     G = np.zeros((lenG, 2), dtype=dtype)
     normstat = np.zeros(lenG, dtype=dtype)
     normnump = np.zeros(lenG, dtype=dtype)
@@ -175,22 +190,25 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
         N /= 2
 
     ## Add elements that are still evaluable:
-    #step = k+1
-    #for n in range(1,number+1):
-    #    idx = int(m + n - 1 + (step-1)*m/2)
-    #    G[idx,0] = deltat * (n+m/2) * 2**step
-    #    G[idx,1] = np.sum(trace[:N-(n+m/2)]*trace[(n+m/2):],
-    #                      dtype=dtype) / N 
-    #    print trace[:N-(n+m/2)]*trace[(n+m/2):]
-    #    normstat[idx] = N-(n+m/2)
-    #    normnump[idx] = N
+    if mode == "full":
+        step = k+1
+        for n in range(1,number+1):
+            idx = int(m + n - 1 + (step-1)*m/2)
+            G[idx,0] = deltat * (n+m/2) * 2**step
+            G[idx,1] = np.sum(trace[:N-(n+m/2)]*trace[(n+m/2):],
+                              dtype=dtype) / N 
+            normstat[idx] = N-(n+m/2)
+            normnump[idx] = N
 
-        
+    
     if normalize:
         G[:,1] /= traceavg**2 * normstat
     else:
         G[:,1] *= N0/normnump 
     
+    print normstat
+    import IPython
+    IPython.embed()
     return G
 
 
@@ -359,7 +377,8 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
 
 
 
-def correlate_numpy(a, v, deltat=1, normalize=False, dtype=None):
+def correlate_numpy(a, v, deltat=1, normalize=False,
+                     dtype=None, copy=True):
     """
     Convenience function that wraps around numpy.correlate and
     returns the data as multipletau.correlate does.
@@ -374,6 +393,8 @@ def correlate_numpy(a, v, deltat=1, normalize=False, dtype=None):
         normalize the result to the square of the average input
         signal and the factor (M-k). The resulting curve follows
         the convention of decaying to zero for large lag times.
+    copy : bool
+        copy input array, set to False to save memory
     dtype : dtype, optional
         The type of the returned array and of the accumulator in 
         which the elements are summed.  By default, the dtype of 
@@ -394,7 +415,11 @@ def correlate_numpy(a, v, deltat=1, normalize=False, dtype=None):
     if len(a) != len(v):
         raise ValueError("Arrays must be of same length.")
 
-    Gd = np.correlate(dtype(a-avg), dtype(v-vvg), mode="full")[len(a)-1:]
+    ab = np.array(a, dtype=dtype, copy=copy)
+    vb = np.array(v, dtype=dtype, copy=copy)
+
+
+    Gd = np.correlate(ab-avg, vb-vvg, mode="full")[len(ab)-1:]
 
     if normalize:
         N = len(Gd)
