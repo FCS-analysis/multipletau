@@ -43,23 +43,24 @@ import multipletau
 #]
 
 
-extensions = ['matplotlib.sphinxext.mathmpl',
-              'matplotlib.sphinxext.only_directives',
-              'matplotlib.sphinxext.plot_directive',
-              'sphinx.ext.viewcode',
+extensions = [
+#              'matplotlib.sphinxext.mathmpl',
+#              'matplotlib.sphinxext.only_directives',
+#              'matplotlib.sphinxext.plot_directive',
+#              'sphinx.ext.viewcode',
 #               'ipython_directive',
               'sphinx.ext.intersphinx',
 #               'sphinx.ext.autosummary',
               'sphinx.ext.autodoc',
-              'sphinx.ext.doctest',
-              'ipython_console_highlighting',
+#              'sphinx.ext.doctest',
+#              'ipython_console_highlighting',
 #               'sphinx.ext.pngmath',
               'sphinx.ext.mathjax',
-              'sphinx.ext.todo',
+#              'sphinx.ext.todo',
 #             'inheritance_diagram',
               'numpydoc',
-              'hidden_code_block',
-              'sphinx.ext.autosummary'
+#              'hidden_code_block',
+#              'sphinx.ext.autosummary'
               ]
 
 
@@ -119,7 +120,7 @@ exclude_patterns = ['_build']
 #show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+#pygments_style = 'default'
 
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
@@ -132,7 +133,7 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'default'
+html_theme = 'nature'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -161,7 +162,7 @@ html_theme = 'default'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+#html_static_path = ['_static']
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
@@ -275,8 +276,9 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'multipletau', u'multipletau Documentation',
-   u'Paul Müller', 'multipletau', 'One line description of project.',
-   'Miscellaneous'),
+   u'Paul Müller', 'multipletau',
+   'A multiple-tau algorithm that utilizes numpy.',
+   'Numeric'),
 ]
 
 # Documents to append as an appendix to all manuals.

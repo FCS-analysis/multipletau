@@ -16,7 +16,7 @@ setup(
     packages=['multipletau'],
     package_dir={'multipletau': 'multipletau'},
     license="OpenBSD",
-    description='A multiple-tau algorithm using numpy arrays.',
+    description='A multiple-tau algorithm that utilizes numpy.',
     long_description=open(join(dirname(__file__), 'README.txt')).read(),
     install_requires=["NumPy >= 1.5.1"]
     )

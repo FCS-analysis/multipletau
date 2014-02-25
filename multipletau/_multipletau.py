@@ -50,19 +50,19 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     This computes the correlation according to 
     :py:func:`numpy.correlate` for positive :math:`k`  on a base 2
     logarithmic scale.
-    
+
         numpy.correlate(a, a, mode="full")[len(a)-1:]  
-        
+
         :math:`z_k = \Sigma_n a_n a_{n+k}`
 
-    
+
     Note that only the correlation in the positive direction is
     computed.
-    
+
     Parameters
     ----------
     a : ndarray
-       1-dimensional array of length N
+        1-dimensional array of length N
     m : even integer
         defines the number of points on one level, must be an
         even integer
@@ -80,11 +80,12 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
         `a` is used.
     mode : {'full', 'base2'}
         'full': 
-          By default, mode is 'full'.  This also returns the convolution
-          for the last step. Boundary effects may be seen.
+          By default, mode is 'full'.  This also returns the 
+          convolution for the last step. Boundary effects may 
+          be seen.
         'base2':
-          This only returns the correlation for all levels of sample
-          size m.
+          This only returns the correlation for all levels of
+          sample size m.
 
     Returns
     -------
@@ -95,14 +96,14 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     Notes
     -----
     For FCS, with the convention of the curve decaying to zero use:
-        
+
            normalize = True
-    
+
     For emulating the numpy.correlate behavior on a logarithmic
     scale (default behavior) use:
 
            normalize = False
-    
+
     """
     traceavg = np.average(a)
     if normalize and traceavg == 0:
