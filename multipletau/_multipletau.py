@@ -62,7 +62,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     Parameters
     ----------
     a : array_like
-        input sequence, 1-dimensional, length N
+        input sequence
     m : even integer
         defines the number of points on one level, must be an
         even integer
@@ -227,7 +227,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     Parameters
     ----------
     a, v : array_like
-        input sequences with equal length N
+        input sequences with equal length
     m : even integer
         defines the number of points on one level, must be an
         even integer
