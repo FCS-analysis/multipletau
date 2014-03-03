@@ -99,7 +99,7 @@ if __name__ == "__main__":
 
 
     print("Performing autocorrelation.")
-    G = correlate(data, data, deltat=deltat, normalize=normalize)
+    G = autocorrelate(data, deltat=deltat, normalize=normalize)
 
     print("Performing numpy correlation.")
 

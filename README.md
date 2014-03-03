@@ -1,7 +1,7 @@
 multipletau
 ===========
 
-This repo contains the multiple-tau algorithm for Python
+This repo contains a multiple-tau algorithm for Python
 
 - **src** implementation of the multiple-tau algorithm using Numpy
 - **test** testing the algorithm

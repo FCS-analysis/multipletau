@@ -43,7 +43,7 @@ __all__ = ["autocorrelate", "correlate", "correlate_numpy"]
 
 
 def autocorrelate(a, m=16, deltat=1, normalize=False,
-                  copy=True, dtype=None, mode='full'):
+                  copy=True, dtype=None):
     """ 
     Autocorrelation of a 1-dimensional sequence on a log2-scale.
     
@@ -61,8 +61,8 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
 
     Parameters
     ----------
-    a : ndarray
-        1-dimensional array of length N
+    a : array_like
+        input sequence, 1-dimensional, length N
     m : even integer
         defines the number of points on one level, must be an
         even integer
@@ -70,22 +70,14 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
         distance between bins
     normalize : bool
         normalize the result to the square of the average input
-        signal and the factor (M-k). The resulting curve follows
-        the convention of decaying to zero for large lag times.
+        signal and the factor `M-k`.
     copy : bool
         copy input array, set to False to save memory
     dtype : dtype, optional
         The type of the returned array and of the accumulator in 
         which the elements are summed.  By default, the dtype of 
         `a` is used.
-    mode : {'full', 'base2'}
-        'full': 
-          By default, mode is 'full'.  This also returns the 
-          convolution for the last step. Boundary effects may 
-          be seen.
-        'base2':
-          This only returns the correlation for all levels of
-          sample size m.
+
 
     Returns
     -------
@@ -95,29 +87,26 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
 
     Notes
     -----
-    For FCS, with the convention of the curve decaying to zero use:
-
+    The algorithm computes the correlation with the convention of the
+    curve decaying to zero.
+    
+    For experiments like e.g. fluorescence correlation spectroscopy,
+    the signal can be normalized to `M-k` by invoking:
+    
            normalize = True
 
     For emulating the numpy.correlate behavior on a logarithmic
     scale (default behavior) use:
 
            normalize = False
-
     """
     traceavg = np.average(a)
     if normalize and traceavg == 0:
         raise ZeroDivisionError("Normalization not possible. "+
                      "The average of the input *binned_array* is zero.")
-    if copy:
-        # Create a copy of the trace instead of binning the given one.
-        trace = a.copy()
-    else:
-        trace = a
-   
-    if dtype is None:
-        dtype = a.dtype
-   
+
+    trace = np.array(a, dtype=dtype, copy=copy)
+    
     # Check parameters
     if np.around(m/2) != m/2:
         mold = 1*m
@@ -126,26 +115,19 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
                       .format(mold,m))
     else:
         m = int(m)
-        
-    if mode not in ["full", "base2"]:
-        raise NotImplementedError("Unknonw mode {}!".format(mode))
-    
+
     N = N0 = len(trace)
-    # Find out the length of the correlation function
+    
+    # Find out the length of the correlation function.
+    # The integer k defines how many times we can average over
+    # two neighboring array elements in order to obtain an array of
+    # length just larger than m.
     k = int(np.floor(np.log2(N/m)))
-    # Initialize correlation array
-    
-  
-    lenG = np.int(np.floor(m+k*m/2))
-    
-    # Too many statistical errors and we would have to discard last
-    # element of the correlation function:
-    # additional data in the end if length of the input is not pow of 2
-    if mode == "full":
-        number = np.int(np.floor(N/2**(k+1)) - m/2) - 1
-        if number == -1:
-            number = 0
-        lenG += number
+
+    # In the base2 multiple-tau scheme, the length of the correlation
+    # array is (only taking into account values that are computed from
+    # traces that are just larger than m):  
+    lenG = np.int(np.floor(m + k*m/2))
         
     G = np.zeros((lenG, 2), dtype=dtype)
     normstat = np.zeros(lenG, dtype=dtype)
@@ -161,28 +143,53 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     # Discrete convolution of m elements
     for n in range(1,m+1):
         G[n-1,0] = deltat * n
+        # This is the computationally intensive step
         G[n-1,1] = np.sum(trace[:N-n]*trace[n:], dtype=dtype)
         normstat[n-1] = N-n
         normnump[n-1] = N
-    ## Now that we calculated the first m elements of G, let us
-    ## go on with the next m/2 elements.
+    # Now that we calculated the first m elements of G, let us
+    # go on with the next m/2 elements.
     # Check if len(trace) is even:
     if N%2 == 1:
         N -= 1
     # Add up every second element
     trace = (trace[:N:2]+trace[1:N+1:2])/2
     N /= 2
-
+    ## Start iteration for each m/2 values
     for step in range(1,k+1):
-        # Get the next m/2 values of the trace
+        ## Get the next m/2 values via correlation of the trace
         for n in range(1,int(m/2)+1):
             idx = int(m + n - 1 + (step-1)*m/2)
-            G[idx,0] = deltat * (n+m/2) * 2**step
-            G[idx,1] = np.sum(trace[:N-(n+m/2)]*trace[(n+m/2):],
-                              dtype=dtype)
-            normstat[idx] = N-(n+m/2)
-            normnump[idx] = N
-
+            if len(trace[:N-(n+m/2)]) == 0:
+                # This is a shortcut that stops the iteration once the
+                # length of the trace is too small to compute a corre- 
+                # lation. The actual length of the correlation function 
+                # does not only depend on k - We also must be able to 
+                # perform the sum with repect to k for all elements.
+                # For small N, the sum over zero elements would be
+                # computed here.
+                #
+                # One could make this for loop go up to maxval, where
+                #   maxval1 = int(m/2)
+                #   maxval2 = int(N-m/2-1)
+                #   maxval = min(maxval1, maxval2)
+                # However, we then would also need to find out which 
+                # element in G is the last element...
+                G = G[:idx-1]
+                normstat = normstat[:idx-1]
+                normnump = normnump[:idx-1]
+                # Note that this break only breaks out of the current
+                # for loop. However, we are already in the last loop
+                # of the step-for-loop. That is because we calculated
+                # k in advance.
+                break
+            else:
+                G[idx,0] = deltat * (n+m/2) * 2**step
+                # This is the computationally intensive step
+                G[idx,1] = np.sum(trace[:N-(n+m/2)]*trace[(n+m/2):],
+                                  dtype=dtype)
+                normstat[idx] = N-(n+m/2)
+                normnump[idx] = N
         # Check if len(trace) is even:
         if N%2 == 1:
             N -= 1
@@ -190,26 +197,11 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
         trace = (trace[:N:2]+trace[1:N+1:2])/2
         N /= 2
 
-    ## Add elements that are still evaluable:
-    if mode == "full":
-        step = k+1
-        for n in range(1,number+1):
-            idx = int(m + n - 1 + (step-1)*m/2)
-            G[idx,0] = deltat * (n+m/2) * 2**step
-            G[idx,1] = np.sum(trace[:N-(n+m/2)]*trace[(n+m/2):],
-                              dtype=dtype) / N 
-            normstat[idx] = N-(n+m/2)
-            normnump[idx] = N
-
-    
     if normalize:
         G[:,1] /= traceavg**2 * normstat
     else:
         G[:,1] *= N0/normnump 
     
-    print normstat
-    import IPython
-    IPython.embed()
     return G
 
 
@@ -234,8 +226,8 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     
     Parameters
     ----------
-    a, v : ndarrays
-        Input sequences
+    a, v : array_like
+        input sequences with equal length N
     m : even integer
         defines the number of points on one level, must be an
         even integer
@@ -243,14 +235,14 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
         distance between bins
     normalize : bool
         normalize the result to the square of the average input
-        signal and the factor (M-k). The resulting curve follows
-        the convention of decaying to zero for large lag times.
+        signal and the factor `M-k`.
     copy : bool
         copy input array, set to False to save memory
     dtype : dtype, optional
         The type of the returned array and of the accumulator in 
         which the elements are summed.  By default, the dtype of 
         `a` is used.
+
 
     Returns
     -------
@@ -260,31 +252,29 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     
     Notes
     -----
-    For FCS, with the convention of the curve decaying to zero use:
-        
-           normalize = True
+    The algorithm computes the correlation with the convention of the
+    curve decaying to zero.
     
+    For experiments like e.g. fluorescence correlation spectroscopy,
+    the signal can be normalized to `N-n` by invoking:
+    
+           normalize = True
+
     For emulating the numpy.correlate behavior on a logarithmic
     scale (default behavior) use:
 
            normalize = False
     """
+    ## See `autocorrelation` for better documented code.
     traceavg1 = np.average(a)
     traceavg2 = np.average(v)
     if normalize and traceavg1*traceavg2 == 0:
         raise ZeroDivisionError("Normalization not possible. "+
                      "The average of the input *binned_array* is zero.")
-    if copy:
-        # Create a copy of the trace instead of binning the given one.
-        trace1 = a.copy()
-        trace2 = v.copy()
-    else:
-        trace = a
-        trace = v
-    
-    if dtype is None:
-        dtype = a.dtype
-   
+                     
+    trace1 = np.array(a, dtype=dtype, copy=copy)
+    dtype = trace1.dtype
+    trace2 = np.array(v, dtype=dtype, copy=copy)
    
     # Check parameters
     if np.around(m/2) != m/2:
@@ -296,21 +286,20 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
         m = int(m)
         
     if len(a) != len(v):
-        raise ValueError("Arrays must be of same length.")
+        raise ValueError("Input arrays must be of equal length.")
         
     N = N0 = len(trace1)
-    # Find out the length of the correlation function
+    # Find out the length of the correlation function.
+    # The integer k defines how many times we can average over
+    # two neighboring array elements in order to obtain an array of
+    # length just larger than m.
     k = int(np.floor(np.log2(N/m)))
-    # Initialize correlation array
     
-    # Too many statistical errors and we would have to discard last
-    # element of the correlation function:
-    # additional data in the end if length of the input is not pow of 2
-    #number = np.int(np.floor(N/2**(k+1)) - m/2 )
-    # lenG = np.int(m+k*m/2) + number
-    
-    
+    # In the base2 multiple-tau scheme, the length of the correlation
+    # array is (only taking into account values that are computed from
+    # traces that are just larger than m):   
     lenG = np.int(m+k*m/2)
+    
     G = np.zeros((lenG, 2), dtype=dtype)
     normstat = np.zeros(lenG, dtype=dtype)
     normnump = np.zeros(lenG, dtype=dtype)
@@ -322,15 +311,12 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     if N < 2*m:
         # Otherwise the following for-loop will fail:
         raise ValueError("len(binned_array) must be larger than 2m.")
-    ## Calculate autocorrelation function for first m bins
-    # Discrete convolution of m elements
+    # Calculate autocorrelation function for first m bins
     for n in range(1,m+1):
         G[n-1,0] = deltat * n
         G[n-1,1] = np.sum(trace1[:N-n]*trace2[n:], dtype=dtype)
         normstat[n-1] = N-n
         normnump[n-1] = N
-    ## Now that we calculated the first m elements of G, let us
-    ## go on with the next m/2 elements.
     # Check if len(trace) is even:
     if N%2 == 1:
         N -= 1
@@ -343,11 +329,18 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
         # Get the next m/2 values of the trace
         for n in range(1,int(m/2)+1):
             idx = int(m + n - 1 + (step-1)*m/2)
-            G[idx,0] = deltat * (n+m/2) * 2**step
-            G[idx,1] = np.sum(trace1[:N-(n+m/2)]*trace2[(n+m/2):],
-                              dtype=dtype)
-            normstat[idx] = N-(n+m/2)
-            normnump[idx] = N
+            if len(trace1[:N-(n+m/2)]) == 0:
+                # Abort
+                G = G[:idx-1]
+                normstat = normstat[:idx-1]
+                normnump = normnump[:idx-1]
+                break
+            else:
+                G[idx,0] = deltat * (n+m/2) * 2**step
+                G[idx,1] = np.sum(trace1[:N-(n+m/2)]*trace2[(n+m/2):],
+                                  dtype=dtype)
+                normstat[idx] = N-(n+m/2)
+                normnump[idx] = N
 
         # Check if len(trace) is even:
         if N%2 == 1:
@@ -357,18 +350,6 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
         trace2 = (trace2[:N:2]+trace2[1:N+1:2])/2
         N /= 2
 
-    ## Add elements that are still evaluable:
-    #step = k+1
-    #for n in range(1,number+1):
-    #    idx = int(m + n - 1 + (step-1)*m/2)
-    #    G[idx,0] = deltat * (n+m/2) * 2**step
-    #    G[idx,1] = np.sum(trace[:N-(n+m/2)]*trace[(n+m/2):],
-    #                      dtype=dtype) / N 
-    #    print trace[:N-(n+m/2)]*trace[(n+m/2):]
-    #    normstat[idx] = N-(n+m/2)
-    #    normnump[idx] = N
-
-        
     if normalize:
         G[:,1] /= traceavg1*traceavg2 * normstat
     else:
@@ -387,7 +368,7 @@ def correlate_numpy(a, v, deltat=1, normalize=False,
     Parameters
     ----------
     a, v : array_like
-        Input sequences
+        input sequences
     deltat : float
         distance between bins
     normalize : bool
@@ -418,7 +399,6 @@ def correlate_numpy(a, v, deltat=1, normalize=False,
 
     ab = np.array(a, dtype=dtype, copy=copy)
     vb = np.array(v, dtype=dtype, copy=copy)
-
 
     Gd = np.correlate(ab-avg, vb-vvg, mode="full")[len(ab)-1:]
 
