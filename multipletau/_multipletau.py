@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """ 
-    A multiple-tau algorithm for python
+    A multiple-τ algorithm for Python 2.7 and 3.x.
     
     Copyright (c) 2014 Paul Müller
 
@@ -256,7 +256,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     curve decaying to zero.
     
     For experiments like e.g. fluorescence correlation spectroscopy,
-    the signal can be normalized to `N-n` by invoking:
+    the signal can be normalized to `M-k` by invoking:
     
            normalize = True
 
@@ -266,15 +266,15 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
            normalize = False
     """
     ## See `autocorrelation` for better documented code.
-    traceavg1 = np.average(a)
-    traceavg2 = np.average(v)
+    traceavg1 = np.average(v)
+    traceavg2 = np.average(a)
     if normalize and traceavg1*traceavg2 == 0:
         raise ZeroDivisionError("Normalization not possible. "+
                      "The average of the input *binned_array* is zero.")
                      
-    trace1 = np.array(a, dtype=dtype, copy=copy)
+    trace1 = np.array(v, dtype=dtype, copy=copy)
     dtype = trace1.dtype
-    trace2 = np.array(v, dtype=dtype, copy=copy)
+    trace2 = np.array(a, dtype=dtype, copy=copy)
    
     # Check parameters
     if np.around(m/2) != m/2:
@@ -298,8 +298,8 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     # In the base2 multiple-tau scheme, the length of the correlation
     # array is (only taking into account values that are computed from
     # traces that are just larger than m):   
-    lenG = np.int(m+k*m/2)
-    
+    lenG = np.int(np.floor(m + k*m/2))
+        
     G = np.zeros((lenG, 2), dtype=dtype)
     normstat = np.zeros(lenG, dtype=dtype)
     normnump = np.zeros(lenG, dtype=dtype)

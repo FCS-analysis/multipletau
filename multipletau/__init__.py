@@ -1,13 +1,25 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """ 
-    A multiple-tau algorithm for python
+    Provides a multiple-τ algorithm for Python 2.7 and Python 3.x.
+
+    Multipe-τ correlation is computed on a logarithmic scale (less
+    data points are computed) and is thus much faster than conventional
+    correlation on a linear scale such as  :py:func:`numpy.correlate`.
+
+    Recommended literature: 
     
-    Multipe-tau correlation are computed on a logarithmic scale and are 
-    thus much faster than convnetional correlation on a linear scale 
-    such as  :py:func:`numpy.correlate`.
+    - Klaus Schaetzel and Rainer Peters; *Noise on multiple-tau photon
+      correlation data*. Proc. SPIE 1430, Photon Correlation
+      Spectroscopy: Multicomponent Systems, 109 (June 1, 1991);    
+      http://doi.org/10.1117/12.44160
+      
+    - Thorsten Wohland, Rudolf Rigler, and Horst Vogel; *The Standard 
+      Deviation in Fluorescence Correlation Spectroscopy*. Biophysical
+      Journal, 80 (June 1, 2001);  
+      http://dx.doi.org/10.1016/S0006-3495(01)76264-9
 """
-from _multipletau import *
+from ._multipletau import *
 
 __version__ = "0.1.3"
 __author__ = "Paul Mueller"
