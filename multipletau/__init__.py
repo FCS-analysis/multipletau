@@ -18,6 +18,9 @@
       Deviation in Fluorescence Correlation Spectroscopy*. Biophysical
       Journal, 80 (June 1, 2001);  
       http://dx.doi.org/10.1016/S0006-3495(01)76264-9
+      
+    The source code of multipletau is available at
+    https://github.com/paulmueller/multipletau.
 """
 from ._multipletau import *
 
