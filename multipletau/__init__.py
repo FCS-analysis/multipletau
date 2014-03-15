@@ -1,7 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """ 
-    Provides a multiple-τ algorithm for Python 2.7 and Python 3.x.
+    Provides a multiple-τ algorithm for Python 2.7 and Python 3.x and
+    requires the package :py:mod:`numpy`.
 
     Multipe-τ correlation is computed on a logarithmic scale (less
     data points are computed) and is thus much faster than conventional
