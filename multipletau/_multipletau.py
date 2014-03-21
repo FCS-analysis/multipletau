@@ -62,7 +62,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     Parameters
     ----------
     a : array_like
-        input sequence
+        input sequence of real numbers
     m : even integer
         defines the number of points on one level, must be an
         even integer
@@ -99,6 +99,18 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     scale (default behavior) use:
 
            normalize = False
+
+
+    Examples
+    --------
+    >>> from numpy import dtype
+    >>> from multipletau import autocorrelate
+    >>> autocorrelate(range(42), m=2, dtype=dtype(float))
+    array([[  1.00000000e+00,   2.29600000e+04],
+           [  2.00000000e+00,   2.21000000e+04],
+           [  4.00000000e+00,   2.03775000e+04],
+           [  8.00000000e+00,   1.50612000e+04]])
+
     """
     traceavg = np.average(a)
     if normalize and traceavg == 0:
@@ -106,6 +118,19 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
                      "The average of the input *binned_array* is zero.")
 
     trace = np.array(a, dtype=dtype, copy=copy)
+    dtype = trace.dtype
+
+    if dtype.kind in ["b","i","u"]:
+        warnings.warn("Converting input data type ({}) to float.".
+                      format(dtype))
+        dtype = np.dtype(float)
+        trace = np.array(a, dtype=dtype, copy=copy)
+    
+    # Complex data
+    if dtype.kind == "c":
+        raise NotImplementedError(
+              "Please use `multipletau.correlate` for complex data.")
+
     
     # Check parameters
     if np.around(m/2) != m/2:
@@ -130,6 +155,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     lenG = np.int(np.floor(m + k*m/2))
         
     G = np.zeros((lenG, 2), dtype=dtype)
+
     normstat = np.zeros(lenG, dtype=dtype)
     normnump = np.zeros(lenG, dtype=dtype)
     
@@ -264,6 +290,18 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     scale (default behavior) use:
 
            normalize = False
+
+
+    Examples
+    --------
+    >>> from numpy import dtype
+    >>> from multipletau import correlate
+    >>> correlate(range(42), range(1,43), m=2, dtype=dtype(float))
+    array([[  1.00000000e+00,   2.38210000e+04],
+           [  2.00000000e+00,   2.29600000e+04],
+           [  4.00000000e+00,   2.12325000e+04],
+           [  8.00000000e+00,   1.58508000e+04]])
+
     """
     ## See `autocorrelation` for better documented code.
     traceavg1 = np.average(v)
@@ -271,10 +309,26 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     if normalize and traceavg1*traceavg2 == 0:
         raise ZeroDivisionError("Normalization not possible. "+
                      "The average of the input *binned_array* is zero.")
-                     
+
     trace1 = np.array(v, dtype=dtype, copy=copy)
     dtype = trace1.dtype
+
+    if dtype.kind in ["b","i","u"]:
+        warnings.warn(
+              "Converting input data type ({}) to float.".format(dtype))
+        dtype = np.dtype(float)
+        trace1 = np.array(v, dtype=dtype, copy=copy)
+    
+    # Prevent traces from overwriting each other
+    if a is v:
+        # Force copying trace 2
+        copy = True
+        
     trace2 = np.array(a, dtype=dtype, copy=copy)
+
+    # Complex data
+    if dtype.kind == "c":
+        trace1.imag *= -1
    
     # Check parameters
     if np.around(m/2) != m/2:
@@ -314,7 +368,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     # Calculate autocorrelation function for first m bins
     for n in range(1,m+1):
         G[n-1,0] = deltat * n
-        G[n-1,1] = np.sum(trace1[:N-n]*trace2[n:], dtype=dtype)
+        G[n-1,1] = np.sum(trace1[:N-n]*trace2[n:])
         normstat[n-1] = N-n
         normnump[n-1] = N
     # Check if len(trace) is even:
@@ -337,8 +391,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
                 break
             else:
                 G[idx,0] = deltat * (n+m/2) * 2**step
-                G[idx,1] = np.sum(trace1[:N-(n+m/2)]*trace2[(n+m/2):],
-                                  dtype=dtype)
+                G[idx,1] = np.sum(trace1[:N-(n+m/2)]*trace2[(n+m/2):])
                 normstat[idx] = N-(n+m/2)
                 normnump[idx] = N
 
