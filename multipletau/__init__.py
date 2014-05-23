@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """ 
     Provides a multiple-τ algorithm for Python 2.7 and Python 3.x and
