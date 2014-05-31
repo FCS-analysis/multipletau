@@ -7,14 +7,16 @@ from warnings import warn
 
 import multipletau
 
+name='multipletau'
+
 setup(
-    name='multipletau',
+    name=name,
     author='Paul Mueller',
     author_email='paul.mueller@biotec.tu-dresden.de',
     url='https://github.com/paulmueller/multipletau',
     version=multipletau.__version__,
-    packages=['multipletau'],
-    package_dir={'multipletau': 'multipletau'},
+    packages=[name],
+    package_dir={name: name},
     license="OpenBSD",
     description='A multiple-tau algorithm for Python/NumPy.',
     long_description=open(join(dirname(__file__), 'README.txt')).read(),
