@@ -12,7 +12,7 @@ This repo contains a multiple-tau algorithm for Python
 
 Installation
 ------------
-    The package can be installed from the Python package index.
+The package can be installed from the Python package index.
 
 
     pip install multipletau
