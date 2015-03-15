@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-""" 
+u""" 
     Provides a multiple-τ algorithm for Python 2.7 and Python 3.x and
     requires the package :py:mod:`numpy`.
 
