@@ -7,17 +7,20 @@ from setuptools import setup, find_packages
 import sys
 from warnings import warn
 
-sys.path.insert(0, realpath(dirname(__file__))+"/multipletau")
-import IPython
-IPython.embed()
-from _version import version
-
 
 author = u"Paul Müller"
 authors = [author]
 description = 'A multiple-tau algorithm for Python/NumPy.'
 name = 'multipletau'
 year = "2013"
+
+
+sys.path.insert(0, realpath(dirname(__file__))+"/"+name)
+try:
+    from _version import version
+except:
+    version = "unknown"
+
 
 
 if __name__ == "__main__":
@@ -29,7 +32,7 @@ if __name__ == "__main__":
         version=version,
         packages=[name],
         package_dir={name: name},
-        license="OpenBSD",
+        license="BSD (3 clause)",
         description=description,
         long_description=open(join(dirname(__file__), 'README.txt')).read(),
         install_requires=["NumPy >= 1.5.1"],

@@ -27,4 +27,4 @@ from ._multipletau import *
 from ._version import version as __version__
 
 __author__ = u"Paul Müller"
-__license__ = "OpenBSD"
+__license__ = "BSD (3 clause)"
