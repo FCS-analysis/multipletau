@@ -27,5 +27,4 @@ from ._multipletau import *
 from ._version import version as __version__
 
 __author__ = u"Paul Müller"
-__email__ = "paul.mueller@biotec.tu-dresden.de"
 __license__ = "OpenBSD"
