@@ -3,6 +3,14 @@ multipletau reference
 .. automodule:: multipletau
    :members:
 
+
+Method summary:
+
+.. autosummary:: 
+    autocorrelate
+    correlate
+    correlate_numpy
+
 Autocorrelation
 ---------------
 .. autofunction:: autocorrelate

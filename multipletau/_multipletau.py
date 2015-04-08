@@ -51,8 +51,9 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     :py:func:`numpy.correlate` for positive :math:`k`  on a base 2
     logarithmic scale.
 
-        numpy.correlate(a, a, mode="full")[len(a)-1:]  
+        :func:`numpy.correlate(a, a, mode="full")[len(a)-1:]`
 
+    
         :math:`z_k = \Sigma_n a_n a_{n+k}`
 
 

@@ -58,21 +58,20 @@ extensions = [
 #              'matplotlib.sphinxext.only_directives',
 #              'matplotlib.sphinxext.plot_directive',
 #              'sphinx.ext.viewcode',
-#               'ipython_directive',
+#              'ipython_directive',
               'sphinx.ext.intersphinx',
               'sphinx.ext.autosummary',
               'sphinx.ext.autodoc',
 #              'sphinx.ext.doctest',
 #              'ipython_console_highlighting',
-#               'sphinx.ext.pngmath',
+#              'sphinx.ext.pngmath',
               'sphinx.ext.mathjax',
 #              'sphinx.ext.viewcode',
 #              'sphinx.ext.todo',
-#             'inheritance_diagram',
+#              'inheritance_diagram',
               'numpydoc',
               'myviewcode',  
 #              'hidden_code_block',
-#              'sphinx.ext.autosummary'
               ]
 
 
