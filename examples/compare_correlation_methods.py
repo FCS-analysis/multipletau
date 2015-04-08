@@ -1,14 +1,33 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from .__init__ import noise_exponential, noise_cross_exponential
+""" 
+Comparison of correlation methods
+---------------------------------
+Illustration of the difference between 
+:py:func:`multipletau.correlate` and :py:func:`numpy.correlate`.
 
-def test():
-    import numpy as np
-    import os
-    import sys
-    from matplotlib import pylab as plt
-    sys.path.append(os.path.realpath(os.path.dirname(__file__)+"/../"))
-    from multipletau import autocorrelate, correlate, correlate_numpy
+.. image:: ../examples/compare_correlation_methods.png
+   :align:   center
+
+Download the 
+:download:`full example <../examples/compare_correlation_methods.py>`.    
+"""
+from __future__ import print_function
+
+from matplotlib import pylab as plt
+import numpy as np
+import os
+from os.path import abspath, dirname, join
+import sys
+import time
+
+sys.path.insert(0, dirname(dirname(abspath(__file__))))
+
+from noise_generator import noise_exponential, noise_cross_exponential
+from multipletau import autocorrelate, correlate, correlate_numpy
+
+
+def compare_corr():
     ## Starting parameters
     N = np.int(np.pi*1e3)
     countrate = 250. * 1e-3 # in Hz
@@ -100,9 +119,15 @@ def test():
     plt.legend(loc=0, fontsize='small')
 
     plt.ylim( -ampcc*.2, ampcc*1.2)
-
     plt.tight_layout()
-    plt.show()
+
+    savename = __file__[:-3]+".png"
+    if os.path.exists(savename):
+        savename = __file__[:-3]+time.strftime("_%Y-%m-%d_%H-%M-%S.png")
+
+    plt.savefig(savename)
+    print("Saved output to", savename)
+
 
 if __name__ == '__main__':
-    test()
+    compare_corr()

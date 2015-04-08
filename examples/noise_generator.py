@@ -1,16 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-""" This module is used for testing the multiple-tau algorithm.
-    Executing this module as a package by invoking
-    
-        python -m test
-    
-    creates plots that illustrate the difference between 
-    :py:func:`multipletau.correlate` and :py:func:`numpy.correlate`.
-    
-    .. image:: testing_multipletau.png
-       :width: 500 px
-    
+"""
+This module contains methods for correlated noise generation.
+
 """
 
 from __future__ import division
@@ -18,7 +10,7 @@ from __future__ import print_function
 
 import numpy as np
 
-__all__=["noise_exponential", "noise_cross_exponential"]
+__all__ = ["noise_exponential", "noise_cross_exponential"]
 
 def noise_exponential(N, tau=20, variance=1, deltat=1):
     """
@@ -132,7 +124,3 @@ def noise_cross_exponential(N, tau=20, variance=1, deltat=1):
     
     return a, randarray
 
-def test():
-    from .__main__ import test
-    test()
-    

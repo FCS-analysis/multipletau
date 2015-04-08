@@ -1,11 +1,23 @@
 multipletau reference
 =====================
 .. automodule:: multipletau
-   :members: autocorrelate, correlate, correlate_numpy
+   :members:
+
+Autocorrelation
+---------------
+.. autofunction:: autocorrelate
+
+Cross-correlation
+-----------------
+.. autofunction:: correlate
+
+Cross-correlation (NumPy)
+-------------------------
+.. autofunction:: correlate_numpy
 
 
-testing multipletau
+Examples
 ===================
-.. automodule:: test
+.. automodule:: compare_correlation_methods
    :members:
 

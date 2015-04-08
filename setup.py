@@ -3,7 +3,8 @@
 # To create a distribution package for pip or easy-install:
 # python setup.py sdist
 from os.path import join, dirname, realpath
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, Command
+import subprocess as sp
 import sys
 from warnings import warn
 
@@ -21,6 +22,36 @@ try:
 except:
     version = "unknown"
 
+
+
+class PyDocGitHub(Command):
+    """ Upload the docs to GitHub gh-pages branch
+    """
+    user_options = []
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        errno = sp.call([sys.executable, 'doc/commit_gh-pages.py'])
+        raise SystemExit(errno)
+
+
+class PyTest(Command):
+    """ Perform pytests
+    """
+    user_options = []
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        errno = sp.call([sys.executable, 'tests/runtests.py'])
+        raise SystemExit(errno)
 
 
 if __name__ == "__main__":
