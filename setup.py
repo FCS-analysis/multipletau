@@ -80,7 +80,10 @@ if __name__ == "__main__":
             'Topic :: Scientific/Engineering :: Visualization',
             'Intended Audience :: Science/Research'
                      ],
-        platforms=['ALL']
+        platforms=['ALL'],
+        cmdclass = {'test': PyTest,
+                    'commit_doc': PyDocGitHub,
+                    },
         )
 
 
