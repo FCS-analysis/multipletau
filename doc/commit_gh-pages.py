@@ -9,29 +9,36 @@ import subprocess as sp
 os.chdir(dirname(dirname(abspath(__file__))))
 
 
-def checkout_master():
+def checkout_master(stashed):
     # go back to master
     sp.check_output(["git", 'checkout', 'master'])
 
-    print("Applying saved stash.")
-    # get last stash
-    sp.check_output(["git", 'stash', 'apply'])
+    if stashed:
+        print("Applying saved stash.")
+        # get last stash?
+        sp.check_output(["git", 'stash', 'apply'])
 
 
 def checkout_ghpages():
-    # commit changes of master
-    print("Automatically stashing current changes.")
-    sp.check_output(["git", 'stash'])
-
     # checkout the gh-pages branch
-    sp.check_output(["git", 'checkout', 'gh-pages'])
+    try:
+        sp.check_output(["git", 'checkout', 'gh-pages'])
+    except:
+        print("Automatically stashing current changes.")
+        sp.check_output(["git", 'stash'])    
+        stashed = True
+        sp.check_output(["git", 'checkout', 'gh-pages'])
+    else:
+        stashed = False
 
-checkout_ghpages()
+    return stashed
+    
+stashed = checkout_ghpages()
 
 
 # copy built files
 if os.system("cp -r ./build/sphinx/html/* ./") != 0:
-    checkout_master()
+    checkout_master(stashed)
     sys.exit()
 
 for item in os.listdir("./build/sphinx/html/"):
@@ -49,4 +56,4 @@ try:
 except:
     print("Could not push to gh-pages.")
 
-checkout_master()
+checkout_master(stashed)
