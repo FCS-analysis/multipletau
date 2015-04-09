@@ -1,10 +1,15 @@
 multipletau reference
 =====================
+
+General
+:::::::
 .. automodule:: multipletau
    :members:
 
+Methods
+:::::::
 
-Method summary:
+Summary:
 
 .. autosummary:: 
     autocorrelate
@@ -25,7 +30,7 @@ Cross-correlation (NumPy)
 
 
 Examples
-===================
+========
 .. automodule:: compare_correlation_methods
    :members:
 
