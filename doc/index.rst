@@ -16,6 +16,8 @@ Summary:
     correlate
     correlate_numpy
 
+For a quick overview, see :ref:`genindex`.
+
 Autocorrelation
 ---------------
 .. autofunction:: autocorrelate

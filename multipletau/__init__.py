@@ -39,7 +39,7 @@ with a matching date).
 
 .. topic:: cite
 
-    Paul Müller (2012) *Python multiple-tau algorithm* (Version x.x.x)
+    Paul Müller (2013) *Python multiple-tau algorithm* (Version x.x.x)
     [Computer program].
     Available at https://pypi.python.org/pypi/multipletau/
     (Accessed DD Month YYYY)
