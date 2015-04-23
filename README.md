@@ -1,5 +1,7 @@
 multipletau
 ===========
+[![PyPI](http://img.shields.io/pypi/v/multipletau.png)](https://pypi.python.org/pypi/multipletau)
+[![Travis](http://img.shields.io/travis/paulmueller/multipletau.png)](https://travis-ci.org/paulmueller/multipletau)
 
 This repo contains a multiple-tau algorithm for Python
 
