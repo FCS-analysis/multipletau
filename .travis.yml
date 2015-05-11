@@ -2,12 +2,16 @@ language: python
 python:
 - "2.7"
 - "3.4"
+branches:
+  only:
+  - master
 before_install:
 - sudo apt-get update -qq
-- travis_retry sudo apt-get -y install python-numpy
-- travis_retry pip install coveralls
 install:
+- if [[ $TRAVIS_PYTHON_VERSION == "2.7" ]]; then sudo apt-get install -y python-numpy; fi
+- if [[ $TRAVIS_PYTHON_VERSION == "3.4" ]]; then sudo apt-get install -y python3-numpy; fi
 - travis_retry python setup.py develop
+- pip freeze
 script: 
   - coverage run --source=multipletau tests/runtests.py
   - coverage report -m
