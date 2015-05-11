@@ -1,7 +1,10 @@
 multipletau
 ===========
-[![PyPI](http://img.shields.io/pypi/v/multipletau.png)](https://pypi.python.org/pypi/multipletau)
-[![Travis](http://img.shields.io/travis/paulmueller/multipletau.png)](https://travis-ci.org/paulmueller/multipletau)
+[![PyPI](http://img.shields.io/pypi/v/multipletau.svg)](https://pypi.python.org/pypi/multipletau)
+[![Travis](http://img.shields.io/travis/paulmueller/multipletau.svg)](https://travis-ci.org/paulmueller/multipletau)
+[![Coveralls](https://img.shields.io/coveralls/paulmueller/multipletau.svg)](https://coveralls.io/r/paulmueller/multipletau)
+
+
 
 This repo contains a multiple-tau algorithm for Python
 
