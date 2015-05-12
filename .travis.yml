@@ -4,13 +4,8 @@ notifications:
 python:
 - "2.7"
 - "3.4"
-virtualenv:
-  system_site_packages: true
-bbefore_install:
-- sudo apt-get update -qq
-- if [[ $TRAVIS_PYTHON_VERSION == "2.7" ]]; then sudo apt-get -y install python-numpy python-scipy; fi
-- if [[ $TRAVIS_PYTHON_VERSION == "3.4" ]]; then sudo apt-get -y install python3-numpy python3-scipy; fi
 install:
+# numpy is already installed in the virtualenv
 - travis_retry pip install coverage
 - travis_retry pip install coveralls
 - pip freeze
