@@ -1,6 +1,6 @@
 ### Test Scripts
 
-tThis will run all tests:
+This will run all tests:
 
     python runtests.py
 
