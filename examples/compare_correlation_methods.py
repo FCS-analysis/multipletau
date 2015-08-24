@@ -14,7 +14,6 @@ Download the
 """
 from __future__ import print_function
 
-from matplotlib import pylab as plt
 import numpy as np
 import os
 from os.path import abspath, dirname, join
@@ -130,4 +129,6 @@ def compare_corr():
 
 
 if __name__ == '__main__':
+    # move mpl import to main so travis automated doc build does not complain
+    from matplotlib import pylab as plt
     compare_corr()
