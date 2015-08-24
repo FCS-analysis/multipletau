@@ -1,17 +1,23 @@
 language: python
+env:
+  global:
+  - GH_REF: github.com/paulmueller/multipletau.git
+  - secure: IVoAJNYKGjWbHUGPpe8oOTLhltGrhu0F+xCaRVGs1tTut34BixSSeDgranlRiXZ0wlVOzBGrDHLkoLxFSRRy43BN4TSiv05WLBZba7ypGYBbDrLrG5nFPnT6n9d4ZgFHHHwyvI2ymdSs6/EJwZRXmr2Ehm0HzetA27FB1/Q3kc0=
 notifications:
   email: false
 python:
-- "2.7"
-- "3.4"
+- '2.7'
+- '3.4'
 install:
-# numpy is already installed in the virtualenv
 - travis_retry pip install coverage
 - travis_retry pip install coveralls
 - pip freeze
-script: 
-  - coverage run --source=multipletau tests/runtests.py
-  - coverage report -m
+script:
+- coverage run --source=multipletau tests/runtests.py
+- coverage report -m
 after_success:
-  coveralls --verbose
-
+- coveralls --verbose
+- git config credential.helper "store --file=.git/credentials"
+- echo "https://${GH_TOKEN}:@github.com" > .git/credentials
+- if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; then pip install numpydoc sphinx; fi
+- if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; then python doc/deploy_ghpages.py; fi
