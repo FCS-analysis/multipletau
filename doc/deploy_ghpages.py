@@ -72,6 +72,11 @@ os.chdir("gh_pages")
 sp.check_output("echo 'https://${GH_TOKEN}:@github.com' > .git/credentials", shell=True)
 sp.check_output("git add --all ./*", shell=True)
 
-sp.check_output("git commit -a -m 'travis bot build {} [ci skip]'".format(os.getenv("TRAVIS_COMMIT")), shell=True)
-sp.check_output("git push --force --quiet origin gh-pages", shell=True)
+try:
+    errorcode = sp.check_output("git commit -a -m 'travis bot build {} [ci skip]'".format(os.getenv("TRAVIS_COMMIT")), shell=True)
+    print("Commit returned:", errorcode)
+except:
+    pass
+finally:
+    sp.check_output("git push --force --quiet origin gh-pages", shell=True)
         
