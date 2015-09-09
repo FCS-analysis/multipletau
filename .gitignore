@@ -37,3 +37,10 @@ nosetests.xml
 
 # doc build
 doc/_build/**
+
+
+# other stuff
+*.yml~
+*.py~
+*.md~
+*.in~
