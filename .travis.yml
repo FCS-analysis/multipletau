@@ -8,6 +8,7 @@ notifications:
 python:
 - '2.7'
 - '3.4'
+- '3.5'
 install:
 - travis_retry pip install coverage
 - travis_retry pip install coveralls
