@@ -1,14 +1,28 @@
 language: python
-env:
-  global:
-  - GH_REF: github.com/paulmueller/multipletau.git
-  - secure: IVoAJNYKGjWbHUGPpe8oOTLhltGrhu0F+xCaRVGs1tTut34BixSSeDgranlRiXZ0wlVOzBGrDHLkoLxFSRRy43BN4TSiv05WLBZba7ypGYBbDrLrG5nFPnT6n9d4ZgFHHHwyvI2ymdSs6/EJwZRXmr2Ehm0HzetA27FB1/Q3kc0=
-notifications:
-  email: false
 python:
 - '2.7'
 - '3.4'
 - '3.5'
+env:
+  global:
+  - GH_REF: github.com/paulmueller/multipletau.git
+  - secure: IVoAJNYKGjWbHUGPpe8oOTLhltGrhu0F+xCaRVGs1tTut34BixSSeDgranlRiXZ0wlVOzBGrDHLkoLxFSRRy43BN4TSiv05WLBZba7ypGYBbDrLrG5nFPnT6n9d4ZgFHHHwyvI2ymdSs6/EJwZRXmr2Ehm0HzetA27FB1/Q3kc0=
+  matrix:
+  - NUMPY_VERSION_MAX="1.7.9"
+  - NUMPY_VERSION_MAX="1.8.9"
+  - NUMPY_VERSION_MAX="1.9.9"
+  - NUMPY_VERSION_MAX="1.10.9"
+matrix:
+  exclude:
+    # These things won't install with anaconda:
+    - python: "3.5"
+      env: NUMPY_VERSION_MAX="1.7.9"
+    - python: "3.5"
+      env: NUMPY_VERSION_MAX="1.8.9"
+    - python: "3.4"
+      env: NUMPY_VERSION_MAX="1.7.9"
+notifications:
+  email: false
 install:
 - travis_retry pip install coverage
 - travis_retry pip install coveralls
