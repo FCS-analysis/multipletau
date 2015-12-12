@@ -1,5 +1,5 @@
-radontea documentation
-============================
+multipletau documentation
+=========================
 
 Install [numpydoc](https://pypi.python.org/pypi/numpydoc):
 
