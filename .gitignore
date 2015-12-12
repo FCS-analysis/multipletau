@@ -44,3 +44,5 @@ doc/_build/**
 *.py~
 *.md~
 *.in~
+*.txt~
+*.txt~
