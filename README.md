@@ -1,8 +1,8 @@
 multipletau
 ===========
 [![PyPI](http://img.shields.io/pypi/v/multipletau.svg)](https://pypi.python.org/pypi/multipletau)
-[![Travis](http://img.shields.io/travis/paulmueller/multipletau.svg)](https://travis-ci.org/paulmueller/multipletau)
-[![Coveralls](https://img.shields.io/coveralls/paulmueller/multipletau.svg)](https://coveralls.io/r/paulmueller/multipletau)
+[![Travis](http://img.shields.io/travis/FCS-analysis/multipletau.svg)](https://travis-ci.org/FCS-analysis/multipletau)
+[![Coveralls](https://img.shields.io/coveralls/FCS-analysis/multipletau.svg)](https://coveralls.io/r/FCS-analysis/multipletau)
 
 
 
@@ -10,7 +10,7 @@ This repo contains a multiple-tau algorithm for Python
 
 - **multipletau** multiple-tau package, implemented using [numpy](http://www.numpy.org/)
 - **test** testing the algorithm
-- **doc** the source of the [documentation](http://fcs-analysis.github.io/multipletau/)
+- **doc** the source of the [documentation](http://FCS-analysis.github.io/multipletau/)
 
 
 

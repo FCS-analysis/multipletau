@@ -5,7 +5,7 @@ python:
 - '3.5'
 env:
   global:
-  - GH_REF: github.com/paulmueller/multipletau.git
+  - GH_REF: github.com/FCS-analysis/multipletau.git
   - secure: IVoAJNYKGjWbHUGPpe8oOTLhltGrhu0F+xCaRVGs1tTut34BixSSeDgranlRiXZ0wlVOzBGrDHLkoLxFSRRy43BN4TSiv05WLBZba7ypGYBbDrLrG5nFPnT6n9d4ZgFHHHwyvI2ymdSs6/EJwZRXmr2Ehm0HzetA27FB1/Q3kc0=
 notifications:
   email: false

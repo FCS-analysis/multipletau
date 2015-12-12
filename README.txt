@@ -5,7 +5,7 @@ correlation on a linear scale such as `numpy.correlate`.
 Reference
 =========
 The code is fully documented. An online reference is available
-at http://paulmueller.github.io/multipletau/.
+at http://FCS-analysis.github.io/multipletau/.
 
 
 Installation

@@ -59,7 +59,7 @@ if __name__ == "__main__":
         name=name,
         author=author,
         author_email='paul.mueller@biotec.tu-dresden.de',
-        url='https://github.com/paulmueller/multipletau',
+        url='https://github.com/FCS-analysis/multipletau',
         version=version,
         packages=[name],
         package_dir={name: name},

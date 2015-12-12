@@ -28,7 +28,7 @@ If you have Python and :py:mod:`numpy` installed, simply run
     pip install multipletau
 
 The source code of multipletau is available at
-https://github.com/paulmueller/multipletau.
+https://github.com/FCS-analysis/multipletau.
 
 
 Citing multipletau
