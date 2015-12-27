@@ -15,7 +15,7 @@ install:
 - python setup.py develop
 - pip freeze
 script:
-- coverage run --source=multipletau tests/runtests.py
+- coverage run --source=multipletau ./setup.py test
 - coverage report -m
 after_success:
 - coveralls --verbose
