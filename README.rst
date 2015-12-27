@@ -5,13 +5,7 @@ multipletau
 
 Multipe-tau correlation is computed on a logarithmic scale (less
 data points are computed) and is thus much faster than conventional
-correlation on a linear scale such as `numpy.correlate`. 
-
-
-- **multipletau** multiple-tau package, implemented using 
-- **test** testing the algorithm
-- **doc** the source of the 
-
+correlation on a linear scale such as `numpy.correlate <http://docs.scipy.org/doc/numpy/reference/generated/numpy.correlate.html>`__. 
 
 
 Installation
