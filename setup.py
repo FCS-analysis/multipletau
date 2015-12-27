@@ -36,9 +36,7 @@ if __name__ == "__main__":
         install_requires=["NumPy >= 1.5.1"],
         keywords=["multiple", "tau", "FCS", "correlation", "spectroscopy",
                   "fluorescence"],
-        extras_require={
-                        'doc': ['sphinx']
-                       },
+        extras_require={'doc': ['sphinx']},
         setup_requires=['pytest-runner'],
         tests_require=["pytest"],
         classifiers= [
@@ -51,5 +49,4 @@ if __name__ == "__main__":
                      ],
         platforms=['ALL']
         )
-
 
