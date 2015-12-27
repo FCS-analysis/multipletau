@@ -46,7 +46,7 @@ The multipletau package should be cited like this
 (replace "x.x.x" with the actual version of multipletau that you used
 and "DD Month YYYY" with a matching date).
 
-Paul Müller (2012) _Python multiple-tau algorithm_ (Version x.x.x) [Computer program]. Available at https://pypi.python.org/pypi/multipletau/ (Accessed DD Month YYYY)
+Paul Müller (2012) *Python multiple-tau algorithm* (Version x.x.x) [Computer program]. Available at `<https://pypi.python.org/pypi/multipletau/>`__ (Accessed DD Month YYYY)
 
 You can find out what version you are using by typing (in a Python console):
 

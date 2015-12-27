@@ -12,6 +12,7 @@ notifications:
 install:
 - travis_retry pip install coverage
 - travis_retry pip install coveralls
+- python setup.py develop
 - pip freeze
 script:
 - coverage run --source=multipletau tests/runtests.py
