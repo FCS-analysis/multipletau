@@ -3,8 +3,7 @@
 # To create a distribution package for pip or easy-install:
 # python setup.py sdist
 from os.path import exists, dirname, realpath
-from setuptools import setup, Command
-import subprocess as sp
+from setuptools import setup
 import sys
 
 
@@ -20,21 +19,6 @@ try:
     from _version import version
 except:
     version = "unknown"
-
-
-class PyTest(Command):
-    """ Perform pytests
-    """
-    user_options = []
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        errno = sp.call([sys.executable, 'tests/runtests.py'])
-        raise SystemExit(errno)
 
 
 if __name__ == "__main__":
@@ -55,16 +39,17 @@ if __name__ == "__main__":
         extras_require={
                         'doc': ['sphinx']
                        },
+        setup_requires=['pytest-runner'],
+        tests_require=["pytest"],
         classifiers= [
             'Operating System :: OS Independent',
             'Programming Language :: Python :: 2.7',
-            'Programming Language :: Python :: 3.2',
             'Programming Language :: Python :: 3.3',
+            'Programming Language :: Python :: 3.4',
             'Topic :: Scientific/Engineering :: Visualization',
             'Intended Audience :: Science/Research'
                      ],
-        platforms=['ALL'],
-        cmdclass = {'test': PyTest},
+        platforms=['ALL']
         )
 
 

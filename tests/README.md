@@ -1,8 +1,9 @@
 ### Test Scripts
 
-This will run all tests:
 
-    python runtests.py
+Execute all tests using `setup.py` in the parent directory:
+
+    python setup.py test
 
 
 ### Running single tests
