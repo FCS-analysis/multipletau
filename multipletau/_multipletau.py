@@ -136,11 +136,11 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     # Check parameters
     if np.around(m / 2) != m / 2:
         mold = 1 * m
-        m = int((np.around(m / 2) + 1) * 2)
+        m = np.int((np.around(m / 2) + 1) * 2)
         warnings.warn("Invalid value of m={}. Using m={} instead"
                       .format(mold, m))
     else:
-        m = int(m)
+        m = np.int(m)
 
     N = N0 = len(trace)
 
@@ -148,7 +148,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     # The integer k defines how many times we can average over
     # two neighboring array elements in order to obtain an array of
     # length just larger than m.
-    k = int(np.floor(np.log2(N / m)))
+    k = np.int(np.floor(np.log2(N / m)))
 
     # In the base2 multiple-tau scheme, the length of the correlation
     # array is (only taking into account values that are computed from
@@ -182,11 +182,12 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     # Add up every second element
     trace = (trace[:N:2] + trace[1:N + 1:2]) / 2
     N /= 2
+    N = np.int(N)
     # Start iteration for each m/2 values
     for step in range(1, k + 1):
         # Get the next m/2 values via correlation of the trace
-        for n in range(1, int(m / 2) + 1):
-            idx = int(m + n - 1 + (step - 1) * m / 2)
+        for n in range(1, np.int(m / 2) + 1):
+            idx = np.int(m + n - 1 + (step - 1) * m / 2)
             if len(trace[:N - (n + m / 2)]) == 0:
                 # This is a shortcut that stops the iteration once the
                 # length of the trace is too small to compute a corre-
@@ -223,6 +224,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
         # Add up every second element
         trace = (trace[:N:2] + trace[1:N + 1:2]) / 2
         N /= 2
+        N = np.int(N)
 
     if normalize:
         G[:, 1] /= traceavg**2 * normstat
@@ -334,11 +336,11 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     # Check parameters
     if np.around(m / 2) != m / 2:
         mold = 1 * m
-        m = int((np.around(m / 2) + 1) * 2)
+        m = np.int((np.around(m / 2) + 1) * 2)
         warnings.warn("Invalid value of m={}. Using m={} instead"
                       .format(mold, m))
     else:
-        m = int(m)
+        m = np.int(m)
 
     if len(a) != len(v):
         raise ValueError("Input arrays must be of equal length.")
@@ -348,7 +350,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     # The integer k defines how many times we can average over
     # two neighboring array elements in order to obtain an array of
     # length just larger than m.
-    k = int(np.floor(np.log2(N / m)))
+    k = np.int(np.floor(np.log2(N / m)))
 
     # In the base2 multiple-tau scheme, the length of the correlation
     # array is (only taking into account values that are computed from
@@ -379,11 +381,12 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     trace1 = (trace1[:N:2] + trace1[1:N + 1:2]) / 2
     trace2 = (trace2[:N:2] + trace2[1:N + 1:2]) / 2
     N /= 2
+    N = np.int(N)
 
     for step in range(1, k + 1):
         # Get the next m/2 values of the trace
-        for n in range(1, int(m / 2) + 1):
-            idx = int(m + n - 1 + (step - 1) * m / 2)
+        for n in range(1, np.int(m / 2) + 1):
+            idx = np.int(m + n - 1 + (step - 1) * m / 2)
             if len(trace1[:N - (n + m / 2)]) == 0:
                 # Abort
                 G = G[:idx - 1]
@@ -404,6 +407,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
         trace1 = (trace1[:N:2] + trace1[1:N + 1:2]) / 2
         trace2 = (trace2[:N:2] + trace2[1:N + 1:2]) / 2
         N /= 2
+        N = np.int(N)
 
     if normalize:
         G[:, 1] /= traceavg1 * traceavg2 * normstat
