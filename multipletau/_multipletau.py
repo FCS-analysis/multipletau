@@ -153,7 +153,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     # In the base2 multiple-tau scheme, the length of the correlation
     # array is (only taking into account values that are computed from
     # traces that are just larger than m):
-    lenG = np.int(np.floor(m + k * m / 2))
+    lenG = np.int(np.floor(m + k * m // 2))
 
     G = np.zeros((lenG, 2), dtype=dtype)
 
@@ -186,9 +186,9 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     # Start iteration for each m/2 values
     for step in range(1, k + 1):
         # Get the next m/2 values via correlation of the trace
-        for n in range(1, np.int(m / 2) + 1):
-            idx = np.int(m + n - 1 + (step - 1) * m / 2)
-            if len(trace[:N - (n + m / 2)]) == 0:
+        for n in range(1, np.int(m // 2) + 1):
+            idx = np.int(m + n - 1 + (step - 1) * m // 2)
+            if len(trace[:N - (n + m // 2)]) == 0:
                 # This is a shortcut that stops the iteration once the
                 # length of the trace is too small to compute a corre-
                 # lation. The actual length of the correlation function
@@ -212,11 +212,11 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
                 # k in advance.
                 break
             else:
-                G[idx, 0] = deltat * (n + m / 2) * 2**step
+                G[idx, 0] = deltat * (n + m // 2) * 2**step
                 # This is the computationally intensive step
-                G[idx, 1] = np.sum(trace[:N - (n + m / 2)] *
-                                   trace[(n + m / 2):], dtype=dtype)
-                normstat[idx] = N - (n + m / 2)
+                G[idx, 1] = np.sum(trace[:N - (n + m // 2)] *
+                                   trace[(n + m // 2):], dtype=dtype)
+                normstat[idx] = N - (n + m // 2)
                 normnump[idx] = N
         # Check if len(trace) is even:
         if N % 2 == 1:
@@ -355,7 +355,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     # In the base2 multiple-tau scheme, the length of the correlation
     # array is (only taking into account values that are computed from
     # traces that are just larger than m):
-    lenG = np.int(np.floor(m + k * m / 2))
+    lenG = np.int(np.floor(m + k * m // 2))
 
     G = np.zeros((lenG, 2), dtype=dtype)
     normstat = np.zeros(lenG, dtype=dtype)
@@ -385,19 +385,19 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
 
     for step in range(1, k + 1):
         # Get the next m/2 values of the trace
-        for n in range(1, np.int(m / 2) + 1):
-            idx = np.int(m + n - 1 + (step - 1) * m / 2)
-            if len(trace1[:N - (n + m / 2)]) == 0:
+        for n in range(1, np.int(m // 2) + 1):
+            idx = np.int(m + n - 1 + (step - 1) * m // 2)
+            if len(trace1[:N - (n + m // 2)]) == 0:
                 # Abort
                 G = G[:idx - 1]
                 normstat = normstat[:idx - 1]
                 normnump = normnump[:idx - 1]
                 break
             else:
-                G[idx, 0] = deltat * (n + m / 2) * 2**step
+                G[idx, 0] = deltat * (n + m // 2) * 2**step
                 G[idx, 1] = np.sum(
-                    trace1[:N - (n + m / 2)] * trace2[(n + m / 2):])
-                normstat[idx] = N - (n + m / 2)
+                    trace1[:N - (n + m // 2)] * trace2[(n + m // 2):])
+                normstat[idx] = N - (n + m // 2)
                 normnump[idx] = N
 
         # Check if len(trace) is even:
