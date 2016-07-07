@@ -33,7 +33,6 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-
 from __future__ import division
 
 import numpy as np
@@ -119,24 +118,29 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
                                 "average of the input *binned_array* " +
                                 "is zero.")
 
-    trace = np.array(a, dtype=dtype, copy=copy)
-    dtype = trace.dtype
+    if not isinstance(a, np.ndarray):
+        a = np.array(a)
 
-    if dtype.kind in ["b", "i", "u"]:
-        warnings.warn("Converting input data type ({}) to float.".
-                      format(dtype))
-        dtype = np.dtype(float)
-        trace = np.array(a, dtype=dtype, copy=copy)
+    trace = np.array(a, copy=copy)
+
+    if dtype is None:
+        dtype = np.dtype(trace.dtype)
+    else:
+        dtype = np.dtype(dtype)
 
     # Complex data
     if dtype.kind == "c":
         raise NotImplementedError(
             "Please use `multipletau.correlate` for complex data.")
+    elif dtype.kind != "f":
+        warnings.warn("Input dtype is not float; converting to np.float!")
+        dtype = np.float
+        trace = np.array(trace, dtype=np.float)
 
     # Check parameters
-    if np.around(m / 2) != m / 2:
+    if m // 2 != m / 2:
         mold = 1 * m
-        m = np.int((np.around(m / 2) + 1) * 2)
+        m = np.int((m // 2 + 1) * 2)
         warnings.warn("Invalid value of m={}. Using m={} instead"
                       .format(mold, m))
     else:
@@ -181,8 +185,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
         N -= 1
     # Add up every second element
     trace = (trace[:N:2] + trace[1:N + 1:2]) / 2
-    N /= 2
-    N = np.int(N)
+    N //= 2
     # Start iteration for each m/2 values
     for step in range(1, k + 1):
         # Get the next m/2 values via correlation of the trace
@@ -223,8 +226,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
             N -= 1
         # Add up every second element
         trace = (trace[:N:2] + trace[1:N + 1:2]) / 2
-        N /= 2
-        N = np.int(N)
+        N //= 2
 
     if normalize:
         G[:, 1] /= traceavg**2 * normstat
