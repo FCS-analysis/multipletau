@@ -113,34 +113,34 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
 
     """
     traceavg = np.average(a)
-    if normalize and traceavg == 0:
-        raise ZeroDivisionError("Normalization not possible. The " +
-                                "average of the input *binned_array* " +
-                                "is zero.")
-
-    if not isinstance(a, np.ndarray):
-        a = np.array(a)
-
-    trace = np.array(a, copy=copy)
+    if normalize:
+        assert traceavg != 0, "Cannot normalize: Average of `a` is zero!"
 
     if dtype is None:
-        dtype = np.dtype(trace.dtype)
+        dtype = np.dtype(a[0].dtype)
     else:
         dtype = np.dtype(dtype)
 
     # Complex data
     if dtype.kind == "c":
-        raise NotImplementedError(
-            "Please use `multipletau.correlate` for complex data.")
+        # run cross-correlation
+        return correlate(a=a,
+                         v=1*a,
+                         m=m,
+                         deltat=deltat,
+                         normalize=normalize,
+                         copy=copy,
+                         dtype=dtype)
     elif dtype.kind != "f":
         warnings.warn("Input dtype is not float; converting to np.float!")
         dtype = np.float
-        trace = np.array(trace, dtype=np.float)
+
+    trace = np.array(a, copy=copy, dtype=dtype)
 
     # Check parameters
-    if m // 2 != m / 2:
+    if m//2 != m/2:
         mold = m
-        m = np.int((m // 2 + 1) * 2)
+        m = np.int((m//2 + 1) * 2)
         warnings.warn("Invalid value of m={}. Using m={} instead"
                       .format(mold, m))
     else:
@@ -167,9 +167,10 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     # We use the fluctuation of the signal around the mean
     if normalize:
         trace -= traceavg
-    if N < 2 * m:
-        # Otherwise the following for-loop will fail:
-        raise ValueError("len(a) must be larger than 2m.")
+    
+    # Otherwise the following for-loop will fail:
+    assert N >= 2*m, "len(a) must be larger than 2m!"
+
     # Calculate autocorrelation function for first m bins
     # Discrete convolution of m elements
     for n in range(1, m + 1):

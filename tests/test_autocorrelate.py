@@ -95,11 +95,11 @@ def test_ac_m():
     print("running ", myname)
     
     arrs = get_sample_arrays()
-    
-    res = []
+
     ms = [8, 16, 32, 64, 128]
     a = np.concatenate(arrs)
-    
+
+    res = []    
     for m in ms:
         r = multipletau.autocorrelate(a=a,
                                       m=m,
@@ -108,6 +108,14 @@ def test_ac_m():
                                       copy=True,
                                       dtype=np.float)
         res.append(r)
+
+        # test minimal length of array
+        _r2 = multipletau.autocorrelate(a=a[:2*m],
+                                        m=m,
+                                        deltat=1,
+                                        normalize=False,
+                                        copy=True,
+                                        dtype=np.float)
     
     res = np.concatenate(res)
     #np.save(os.path.dirname(__file__)+"/data/"+os.path.basename(__file__)+"_"+myname+".npy", res)
@@ -151,9 +159,90 @@ def test_ac_copy():
 
     # make sure the copy function really changes something
     assert not np.all(arrs == refarrs)
+
     
+def test_ac_dtype():
+    myframe = sys._getframe()
+    myname = myframe.f_code.co_name
+    print("running ", myname)
     
+    a = np.round(get_sample_arrays()[0])
+
+
+    # integer
+    rf = multipletau.autocorrelate(a=a,
+                                   m=16,
+                                   deltat=1,
+                                   normalize=True,
+                                   copy=True,
+                                   dtype=np.float)
+
+    ri = multipletau.autocorrelate(a=a,
+                                   m=16,
+                                   deltat=1,
+                                   normalize=True,
+                                   copy=True,
+                                   dtype=np.uint)
+
+    ri2 = multipletau.autocorrelate(a=np.array(a, dtype=np.uint),
+                                   m=16,
+                                   deltat=1,
+                                   normalize=True,
+                                   copy=True,
+                                   dtype=None)
     
+    assert ri.dtype == np.dtype(np.float), "if wrong dtype, dtype should default to np.float"
+    assert ri2.dtype == np.dtype(np.float), "if wrong dtype, dtype should default to np.float"
+    assert np.all(rf == ri), "result should be the same, because input us the same"
+    assert np.all(rf == ri2), "result should be the same, because input us the same"
+
+
+def test_ac_m_wrong():
+    myframe = sys._getframe()
+    myname = myframe.f_code.co_name
+    print("running ", myname)
+    
+    a = get_sample_arrays()[0]
+
+    # integer
+    r1 = multipletau.autocorrelate(a=a,
+                                   m=16,
+                                   deltat=1,
+                                   normalize=True,
+                                   copy=True,
+                                   dtype=np.float)
+
+    r2 = multipletau.autocorrelate(a=a,
+                                   m=15,
+                                   deltat=1,
+                                   normalize=True,
+                                   copy=True,
+                                   dtype=np.float)
+
+    r3 = multipletau.autocorrelate(a=a,
+                                   m=15.5,
+                                   deltat=1,
+                                   normalize=True,
+                                   copy=True,
+                                   dtype=np.float)
+
+    r4 = multipletau.autocorrelate(a=a,
+                                   m=14.5,
+                                   deltat=1,
+                                   normalize=True,
+                                   copy=True,
+                                   dtype=np.float)
+
+    r5 = multipletau.autocorrelate(a=a,
+                                   m=16.,
+                                   deltat=1,
+                                   normalize=True,
+                                   copy=True,
+                                   dtype=np.float)
+    assert np.all(r1==r2)
+    assert np.all(r1==r3)
+    assert np.all(r1==r4)
+    assert np.all(r1==r5)
 
 
 if __name__ == "__main__":
