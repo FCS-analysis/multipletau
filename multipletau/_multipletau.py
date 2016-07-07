@@ -133,9 +133,11 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
                          dtype=dtype)
     elif dtype.kind != "f":
         warnings.warn("Input dtype is not float; converting to np.float!")
-        dtype = np.float
+        dtype = np.dtype(np.float)
 
-    trace = np.array(a, copy=copy, dtype=dtype)
+    # If copy is false and dtype is the same as the input array,
+    # then this line does not have an effect:
+    trace = np.array(a, dtype=dtype, copy=copy)
 
     # Check parameters
     if m//2 != m/2:
@@ -152,12 +154,12 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     # The integer k defines how many times we can average over
     # two neighboring array elements in order to obtain an array of
     # length just larger than m.
-    k = np.int(np.floor(np.log2(N / m)))
+    k = np.int(np.floor(np.log2(N/m)))
 
     # In the base2 multiple-tau scheme, the length of the correlation
     # array is (only taking into account values that are computed from
     # traces that are just larger than m):
-    lenG = np.int(np.floor(m + k * m // 2))
+    lenG = m + k*(m//2)
 
     G = np.zeros((lenG, 2), dtype=dtype)
 
@@ -173,10 +175,10 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
 
     # Calculate autocorrelation function for first m bins
     # Discrete convolution of m elements
-    for n in range(1, m + 1):
+    for n in range(1, m+1):
         G[n - 1, 0] = deltat * n
         # This is the computationally intensive step
-        G[n - 1, 1] = np.sum(trace[:N - n] * trace[n:], dtype=dtype)
+        G[n - 1, 1] = np.sum(trace[:N - n] * trace[n:])
         normstat[n - 1] = N - n
         normnump[n - 1] = N
     # Now that we calculated the first m elements of G, let us
@@ -190,9 +192,9 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     # Start iteration for each m/2 values
     for step in range(1, k + 1):
         # Get the next m/2 values via correlation of the trace
-        for n in range(1, np.int(m // 2) + 1):
-            idx = np.int(m + n - 1 + (step - 1) * m // 2)
-            if len(trace[:N - (n + m // 2)]) == 0:
+        for n in range(1, m//2 + 1):
+            idx = np.int(m + n - 1 + (step - 1) * m//2)
+            if len(trace[:N - (n + m//2)]) == 0:
                 # This is a shortcut that stops the iteration once the
                 # length of the trace is too small to compute a corre-
                 # lation. The actual length of the correlation function
@@ -216,11 +218,11 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
                 # k in advance.
                 break
             else:
-                G[idx, 0] = deltat * (n + m // 2) * 2**step
+                G[idx, 0] = deltat * (n + m//2) * 2**step
                 # This is the computationally intensive step
-                G[idx, 1] = np.sum(trace[:N - (n + m // 2)] *
-                                   trace[(n + m // 2):], dtype=dtype)
-                normstat[idx] = N - (n + m // 2)
+                G[idx, 1] = np.sum(trace[:N - (n + m//2)] *
+                                   trace[(n + m//2):])
+                normstat[idx] = N - (n + m//2)
                 normnump[idx] = N
         # Check if len(trace) is even:
         if N % 2 == 1:
