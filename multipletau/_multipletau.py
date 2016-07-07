@@ -139,7 +139,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
 
     # Check parameters
     if m // 2 != m / 2:
-        mold = 1 * m
+        mold = m
         m = np.int((m // 2 + 1) * 2)
         warnings.warn("Invalid value of m={}. Using m={} instead"
                       .format(mold, m))
@@ -169,7 +169,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
         trace -= traceavg
     if N < 2 * m:
         # Otherwise the following for-loop will fail:
-        raise ValueError("len(binned_array) must be larger than 2m.")
+        raise ValueError("len(a) must be larger than 2m.")
     # Calculate autocorrelation function for first m bins
     # Discrete convolution of m elements
     for n in range(1, m + 1):
