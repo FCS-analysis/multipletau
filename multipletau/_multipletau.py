@@ -117,7 +117,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
         assert traceavg != 0, "Cannot normalize: Average of `a` is zero!"
 
     if dtype is None:
-        dtype = np.dtype(a[0].dtype)
+        dtype = np.dtype(a[0].__class__)
     else:
         dtype = np.dtype(dtype)
 
@@ -125,14 +125,14 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     if dtype.kind == "c":
         # run cross-correlation
         return correlate(a=a,
-                         v=1*a,
+                         v=a,
                          m=m,
                          deltat=deltat,
                          normalize=normalize,
                          copy=copy,
                          dtype=dtype)
     elif dtype.kind != "f":
-        warnings.warn("Input dtype is not float; converting to np.float!")
+        warnings.warn("Input dtype is not float; casting to np.float!")
         dtype = np.dtype(np.float)
 
     # If copy is false and dtype is the same as the input array,
@@ -193,7 +193,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     for step in range(1, k + 1):
         # Get the next m/2 values via correlation of the trace
         for n in range(1, m//2 + 1):
-            idx = np.int(m + n - 1 + (step - 1) * m//2)
+            idx = m + n - 1 + (step - 1) * m//2
             if len(trace[:N - (n + m//2)]) == 0:
                 # This is a shortcut that stops the iteration once the
                 # length of the trace is too small to compute a corre-
@@ -313,19 +313,29 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     # See `autocorrelation` for better documented code.
     traceavg1 = np.average(v)
     traceavg2 = np.average(a)
-    if normalize and traceavg1 * traceavg2 == 0:
-        raise ZeroDivisionError("Normalization not possible. The " +
-                                "average of the input *binned_array* " +
-                                "is zero.")
+    if normalize:
+        assert traceavg1 != 0, "Cannot normalize: Average of `v` is zero!"
+        assert traceavg2 != 0, "Cannot normalize: Average of `a` is zero!"
+
+    if dtype is None:
+        dtype = np.dtype(dtype)
+    else:
+        dtype1 = np.dtype(v[0].__class__)
+        dtype2 = np.dtype(a[0].__class__)
+        if dtype1 != dtype2:
+            if dtype1.kind == "c" or dtype2.kind == "c":
+                # The user might try to combine complex64 and float128.
+                warnings.warn("Input dtypes not equal; casting to np.complex!")
+                dtype = np.dtype(np.complex)
+            else:
+                warnings.warn("Input dtypes not equal; casting to np.float!")
+                dtype = np.dtype(np.float)
+
+    if not dtype.kind in ["c", "f"]:
+        warnings.warn("Input dtype is not float; casting to np.float!")
+        dtype = np.dtype(np.float)
 
     trace1 = np.array(v, dtype=dtype, copy=copy)
-    dtype = trace1.dtype
-
-    if dtype.kind in ["b", "i", "u"]:
-        warnings.warn(
-            "Converting input data type ({}) to float.".format(dtype))
-        dtype = np.dtype(float)
-        trace1 = np.array(v, dtype=dtype, copy=copy)
 
     # Prevent traces from overwriting each other
     if a is v:
@@ -334,33 +344,33 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
 
     trace2 = np.array(a, dtype=dtype, copy=copy)
 
+    assert trace1.shape[0] == trace2.shape[0], "`a`,`v` must have same length!"
+
     # Complex data
     if dtype.kind == "c":
-        trace1.imag *= -1
+        np.conjugate(trace1, out=trace1)
 
     # Check parameters
-    if np.around(m / 2) != m / 2:
-        mold = 1 * m
-        m = np.int((np.around(m / 2) + 1) * 2)
+    if m//2 != m/2:
+        mold = m
+        m = np.int(m//2 + 1) * 2
         warnings.warn("Invalid value of m={}. Using m={} instead"
                       .format(mold, m))
     else:
         m = np.int(m)
 
-    if len(a) != len(v):
-        raise ValueError("Input arrays must be of equal length.")
 
     N = N0 = len(trace1)
     # Find out the length of the correlation function.
     # The integer k defines how many times we can average over
     # two neighboring array elements in order to obtain an array of
     # length just larger than m.
-    k = np.int(np.floor(np.log2(N / m)))
+    k = np.int(np.floor(np.log2(N/m)))
 
     # In the base2 multiple-tau scheme, the length of the correlation
     # array is (only taking into account values that are computed from
     # traces that are just larger than m):
-    lenG = np.int(np.floor(m + k * m // 2))
+    lenG = m + k * m//2
 
     G = np.zeros((lenG, 2), dtype=dtype)
     normstat = np.zeros(lenG, dtype=dtype)
@@ -370,9 +380,10 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     if normalize:
         trace1 -= traceavg1
         trace2 -= traceavg2
-    if N < 2 * m:
-        # Otherwise the following for-loop will fail:
-        raise ValueError("len(binned_array) must be larger than 2m.")
+
+    # Otherwise the following for-loop will fail:
+    assert N >= 2*m, "len(a) must be larger than 2m!"
+
     # Calculate autocorrelation function for first m bins
     for n in range(1, m + 1):
         G[n - 1, 0] = deltat * n
@@ -385,24 +396,23 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     # Add up every second element
     trace1 = (trace1[:N:2] + trace1[1:N + 1:2]) / 2
     trace2 = (trace2[:N:2] + trace2[1:N + 1:2]) / 2
-    N /= 2
-    N = np.int(N)
+    N //= 2
 
     for step in range(1, k + 1):
         # Get the next m/2 values of the trace
-        for n in range(1, np.int(m // 2) + 1):
-            idx = np.int(m + n - 1 + (step - 1) * m // 2)
-            if len(trace1[:N - (n + m // 2)]) == 0:
+        for n in range(1, m//2 + 1):
+            idx = m + n - 1 + (step - 1) * m//2
+            if len(trace1[:N - (n + m//2)]) == 0:
                 # Abort
                 G = G[:idx - 1]
                 normstat = normstat[:idx - 1]
                 normnump = normnump[:idx - 1]
                 break
             else:
-                G[idx, 0] = deltat * (n + m // 2) * 2**step
+                G[idx, 0] = deltat * (n + m//2) * 2**step
                 G[idx, 1] = np.sum(
-                    trace1[:N - (n + m // 2)] * trace2[(n + m // 2):])
-                normstat[idx] = N - (n + m // 2)
+                    trace1[:N - (n + m//2)] * trace2[(n + m//2):])
+                normstat[idx] = N - (n + m//2)
                 normnump[idx] = N
 
         # Check if len(trace) is even:
@@ -411,8 +421,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
         # Add up every second element
         trace1 = (trace1[:N:2] + trace1[1:N + 1:2]) / 2
         trace2 = (trace2[:N:2] + trace2[1:N + 1:2]) / 2
-        N /= 2
-        N = np.int(N)
+        N //= 2
 
     if normalize:
         G[:, 1] /= traceavg1 * traceavg2 * normstat
@@ -473,3 +482,4 @@ def correlate_numpy(a, v, deltat=1, normalize=False,
     G[:, 1] = Gd
     G[:, 0] = np.arange(len(Gd)) * deltat
     return G
+
