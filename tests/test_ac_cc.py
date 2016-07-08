@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-""" Tests autocorrelation algorithm
+""" Tests correlation-autocorrelation identity
 """
 from __future__ import division, print_function
 
@@ -137,4 +137,3 @@ if __name__ == "__main__":
     for key in list(loc.keys()):
         if key.startswith("test_") and hasattr(loc[key], "__call__"):
             loc[key]()
-    
