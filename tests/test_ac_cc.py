@@ -18,27 +18,7 @@ sys.path = [split(DIR)[0]] + sys.path
 
 import multipletau
 
-
-def get_reference_data(funcname, pyfile):
-    adir = os.path.dirname(pyfile)+"/data/"
-    aname = os.path.basename(pyfile)+"_"+funcname+".npy"
-    return np.load(adir + aname)
-
-
-def get_sample_arrays():
-    a = [-4.3,   1,    9, -99.2, 13]
-    b = [9921, 281, 23.5,   5.3, 77]
-    l = [  33,  92,   47,    54, 99]
-    r = [   0,   1,   12,     4,  0] 
-    p = [   1,   4,   .5,     2,  3]
-    arrs = []
-    
-    for ai, bi, li, ri, pi in zip(a,b,l,r,p): 
-        x = np.linspace(ai,bi,li)
-        a = (x*np.roll(x,ri))**pi
-        arrs.append(a)
-    
-    return arrs
+from test_autocorrelate import get_sample_arrays
 
 
 def test_ac_cc_simple():
@@ -72,7 +52,6 @@ def test_ac_cc_simple():
     
     resac = np.concatenate(resac)
     
-
     assert np.all(resac==rescc)
 
 
@@ -94,7 +73,6 @@ def test_ac_cc_normalize():
         res.append(r)
     
     res = np.concatenate(res)
-
 
     rescc = []
     for a in arrs:
@@ -132,7 +110,6 @@ def test_ac_cc_m():
         res.append(r)
     res = np.concatenate(res)
 
-
     rescc = []    
     for m in ms:
         r = multipletau.correlate(a=a, v=a,
@@ -149,11 +126,8 @@ def test_ac_cc_m():
                                     normalize=False,
                                     copy=True,
                                     dtype=np.float)
-
     
     rescc = np.concatenate(rescc)
-
-
     assert np.all(res==rescc)
 
 
