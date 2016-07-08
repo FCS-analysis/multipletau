@@ -1,8 +1,10 @@
 0.1.6
 - support NumPy 1.11
+- bugfix: wrong normalization for complex array `v` in `correlate`
+- add tests to improve code coverage
 0.1.5
 - update documentation
-- officially support Python 3
+- support Python 3
 0.1.4
 - integer and boolean input types are now automatically converted to floats
 - `multipletau.correlate` now works with complex data types

@@ -29,9 +29,12 @@ def test_cc():
                     [  4.00000000e+00,   2.12325000e+04],
                     [  8.00000000e+00,   1.58508000e+04]])
     assert np.allclose(soll, ist)
-    
+
     
 if __name__ == "__main__":
-    test_ac()
-    test_cc()
-
+    # Run all tests
+    loc = locals()
+    for key in list(loc.keys()):
+        if key.startswith("test_") and hasattr(loc[key], "__call__"):
+            loc[key]()
+    

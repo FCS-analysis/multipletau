@@ -184,7 +184,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     # Now that we calculated the first m elements of G, let us
     # go on with the next m/2 elements.
     # Check if len(trace) is even:
-    if N % 2 == 1:
+    if N%2 == 1:
         N -= 1
     # Add up every second element
     trace = (trace[:N:2] + trace[1:N + 1:2]) / 2
@@ -225,7 +225,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
                 normstat[idx] = N - (n + m//2)
                 normnump[idx] = N
         # Check if len(trace) is even:
-        if N % 2 == 1:
+        if N%2 == 1:
             N -= 1
         # Add up every second element
         trace = (trace[:N:2] + trace[1:N + 1:2]) / 2
@@ -380,7 +380,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
 
     # We use the fluctuation of the signal around the mean
     if normalize:
-        trace1 -= traceavg1
+        trace1 -= np.conj(traceavg1)
         trace2 -= traceavg2
 
     # Otherwise the following for-loop will fail:
@@ -393,7 +393,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
         normstat[n - 1] = N - n
         normnump[n - 1] = N
     # Check if len(trace) is even:
-    if N % 2 == 1:
+    if N%2 == 1:
         N -= 1
     # Add up every second element
     trace1 = (trace1[:N:2] + trace1[1:N + 1:2]) / 2
@@ -418,7 +418,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
                 normnump[idx] = N
 
         # Check if len(trace) is even:
-        if N % 2 == 1:
+        if N%2 == 1:
             N -= 1
         # Add up every second element
         trace1 = (trace1[:N:2] + trace1[1:N + 1:2]) / 2
@@ -480,7 +480,11 @@ def correlate_numpy(a, v, deltat=1, normalize=False,
         N = len(Gd)
         m = N - np.arange(N)
         Gd /= m * avg * vvg
-    G = np.zeros((len(Gd), 2))
+    else:
+        # TODO: correct normalization that corresponds to `correlate`
+        pass
+    
+    G = np.zeros((len(Gd), 2), dtype=dtype)
     G[:, 1] = Gd
     G[:, 0] = np.arange(len(Gd)) * deltat
     return G
