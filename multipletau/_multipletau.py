@@ -298,6 +298,8 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
 
            normalize = False
 
+    For complex arrays, this method falls back to the method
+    :py:func:`multipletau.correlate`.
 
     Examples
     --------

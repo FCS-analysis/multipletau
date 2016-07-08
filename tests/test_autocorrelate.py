@@ -35,8 +35,8 @@ def get_sample_arrays():
     
     for ai, bi, li, ri, pi in zip(a,b,l,r,p): 
         x = np.linspace(ai,bi,li)
-        a = (x*np.roll(x,ri))**pi
-        arrs.append(a)
+        arr = (x*np.roll(x,ri))**pi
+        arrs.append(arr)
     
     return arrs
 
