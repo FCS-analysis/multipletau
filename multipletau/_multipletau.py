@@ -318,8 +318,6 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
         assert traceavg2 != 0, "Cannot normalize: Average of `a` is zero!"
 
     if dtype is None:
-        dtype = np.dtype(dtype)
-    else:
         dtype1 = np.dtype(v[0].__class__)
         dtype2 = np.dtype(a[0].__class__)
         if dtype1 != dtype2:
@@ -330,6 +328,8 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
             else:
                 warnings.warn("Input dtypes not equal; casting to np.float!")
                 dtype = np.dtype(np.float)
+    else:
+        dtype = np.dtype(dtype)
 
     if not dtype.kind in ["c", "f"]:
         warnings.warn("Input dtype is not float; casting to np.float!")
