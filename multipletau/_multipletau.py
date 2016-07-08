@@ -318,10 +318,10 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
         assert traceavg2 != 0, "Cannot normalize: Average of `a` is zero!"
 
     if dtype is None:
-        dtype1 = np.dtype(v[0].__class__)
+        dtype = np.dtype(v[0].__class__)
         dtype2 = np.dtype(a[0].__class__)
-        if dtype1 != dtype2:
-            if dtype1.kind == "c" or dtype2.kind == "c":
+        if dtype != dtype2:
+            if dtype.kind == "c" or dtype2.kind == "c":
                 # The user might try to combine complex64 and float128.
                 warnings.warn("Input dtypes not equal; casting to np.complex!")
                 dtype = np.dtype(np.complex)
