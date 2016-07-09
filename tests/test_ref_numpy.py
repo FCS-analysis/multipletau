@@ -35,7 +35,32 @@ def test_corresponds_ac():
                                          normalize=True,
                                          dtype=np.float128)
 
-    idx = np.array(restau[:,0], dtype=int)[:m]
+    idx = np.array(restau[:,0].real, dtype=int)[:m]
+
+    assert np.allclose(reslin[idx, 1], restau[:m,1])
+
+
+def test_corresponds_ac_nonormalize():
+    myframe = sys._getframe()
+    myname = myframe.f_code.co_name
+    print("running ", myname)
+    
+    a = np.concatenate(get_sample_arrays_cplx()).real
+    m=16
+
+    restau = multipletau.autocorrelate(a=1*a,
+                                       m=m,
+                                       copy=True,
+                                       normalize=False,
+                                       dtype=np.float128)
+
+    reslin = multipletau.correlate_numpy(a=1*a,
+                                         v=1*a,
+                                         copy=True,
+                                         normalize=False,
+                                         dtype=np.float128)
+
+    idx = np.array(restau[:,0].real, dtype=int)[:m]
 
     assert np.allclose(reslin[idx, 1], restau[:m,1])
 
@@ -61,7 +86,33 @@ def test_corresponds_cc():
                                          normalize=True,
                                          dtype=np.complex256)
 
-    idx = np.array(restau[:,0], dtype=int)[:m]
+    idx = np.array(restau[:,0].real, dtype=int)[:m]
+
+    assert np.allclose(reslin[idx, 1], restau[:m,1])
+
+
+def test_corresponds_cc_nonormalize():
+    myframe = sys._getframe()
+    myname = myframe.f_code.co_name
+    print("running ", myname)
+    
+    a = np.concatenate(get_sample_arrays_cplx())
+    m=16
+
+    restau = multipletau.correlate(a=a,
+                                   v=a.imag+1j*a.real,
+                                   m=m,
+                                   copy=True,
+                                   normalize=False,
+                                   dtype=np.complex256)
+
+    reslin = multipletau.correlate_numpy(a=a,
+                                         v=a.imag+1j*a.real,
+                                         copy=True,
+                                         normalize=False,
+                                         dtype=np.complex256)
+
+    idx = np.array(restau[:,0].real, dtype=int)[:m]
 
     assert np.allclose(reslin[idx, 1], restau[:m,1])
     

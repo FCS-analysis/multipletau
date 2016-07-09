@@ -1,7 +1,9 @@
 0.1.6
 - support NumPy 1.11
-- bugfix: wrong normalization for complex array `v` in `correlate`
 - add tests to improve code coverage
+- bugfixes:
+  - wrong normalization for cplx array `v` in `correlate` if `normalize==True`
+  - wrong normalization in `correlate_numpy` if `normalize==False`
 0.1.5
 - update documentation
 - support Python 3

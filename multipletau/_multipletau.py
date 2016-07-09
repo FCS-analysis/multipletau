@@ -112,10 +112,6 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
            [  8.00000000e+00,   1.50612000e+04]])
 
     """
-    traceavg = np.average(a)
-    if normalize:
-        assert traceavg != 0, "Cannot normalize: Average of `a` is zero!"
-
     if dtype is None:
         dtype = np.dtype(a[0].__class__)
     else:
@@ -166,9 +162,12 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     normstat = np.zeros(lenG, dtype=dtype)
     normnump = np.zeros(lenG, dtype=dtype)
 
+    traceavg = np.average(trace)
+
     # We use the fluctuation of the signal around the mean
     if normalize:
         trace -= traceavg
+        assert traceavg != 0, "Cannot normalize: Average of `a` is zero!"
     
     # Otherwise the following for-loop will fail:
     assert N >= 2*m, "len(a) must be larger than 2m!"
@@ -199,11 +198,11 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
                 # length of the trace is too small to compute a corre-
                 # lation. The actual length of the correlation function
                 # does not only depend on k - We also must be able to
-                # perform the sum with repect to k for all elements.
+                # perform the sum with respect to k for all elements.
                 # For small N, the sum over zero elements would be
                 # computed here.
                 #
-                # One could make this for loop go up to maxval, where
+                # One could make this for-loop go up to maxval, where
                 #   maxval1 = int(m/2)
                 #   maxval2 = int(N-m/2-1)
                 #   maxval = min(maxval1, maxval2)
@@ -461,31 +460,28 @@ def correlate_numpy(a, v, deltat=1, normalize=False,
     crosscorrelation : ndarray
         Nx2 array containing lag time and cross-correlation
     """
-
-    avg = np.average(a)
-    vvg = np.average(v)
-
-    if dtype is None:
-        dtype = a.dtype
-
-    if len(a) != len(v):
-        raise ValueError("Arrays must be of same length.")
-
     ab = np.array(a, dtype=dtype, copy=copy)
     vb = np.array(v, dtype=dtype, copy=copy)
 
-    Gd = np.correlate(ab - avg, vb - vvg, mode="full")[len(ab) - 1:]
+    assert ab.shape[0] == vb.shape[0], "`a`,`v` must have same length!"
+
+    avg = np.average(ab)
+    vvg = np.average(vb)
+
+    if normalize:
+        ab -= avg
+        vb -= vvg
+        assert avg != 0, "Cannot normalize: Average of `a` is zero!"
+        assert vvg != 0, "Cannot normalize: Average of `v` is zero!"
+
+    Gd = np.correlate(ab, vb, mode="full")[len(ab) - 1:]
 
     if normalize:
         N = len(Gd)
         m = N - np.arange(N)
         Gd /= m * avg * vvg
-    else:
-        # TODO: correct normalization that corresponds to `correlate`
-        pass
     
     G = np.zeros((len(Gd), 2), dtype=dtype)
     G[:, 1] = Gd
     G[:, 0] = np.arange(len(Gd)) * deltat
     return G
-
