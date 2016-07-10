@@ -60,7 +60,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
 
     Parameters
     ----------
-    a : array_like
+    a : array-like
         input sequence of real numbers
     m : even integer
         defines the number of points on one level, must be an
@@ -72,10 +72,9 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
         signal and the factor `M-k`.
     copy : bool
         copy input array, set to False to save memory
-    dtype : dtype, optional
-        The type of the returned array and of the accumulator in 
-        which the elements are summed.  By default, the dtype of 
-        `a` is used.
+    dtype : object to be converted to a data type object
+        The data type of the returned array and of the accumulator
+        for the multiple-tau computation.
 
 
     Returns
@@ -263,7 +262,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
 
     Parameters
     ----------
-    a, v : array_like
+    a, v : array-like
         input sequences with equal length
     m : even integer
         defines the number of points on one level, must be an
@@ -275,10 +274,9 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
         signal and the factor `M-k`.
     copy : bool
         copy input array, set to False to save memory
-    dtype : dtype, optional
-        The type of the returned array and of the accumulator in 
-        which the elements are summed.  By default, the dtype of 
-        `a` is used.
+    dtype : object to be converted to a data type object
+        The data type of the returned array and of the accumulator
+        for the multiple-tau computation.
 
 
     Returns
@@ -446,7 +444,7 @@ def correlate_numpy(a, v, deltat=1, normalize=False,
 
     Parameters
     ----------
-    a, v : array_like
+    a, v : array-like
         input sequences
     deltat : float
         distance between bins
@@ -456,9 +454,8 @@ def correlate_numpy(a, v, deltat=1, normalize=False,
         the convention of decaying to zero for large lag times.
     copy : bool
         copy input array, set to False to save memory
-    dtype : dtype, optional
-        The type of the returned array and of the accumulator in 
-        which the elements are summed.
+    dtype : object to be converted to a data type object
+        The data type of the returned array.
 
 
     Returns

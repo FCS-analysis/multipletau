@@ -3,8 +3,8 @@
 """ 
 Comparison of correlation methods
 ---------------------------------
-Illustration of the difference between 
-:py:func:`multipletau.correlate` and :py:func:`numpy.correlate`.
+Comparison between the multiple tau correlation methods
+(:py:func:`multipletau.autocorrelate`, :py:func:`multipletau.correlate`) and :py:func:`numpy.correlate`.
 
 .. image:: ../examples/compare_correlation_methods.png
    :align:   center
