@@ -47,17 +47,16 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     Autocorrelation of a 1-dimensional sequence on a log2-scale.
 
     This computes the correlation similar to 
-    :py:func:`numpy.correlate` for positive :math:`k`  on a base 2
+    :py:func:`numpy.correlate` for positive :math:`k` on a base 2
     logarithmic scale.
 
         :func:`numpy.correlate(a, a, mode="full")[len(a)-1:]`
-
     
         :math:`z_k = \Sigma_n a_n a_{n+k}`
 
-
     Note that only the correlation in the positive direction is
     computed.
+
 
     Parameters
     ----------
@@ -261,6 +260,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     Note that only the correlation
     in the positive direction is computed.
 
+
     Parameters
     ----------
     a, v : array_like
@@ -301,6 +301,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     use:
 
            normalize = False
+
 
     Examples
     --------
@@ -440,7 +441,8 @@ def correlate_numpy(a, v, deltat=1, normalize=False,
                     dtype=None, copy=True):
     """
     Convenience function that wraps around :py:func:`numpy.correlate` and
-    returns the data as :func:`correlate` does.
+    returns the correlation in the same format as :func:`correlate` does.
+
 
     Parameters
     ----------
@@ -457,6 +459,7 @@ def correlate_numpy(a, v, deltat=1, normalize=False,
     dtype : dtype, optional
         The type of the returned array and of the accumulator in 
         which the elements are summed.
+
 
     Returns
     -------
