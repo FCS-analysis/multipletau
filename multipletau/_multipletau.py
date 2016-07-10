@@ -46,7 +46,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     """ 
     Autocorrelation of a 1-dimensional sequence on a log2-scale.
 
-    This computes the correlation according to 
+    This computes the correlation similar to 
     :py:func:`numpy.correlate` for positive :math:`k`  on a base 2
     logarithmic scale.
 
@@ -95,23 +95,29 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
 
            normalize = True
 
-    For emulating the numpy.correlate behavior on a logarithmic
-    scale (default behavior) use:
+    For normalizing according to the behavior of :py:func:`numpy.correlate`,
+    use:
 
            normalize = False
+
+    For complex arrays, this method falls back to the method
+    :func:`correlate`.
 
 
     Examples
     --------
-    >>> from numpy import dtype
     >>> from multipletau import autocorrelate
-    >>> autocorrelate(range(42), m=2, dtype=dtype(float))
-    array([[  1.00000000e+00,   2.29600000e+04],
+    >>> autocorrelate(range(42), m=2, dtype=np.float)
+    array([[  0.00000000e+00,   2.38210000e+04],
+           [  1.00000000e+00,   2.29600000e+04],
            [  2.00000000e+00,   2.21000000e+04],
            [  4.00000000e+00,   2.03775000e+04],
            [  8.00000000e+00,   1.50612000e+04]])
 
     """
+    assert isinstance(copy, bool)
+    assert isinstance(normalize, bool)
+
     if dtype is None:
         dtype = np.dtype(a[0].__class__)
     else:
@@ -155,7 +161,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     # In the base2 multiple-tau scheme, the length of the correlation
     # array is (only taking into account values that are computed from
     # traces that are just larger than m):
-    lenG = m + k*(m//2)
+    lenG = m + k*(m//2) + 1
 
     G = np.zeros((lenG, 2), dtype=dtype)
 
@@ -174,12 +180,12 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
 
     # Calculate autocorrelation function for first m bins
     # Discrete convolution of m elements
-    for n in range(1, m+1):
-        G[n - 1, 0] = deltat * n
+    for n in range(0, m+1):
+        G[n, 0] = deltat * n
         # This is the computationally intensive step
-        G[n - 1, 1] = np.sum(trace[:N - n] * trace[n:])
-        normstat[n - 1] = N - n
-        normnump[n - 1] = N
+        G[n, 1] = np.sum(trace[:N - n] * trace[n:])
+        normstat[n] = N - n
+        normnump[n] = N
     # Now that we calculated the first m elements of G, let us
     # go on with the next m/2 elements.
     # Check if len(trace) is even:
@@ -192,7 +198,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     for step in range(1, k + 1):
         # Get the next m/2 values via correlation of the trace
         for n in range(1, m//2 + 1):
-            idx = m + n - 1 + (step - 1) * m//2
+            idx = m + n + (step - 1) * m//2
             if len(trace[:N - (n + m//2)]) == 0:
                 # This is a shortcut that stops the iteration once the
                 # length of the trace is too small to compute a corre-
@@ -244,17 +250,16 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     Cross-correlation of two 1-dimensional sequences
     on a log2-scale.
 
-    This computes the cross-correlation according to
+    This computes the cross-correlation similar to
     :py:func:`numpy.correlate` for positive :math:`k`  on a base 2
     logarithmic scale.
 
-        numpy.correlate(a, v, mode="full")[len(a)-1:]
+        :func:`numpy.correlate(a, v, mode="full")[len(a)-1:]`
 
         :math:`z_k = \Sigma_n a_n v_{n+k}`
 
     Note that only the correlation
     in the positive direction is computed.
-
 
     Parameters
     ----------
@@ -292,25 +297,24 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
 
            normalize = True
 
-    For emulating the numpy.correlate behavior on a logarithmic
-    scale (default behavior) use:
+    For normalizing according to the behavior of :py:func:`numpy.correlate`,
+    use:
 
            normalize = False
 
-    For complex arrays, this method falls back to the method
-    :py:func:`multipletau.correlate`.
-
     Examples
     --------
-    >>> from numpy import dtype
     >>> from multipletau import correlate
-    >>> correlate(range(42), range(1,43), m=2, dtype=dtype(float))
-    array([[  1.00000000e+00,   2.38210000e+04],
+    >>> correlate(range(42), range(1,43), m=2, dtype=np.float)
+    array([[  0.00000000e+00,   2.46820000e+04],
+           [  1.00000000e+00,   2.38210000e+04],
            [  2.00000000e+00,   2.29600000e+04],
            [  4.00000000e+00,   2.12325000e+04],
            [  8.00000000e+00,   1.58508000e+04]])
 
     """
+    assert isinstance(copy, bool)
+    assert isinstance(normalize, bool)
     # See `autocorrelation` for better documented code.
     traceavg1 = np.average(v)
     traceavg2 = np.average(a)
@@ -371,7 +375,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     # In the base2 multiple-tau scheme, the length of the correlation
     # array is (only taking into account values that are computed from
     # traces that are just larger than m):
-    lenG = m + k * m//2
+    lenG = m + k * m//2 + 1
 
     G = np.zeros((lenG, 2), dtype=dtype)
     normstat = np.zeros(lenG, dtype=dtype)
@@ -386,11 +390,11 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     assert N >= 2*m, "len(a) must be larger than 2m!"
 
     # Calculate autocorrelation function for first m bins
-    for n in range(1, m + 1):
-        G[n - 1, 0] = deltat * n
-        G[n - 1, 1] = np.sum(trace1[:N - n] * trace2[n:])
-        normstat[n - 1] = N - n
-        normnump[n - 1] = N
+    for n in range(0, m + 1):
+        G[n, 0] = deltat * n
+        G[n, 1] = np.sum(trace1[:N - n] * trace2[n:])
+        normstat[n] = N - n
+        normnump[n] = N
     # Check if len(trace) is even:
     if N%2 == 1:
         N -= 1
@@ -402,7 +406,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     for step in range(1, k + 1):
         # Get the next m/2 values of the trace
         for n in range(1, m//2 + 1):
-            idx = m + n - 1 + (step - 1) * m//2
+            idx = m + n + (step - 1) * m//2
             if len(trace1[:N - (n + m//2)]) == 0:
                 # Abort
                 G = G[:idx - 1]
@@ -435,8 +439,8 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
 def correlate_numpy(a, v, deltat=1, normalize=False,
                     dtype=None, copy=True):
     """
-    Convenience function that wraps around numpy.correlate and
-    returns the data as multipletau.correlate does.
+    Convenience function that wraps around :py:func:`numpy.correlate` and
+    returns the data as :func:`correlate` does.
 
     Parameters
     ----------
@@ -452,8 +456,7 @@ def correlate_numpy(a, v, deltat=1, normalize=False,
         copy input array, set to False to save memory
     dtype : dtype, optional
         The type of the returned array and of the accumulator in 
-        which the elements are summed.  By default, the dtype of 
-        `a` is used.
+        which the elements are summed.
 
     Returns
     -------

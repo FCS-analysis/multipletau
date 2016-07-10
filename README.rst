@@ -29,12 +29,13 @@ Usage
 
 .. code:: python
 
-    >>> import numpy as np
-    >>> import multipletau
-    >>> a = np.linspace(2,5,42)
-    >>> v = np.linspace(1,6,42)
-    >>> multipletau.correlate(a, v, m=2)
-    array([[   1.        ,  549.87804878],
+    import numpy as np
+    import multipletau
+    a = np.linspace(2,5,42)
+    v = np.linspace(1,6,42)
+    multipletau.correlate(a, v, m=2)
+    array([[   0.        ,  569.56097561],
+    	   [   1.        ,  549.87804878],
            [   2.        ,  530.37477692],
            [   4.        ,  491.85812017],
            [   8.        ,  386.39500297]])

@@ -1,4 +1,5 @@
 0.1.6
+- also compute correlation for zero lag time (`G(tau==0)`)
 - support NumPy 1.11
 - add tests to improve code coverage
 - bugfixes:

@@ -60,9 +60,9 @@ def test_corresponds_ac_nonormalize():
                                          normalize=False,
                                          dtype=np.float128)
 
-    idx = np.array(restau[:,0].real, dtype=int)[:m]
+    idx = np.array(restau[:,0].real, dtype=int)[:m+1]
 
-    assert np.allclose(reslin[idx, 1], restau[:m,1])
+    assert np.allclose(reslin[idx, 1], restau[:m+1,1])
 
 
 def test_corresponds_cc():
@@ -86,9 +86,9 @@ def test_corresponds_cc():
                                          normalize=True,
                                          dtype=np.complex256)
 
-    idx = np.array(restau[:,0].real, dtype=int)[:m]
+    idx = np.array(restau[:,0].real, dtype=int)[:m+1]
 
-    assert np.allclose(reslin[idx, 1], restau[:m,1])
+    assert np.allclose(reslin[idx, 1], restau[:m+1,1])
 
 
 def test_corresponds_cc_nonormalize():
@@ -112,9 +112,9 @@ def test_corresponds_cc_nonormalize():
                                          normalize=False,
                                          dtype=np.complex256)
 
-    idx = np.array(restau[:,0].real, dtype=int)[:m]
+    idx = np.array(restau[:,0].real, dtype=int)[:m+1]
 
-    assert np.allclose(reslin[idx, 1], restau[:m,1])
+    assert np.allclose(reslin[idx, 1], restau[:m+1,1])
     
 
 
