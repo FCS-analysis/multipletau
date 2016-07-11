@@ -85,6 +85,9 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
 
     Notes
     -----
+    .. versionchanged :: 0.1.6
+       Compute the correlation for zero lag time.
+
     The algorithm computes the correlation with the convention of the
     curve decaying to zero.
 
@@ -111,7 +114,6 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
            [  2.00000000e+00,   2.21000000e+04],
            [  4.00000000e+00,   2.03775000e+04],
            [  8.00000000e+00,   1.50612000e+04]])
-
     """
     assert isinstance(copy, bool)
     assert isinstance(normalize, bool)
@@ -148,7 +150,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     else:
         m = np.int(m)
 
-    N = N0 = len(trace)
+    N = N0 = trace.shape[0]
 
     # Find out the length of the correlation function.
     # The integer k defines how many times we can average over
@@ -176,7 +178,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     # Otherwise the following for-loop will fail:
     assert N >= 2*m, "len(a) must be larger than 2m!"
 
-    # Calculate autocorrelation function for first m bins
+    # Calculate autocorrelation function for first m+1 bins
     # Discrete convolution of m elements
     for n in range(0, m+1):
         G[n, 0] = deltat * n
@@ -190,14 +192,15 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     if N%2 == 1:
         N -= 1
     # Add up every second element
-    trace = (trace[:N:2] + trace[1:N + 1:2]) / 2
+    trace = (trace[:N:2] + trace[1:N:2]) / 2
     N //= 2
     # Start iteration for each m/2 values
     for step in range(1, k + 1):
         # Get the next m/2 values via correlation of the trace
         for n in range(1, m//2 + 1):
+            npmd2 = n + m//2
             idx = m + n + (step - 1) * m//2
-            if len(trace[:N - (n + m//2)]) == 0:
+            if len(trace[:N - npmd2]) == 0:
                 # This is a shortcut that stops the iteration once the
                 # length of the trace is too small to compute a corre-
                 # lation. The actual length of the correlation function
@@ -221,17 +224,17 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
                 # k in advance.
                 break
             else:
-                G[idx, 0] = deltat * (n + m//2) * 2**step
+                G[idx, 0] = deltat * npmd2 * 2**step
                 # This is the computationally intensive step
-                G[idx, 1] = np.sum(trace[:N - (n + m//2)] *
-                                   trace[(n + m//2):])
-                normstat[idx] = N - (n + m//2)
+                G[idx, 1] = np.sum(trace[:N - npmd2] *
+                                   trace[npmd2:])
+                normstat[idx] = N - npmd2
                 normnump[idx] = N
         # Check if len(trace) is even:
         if N%2 == 1:
             N -= 1
         # Add up every second element
-        trace = (trace[:N:2] + trace[1:N + 1:2]) / 2
+        trace = (trace[:N:2] + trace[1:N:2]) / 2
         N //= 2
 
     if normalize:
@@ -287,6 +290,10 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
 
     Notes
     -----
+    .. versionchanged :: 0.1.6
+       Compute the correlation for zero lag time and correctly normalize
+       the correlation for a complex input sequence `v`.
+
     The algorithm computes the correlation with the convention of the
     curve decaying to zero.
 
@@ -364,7 +371,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
         m = np.int(m)
 
 
-    N = N0 = len(trace1)
+    N = N0 = trace1.shape[0]
     # Find out the length of the correlation function.
     # The integer k defines how many times we can average over
     # two neighboring array elements in order to obtain an array of
@@ -388,7 +395,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     # Otherwise the following for-loop will fail:
     assert N >= 2*m, "len(a) must be larger than 2m!"
 
-    # Calculate autocorrelation function for first m bins
+    # Calculate autocorrelation function for first m+1 bins
     for n in range(0, m + 1):
         G[n, 0] = deltat * n
         G[n, 1] = np.sum(trace1[:N - n] * trace2[n:])
@@ -398,33 +405,34 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     if N%2 == 1:
         N -= 1
     # Add up every second element
-    trace1 = (trace1[:N:2] + trace1[1:N + 1:2]) / 2
-    trace2 = (trace2[:N:2] + trace2[1:N + 1:2]) / 2
+    trace1 = (trace1[:N:2] + trace1[1:N:2]) / 2
+    trace2 = (trace2[:N:2] + trace2[1:N:2]) / 2
     N //= 2
 
     for step in range(1, k + 1):
         # Get the next m/2 values of the trace
         for n in range(1, m//2 + 1):
+            npmd2 = (n + m//2)
             idx = m + n + (step - 1) * m//2
-            if len(trace1[:N - (n + m//2)]) == 0:
+            if len(trace1[:N - npmd2]) == 0:
                 # Abort
                 G = G[:idx - 1]
                 normstat = normstat[:idx - 1]
                 normnump = normnump[:idx - 1]
                 break
             else:
-                G[idx, 0] = deltat * (n + m//2) * 2**step
+                G[idx, 0] = deltat * npmd2 * 2**step
                 G[idx, 1] = np.sum(
-                    trace1[:N - (n + m//2)] * trace2[(n + m//2):])
-                normstat[idx] = N - (n + m//2)
+                    trace1[:N - npmd2] * trace2[npmd2:])
+                normstat[idx] = N - npmd2
                 normnump[idx] = N
 
         # Check if len(trace) is even:
         if N%2 == 1:
             N -= 1
         # Add up every second element
-        trace1 = (trace1[:N:2] + trace1[1:N + 1:2]) / 2
-        trace2 = (trace2[:N:2] + trace2[1:N + 1:2]) / 2
+        trace1 = (trace1[:N:2] + trace1[1:N:2]) / 2
+        trace2 = (trace2[:N:2] + trace2[1:N:2]) / 2
         N //= 2
 
     if normalize:
@@ -462,6 +470,12 @@ def correlate_numpy(a, v, deltat=1, normalize=False,
     -------
     crosscorrelation : ndarray
         Nx2 array containing lag time and cross-correlation
+
+
+    Notes
+    -----
+    .. versionchanged :: 0.1.6
+       Removed false normalization when `normalize==False`.
     """
     ab = np.array(a, dtype=dtype, copy=copy)
     vb = np.array(v, dtype=dtype, copy=copy)

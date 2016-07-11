@@ -1,7 +1,7 @@
 0.1.6
 - also compute correlation for zero lag time (`G(tau==0)`)
 - support NumPy 1.11
-- add tests to improve code coverage
+- add tests to complete code coverage
 - bugfixes:
   - wrong normalization for cplx array `v` in `correlate` if `normalize==True`
   - wrong normalization in `correlate_numpy` if `normalize==False`
