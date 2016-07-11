@@ -3,7 +3,7 @@
 """ 
 Comparison of correlation methods
 ---------------------------------
-Comparison between the multiple tau correlation methods
+Comparison between the :py:mod:`multipletau` correlation methods
 (:py:func:`multipletau.autocorrelate`, :py:func:`multipletau.correlate`) and :py:func:`numpy.correlate`.
 
 .. image:: ../examples/compare_correlation_methods.png
@@ -37,6 +37,11 @@ def compare_corr():
     # time factor
     taudiff *= deltat
 
+    if N < 1e5:
+        do_np_corr = True
+    else:
+        do_np_corr = False
+
     ## Autocorrelation
     print("Creating noise for autocorrelation")
     data = noise_exponential(N, taudiff, deltat=deltat)
@@ -47,10 +52,12 @@ def compare_corr():
     print("Performing autocorrelation (multipletau).")
     G = autocorrelate(data, deltat=deltat, normalize=normalize)
     # numpy.correlate for comparison
-    if len(data) < 1e5:
+    if do_np_corr:
         print("Performing autocorrelation (numpy).")
         Gd = correlate_numpy(data, data, deltat=deltat,
                              normalize=normalize)
+    else:
+        Gd = G
     
     ## Cross-correlation
     print("Creating noise for cross-correlation")
@@ -62,7 +69,7 @@ def compare_corr():
         v += countrate
     Gccforw = correlate(a, v, deltat=deltat, normalize=normalize) # forward
     Gccback = correlate(v, a, deltat=deltat, normalize=normalize) # backward
-    if len(a) < 1e5:
+    if do_np_corr:
         print("Performing cross-correlation (numpy).")
         Gdccforw = correlate_numpy(a, v, deltat=deltat, normalize=normalize)
     
@@ -88,7 +95,7 @@ def compare_corr():
     fig.canvas.set_window_title('testing multipletau')
     ax = fig.add_subplot(2,1,1)
     ax.set_xscale('log')
-    if len(data) < 1e5:
+    if do_np_corr:
         plt.plot(Gd[:,0], Gd[:,1] , "-", color="gray", label="correlate (numpy)")
     plt.plot(x, y, "g-", label="input model")
     plt.plot(G[:,0], G[:,1], "-",  color="#B60000", label="autocorrelate")
@@ -101,7 +108,7 @@ def compare_corr():
     # CC
     ax = fig.add_subplot(2,1,2)
     ax.set_xscale('log')
-    if len(data) < 1e5:
+    if do_np_corr:
         plt.plot(Gdccforw[:,0], Gdccforw[:,1] , "-", color="gray", label="forward (numpy)")
     plt.plot(xcc, ycc, "g-", label="input model")
     plt.plot(Gccforw[:,0], Gccforw[:,1], "-", color="#B60000", label="forward")
