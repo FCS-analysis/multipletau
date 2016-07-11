@@ -54,14 +54,11 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     
         :math:`z_k = \Sigma_n a_n a_{n+k}`
 
-    Note that only the correlation in the positive direction is
-    computed.
-
 
     Parameters
     ----------
     a : array-like
-        input sequence of real numbers
+        input sequence
     m : even integer
         defines the number of points on one level, must be an
         even integer
@@ -69,9 +66,9 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
         distance between bins
     normalize : bool
         normalize the result to the square of the average input
-        signal and the factor `M-k`.
+        signal and the factor :math:`M-k`.
     copy : bool
-        copy input array, set to False to save memory
+        copy input array, set to ``False`` to save memory
     dtype : object to be converted to a data type object
         The data type of the returned array and of the accumulator
         for the multiple-tau computation.
@@ -79,9 +76,8 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
 
     Returns
     -------
-    autocorrelation : ndarray
-        Nx2 array containing lag time and autocorrelation
-
+    autocorrelation : ndarray of shape (N,2)
+        the lag time (1st column) and the autocorrelation (2nd column).
 
     Notes
     -----
@@ -92,14 +88,10 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     curve decaying to zero.
 
     For experiments like e.g. fluorescence correlation spectroscopy,
-    the signal can be normalized to `M-k` by invoking:
-
-           normalize = True
+    the signal can be normalized to :math:`M-k` by invoking ``normalize = True``.           
 
     For normalizing according to the behavior of :py:func:`numpy.correlate`,
-    use:
-
-           normalize = False
+    use ``normalize = False``.
 
     For complex arrays, this method falls back to the method
     :func:`correlate`.
@@ -259,9 +251,9 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
 
         :math:`z_k = \Sigma_n a_n v_{n+k}`
 
-    Note that only the correlation
-    in the positive direction is computed.
-
+    Note that only the correlation in the positive direction is computed.
+    To obtain the correlation for negative lag times swap the input variables
+    ``a`` and ``v``.
 
     Parameters
     ----------
@@ -274,9 +266,9 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
         distance between bins
     normalize : bool
         normalize the result to the square of the average input
-        signal and the factor `M-k`.
+        signal and the factor :math:`M-k`.
     copy : bool
-        copy input array, set to False to save memory
+        copy input array, set to ``False`` to save memory
     dtype : object to be converted to a data type object
         The data type of the returned array and of the accumulator
         for the multiple-tau computation.
@@ -284,8 +276,8 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
 
     Returns
     -------
-    crosscorrelation : ndarray
-        Nx2 array containing lag time and cross-correlation
+    cross_correlation : ndarray of shape (N,2)
+        the lag time (1st column) and the cross-correlation (2nd column).
 
 
     Notes
@@ -298,14 +290,10 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     curve decaying to zero.
 
     For experiments like e.g. fluorescence correlation spectroscopy,
-    the signal can be normalized to `M-k` by invoking:
-
-           normalize = True
+    the signal can be normalized to :math:`M-k` by invoking ``normalize = True``.           
 
     For normalizing according to the behavior of :py:func:`numpy.correlate`,
-    use:
-
-           normalize = False
+    use ``normalize = False``.
 
 
     Examples
@@ -457,19 +445,19 @@ def correlate_numpy(a, v, deltat=1, normalize=False,
     deltat : float
         distance between bins
     normalize : bool
-        normalize the result to the square of the average input
-        signal and the factor (M-k). The resulting curve follows
+        normalize the result to the square of the average input signal
+        and the factor :math:`M-k`. The resulting curve follows
         the convention of decaying to zero for large lag times.
     copy : bool
-        copy input array, set to False to save memory
+        copy input array, set to ``False`` to save memory
     dtype : object to be converted to a data type object
         The data type of the returned array.
 
 
     Returns
     -------
-    crosscorrelation : ndarray
-        Nx2 array containing lag time and cross-correlation
+    cross_correlation : ndarray of shape (N,2)
+        the lag time (1st column) and the cross-correlation (2nd column).
 
 
     Notes
