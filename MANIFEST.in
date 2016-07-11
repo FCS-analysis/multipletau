@@ -2,6 +2,7 @@ include CHANGELOG
 include README.txt
 include tests/*.py
 include tests/*.md
+include tests/data/*.npy
 include examples/*.py
 include doc/*.py
 include doc/*.rst
