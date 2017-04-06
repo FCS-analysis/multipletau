@@ -1,11 +1,6 @@
 include CHANGELOG
 include LICENSE
 include README.rst
-include tests/*.py
-include tests/*.md
-include tests/data/*.npy
-include examples/*.py
-include doc/*.py
-include doc/*.rst
-include doc/*.md
-include doc/extensions/*.py
+recursive-include examples *.py
+recursive-include doc *.py *.md *.rst
+recursive-include tests *.py *.md test_*.npy
