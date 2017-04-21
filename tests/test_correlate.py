@@ -12,6 +12,7 @@ import sys
 import warnings
 import zipfile
 
+
 # Add parent directory to beginning of path variable
 DIR = dirname(abspath(__file__))
 sys.path = [split(DIR)[0]] + sys.path
@@ -54,7 +55,7 @@ def test_cc_simple():
                                   deltat=1,
                                   normalize=False,
                                   copy=True,
-                                  dtype=np.complex)
+                                  dtype=np.complex_)
         res.append(r)
     res = np.concatenate(res)
 
@@ -71,7 +72,7 @@ def test_cc_simple():
                                       deltat=1,
                                       normalize=False,
                                       copy=True,
-                                      dtype=np.complex)
+                                      dtype=np.complex_)
         res2.append(r)
     res2 = np.concatenate(res2)
 
@@ -93,7 +94,7 @@ def test_cc_normalize():
                                   deltat=1,
                                   normalize=True,
                                   copy=True,
-                                  dtype=np.float)
+                                  dtype=np.float_)
         res.append(r)
     
     res = np.concatenate(res)
@@ -121,7 +122,7 @@ def test_cc_m():
                                   deltat=1,
                                   normalize=False,
                                   copy=True,
-                                  dtype=np.complex)
+                                  dtype=np.complex_)
         res.append(r)
 
         # test minimal length of array
@@ -131,7 +132,7 @@ def test_cc_m():
                                     deltat=1,
                                     normalize=False,
                                     copy=True,
-                                    dtype=np.complex)
+                                    dtype=np.complex_)
     
     res = np.concatenate(res)
     #np.save(os.path.dirname(__file__)+"/data/"+os.path.basename(__file__)+"_"+myname+".npy", res)
@@ -192,7 +193,7 @@ def test_cc_dtype():
                                deltat=1,
                                normalize=True,
                                copy=True,
-                               dtype=np.float)
+                               dtype=np.float_)
 
     ri = multipletau.correlate(a=a,
                                v=a,
@@ -210,8 +211,8 @@ def test_cc_dtype():
                                 copy=True,
                                 dtype=None)
     
-    assert ri.dtype == np.dtype(np.float), "if wrong dtype, dtype should default to np.float"
-    assert ri2.dtype == np.dtype(np.float), "if wrong dtype, dtype should default to np.float"
+    assert ri.dtype == np.dtype(np.float_), "if wrong dtype, dtype should default to np.float_"
+    assert ri2.dtype == np.dtype(np.float_), "if wrong dtype, dtype should default to np.float_"
     assert np.all(rf == ri), "result should be the same, because input us the same"
     assert np.all(rf == ri2), "result should be the same, because input us the same"
 
@@ -230,7 +231,7 @@ def test_cc_dtype2():
                                deltat=1,
                                normalize=True,
                                copy=True)
-    assert np.dtype(rf.dtype) == np.dtype(np.complex)
+    assert np.dtype(rf.dtype) == np.dtype(np.complex_)
 
     print("this should issue a warning of unequal input dtypes, casting to float")
     rf2 = multipletau.correlate(a=a.real,
@@ -239,7 +240,7 @@ def test_cc_dtype2():
                                deltat=1,
                                normalize=True,
                                copy=True)
-    assert np.dtype(rf2.dtype) == np.dtype(np.float)
+    assert np.dtype(rf2.dtype) == np.dtype(np.float_)
 
 
 def test_cc_m_wrong():

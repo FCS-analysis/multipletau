@@ -14,7 +14,6 @@ import multipletau
 from test_correlate import get_sample_arrays_cplx
 
 
-
 def test_corresponds_ac():
     myframe = sys._getframe()
     myname = myframe.f_code.co_name
@@ -27,13 +26,13 @@ def test_corresponds_ac():
                                        m=m,
                                        copy=True,
                                        normalize=True,
-                                       dtype=np.float128)
+                                       dtype=np.float_)
 
     reslin = multipletau.correlate_numpy(a=1*a,
                                          v=1*a,
                                          copy=True,
                                          normalize=True,
-                                         dtype=np.float128)
+                                         dtype=np.float_)
 
     idx = np.array(restau[:,0].real, dtype=int)[:m]
 
@@ -52,13 +51,13 @@ def test_corresponds_ac_nonormalize():
                                        m=m,
                                        copy=True,
                                        normalize=False,
-                                       dtype=np.float128)
+                                       dtype=np.float_)
 
     reslin = multipletau.correlate_numpy(a=1*a,
                                          v=1*a,
                                          copy=True,
                                          normalize=False,
-                                         dtype=np.float128)
+                                         dtype=np.float_)
 
     idx = np.array(restau[:,0].real, dtype=int)[:m+1]
 
@@ -78,13 +77,13 @@ def test_corresponds_cc():
                                    m=m,
                                    copy=True,
                                    normalize=True,
-                                   dtype=np.complex256)
+                                   dtype=np.complex_)
 
     reslin = multipletau.correlate_numpy(a=a,
                                          v=a.imag+1j*a.real,
                                          copy=True,
                                          normalize=True,
-                                         dtype=np.complex256)
+                                         dtype=np.complex_)
 
     idx = np.array(restau[:,0].real, dtype=int)[:m+1]
 
@@ -104,13 +103,13 @@ def test_corresponds_cc_nonormalize():
                                    m=m,
                                    copy=True,
                                    normalize=False,
-                                   dtype=np.complex256)
+                                   dtype=np.complex_)
 
     reslin = multipletau.correlate_numpy(a=a,
                                          v=a.imag+1j*a.real,
                                          copy=True,
                                          normalize=False,
-                                         dtype=np.complex256)
+                                         dtype=np.complex_)
 
     idx = np.array(restau[:,0].real, dtype=int)[:m+1]
 
@@ -155,13 +154,13 @@ def test_corresponds_ac_first_loop():
                                        m=m,
                                        copy=True,
                                        normalize=False,
-                                       dtype=np.complex256)
+                                       dtype=np.complex_)
         
         reslin = multipletau.correlate_numpy(a=a,
                                              v=a.imag+1j*a.real,
                                              copy=True,
                                              normalize=False,
-                                             dtype=np.complex256)
+                                             dtype=np.complex_)
         
         idtau = np.where(restau[:,0]==m+2)[0][0]
         tau3 = restau[idtau, 1] #m+1 initial bins

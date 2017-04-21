@@ -13,7 +13,7 @@ from multipletau import autocorrelate, correlate
 
 
 def test_ac():
-    ist = autocorrelate(range(42), m=2, dtype=np.dtype(float))
+    ist = autocorrelate(range(42), m=2, dtype=np.float_)
     soll = np.array([[  0.00000000e+00,   2.38210000e+04],
                      [  1.00000000e+00,   2.29600000e+04],
                      [  2.00000000e+00,   2.21000000e+04],
@@ -23,7 +23,7 @@ def test_ac():
 
 
 def test_cc():
-    ist = correlate(range(42), range(1,43), m=2, dtype=np.dtype(float))
+    ist = correlate(range(42), range(1,43), m=2, dtype=np.float_)
     soll = np.array([[  0.00000000e+00,   2.46820000e+04],
                      [  1.00000000e+00,   2.38210000e+04],
                      [  2.00000000e+00,   2.29600000e+04],

@@ -55,7 +55,7 @@ def test_ac_simple():
                                       deltat=1,
                                       normalize=False,
                                       copy=True,
-                                      dtype=np.float)
+                                      dtype=np.float_)
         res.append(r)
     
     res = np.concatenate(res)
@@ -79,7 +79,7 @@ def test_ac_normalize():
                                       deltat=1,
                                       normalize=True,
                                       copy=True,
-                                      dtype=np.float)
+                                      dtype=np.float_)
         res.append(r)
     
     res = np.concatenate(res)
@@ -106,7 +106,7 @@ def test_ac_m():
                                       deltat=1,
                                       normalize=False,
                                       copy=True,
-                                      dtype=np.float)
+                                      dtype=np.float_)
         res.append(r)
 
         # test minimal length of array
@@ -115,7 +115,7 @@ def test_ac_m():
                                         deltat=1,
                                         normalize=False,
                                         copy=True,
-                                        dtype=np.float)
+                                        dtype=np.float_)
     
     res = np.concatenate(res)
     #np.save(os.path.dirname(__file__)+"/data/"+os.path.basename(__file__)+"_"+myname+".npy", res)
@@ -138,7 +138,7 @@ def test_ac_copy():
                                       deltat=1,
                                       normalize=True,
                                       copy=True,
-                                      dtype=np.float)
+                                      dtype=np.float_)
         res1.append(r)
 
     res2 = []
@@ -148,7 +148,7 @@ def test_ac_copy():
                                       deltat=1,
                                       normalize=True,
                                       copy=False,
-                                      dtype=np.float)
+                                      dtype=np.float_)
         res2.append(r)
     
     # simple test if result is the same
@@ -175,7 +175,7 @@ def test_ac_dtype():
                                    deltat=1,
                                    normalize=True,
                                    copy=True,
-                                   dtype=np.float)
+                                   dtype=np.float_)
 
     ri = multipletau.autocorrelate(a=a,
                                    m=16,
@@ -191,8 +191,8 @@ def test_ac_dtype():
                                    copy=True,
                                    dtype=None)
     
-    assert ri.dtype == np.dtype(np.float), "if wrong dtype, dtype should default to np.float"
-    assert ri2.dtype == np.dtype(np.float), "if wrong dtype, dtype should default to np.float"
+    assert ri.dtype == np.dtype(np.float_), "if wrong dtype, dtype should default to np.float_"
+    assert ri2.dtype == np.dtype(np.float_), "if wrong dtype, dtype should default to np.float_"
     assert np.all(rf == ri), "result should be the same, because input us the same"
     assert np.all(rf == ri2), "result should be the same, because input us the same"
 
@@ -210,35 +210,35 @@ def test_ac_m_wrong():
                                    deltat=1,
                                    normalize=True,
                                    copy=True,
-                                   dtype=np.float)
+                                   dtype=np.float_)
 
     r2 = multipletau.autocorrelate(a=a,
                                    m=15,
                                    deltat=1,
                                    normalize=True,
                                    copy=True,
-                                   dtype=np.float)
+                                   dtype=np.float_)
 
     r3 = multipletau.autocorrelate(a=a,
                                    m=15.5,
                                    deltat=1,
                                    normalize=True,
                                    copy=True,
-                                   dtype=np.float)
+                                   dtype=np.float_)
 
     r4 = multipletau.autocorrelate(a=a,
                                    m=14.5,
                                    deltat=1,
                                    normalize=True,
                                    copy=True,
-                                   dtype=np.float)
+                                   dtype=np.float_)
 
     r5 = multipletau.autocorrelate(a=a,
                                    m=16.,
                                    deltat=1,
                                    normalize=True,
                                    copy=True,
-                                   dtype=np.float)
+                                   dtype=np.float_)
     assert np.all(r1==r2)
     assert np.all(r1==r3)
     assert np.all(r1==r4)

@@ -35,7 +35,7 @@ def test_ac_cc_simple():
                                   deltat=1,
                                   normalize=False,
                                   copy=True,
-                                  dtype=np.float)
+                                  dtype=np.float_)
         rescc.append(r)
     
     rescc = np.concatenate(rescc)
@@ -47,7 +47,7 @@ def test_ac_cc_simple():
                                       deltat=1,
                                       normalize=False,
                                       copy=True,
-                                      dtype=np.float)
+                                      dtype=np.float_)
         resac.append(r)
     
     resac = np.concatenate(resac)
@@ -69,7 +69,7 @@ def test_ac_cc_normalize():
                                       deltat=1,
                                       normalize=True,
                                       copy=True,
-                                      dtype=np.float)
+                                      dtype=np.float_)
         res.append(r)
     
     res = np.concatenate(res)
@@ -81,7 +81,7 @@ def test_ac_cc_normalize():
                                   deltat=1,
                                   normalize=True,
                                   copy=True,
-                                  dtype=np.float)
+                                  dtype=np.float_)
         rescc.append(r)
     
     rescc = np.concatenate(rescc)
@@ -106,7 +106,7 @@ def test_ac_cc_m():
                                       deltat=1,
                                       normalize=False,
                                       copy=True,
-                                      dtype=np.float)
+                                      dtype=np.float_)
         res.append(r)
     res = np.concatenate(res)
 
@@ -117,7 +117,7 @@ def test_ac_cc_m():
                                   deltat=1,
                                   normalize=False,
                                   copy=True,
-                                  dtype=np.float)
+                                  dtype=np.float_)
         rescc.append(r)
         # test minimal length of array
         _r2 = multipletau.correlate(a=a[:2*m], v=a[:2*m],
@@ -125,7 +125,7 @@ def test_ac_cc_m():
                                     deltat=1,
                                     normalize=False,
                                     copy=True,
-                                    dtype=np.float)
+                                    dtype=np.float_)
     
     rescc = np.concatenate(rescc)
     assert np.all(res==rescc)
