@@ -62,7 +62,7 @@ def test_cc_simple():
     #np.save(os.path.dirname(__file__)+"/data/"+os.path.basename(__file__)+"_"+myname+".npy", res)
     ref = get_reference_data(myname, __file__)
 
-    assert np.all(res==ref)
+    assert np.allclose(res, ref, atol=0, rtol=1e-15)
 
     # also check result of autocorrelate
     res2 = []
@@ -76,7 +76,7 @@ def test_cc_simple():
         res2.append(r)
     res2 = np.concatenate(res2)
 
-    assert np.all(res==res2)
+    assert np.allclose(res, res2, atol=0, rtol=1e-15)
 
 
 def test_cc_normalize():
@@ -101,7 +101,7 @@ def test_cc_normalize():
     #np.save(os.path.dirname(__file__)+"/data/"+os.path.basename(__file__)+"_"+myname+".npy", res)
     ref = get_reference_data(myname, __file__)
 
-    assert np.all(res==ref)
+    assert np.allclose(res, ref, atol=0, rtol=1e-15)
 
 
 def test_cc_m():

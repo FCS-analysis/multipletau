@@ -62,7 +62,7 @@ def test_ac_simple():
     #np.save(os.path.dirname(__file__)+"/data/"+os.path.basename(__file__)+"_"+myname+".npy", res)
     ref = get_reference_data(myname, __file__)
 
-    assert np.all(res==ref)
+    assert np.allclose(res, ref, atol=0, rtol=1e-15)
 
 
 def test_ac_normalize():
@@ -86,7 +86,7 @@ def test_ac_normalize():
     #np.save(os.path.dirname(__file__)+"/data/"+os.path.basename(__file__)+"_"+myname+".npy", res)
     ref = get_reference_data(myname, __file__)
 
-    assert np.all(res==ref)
+    assert np.allclose(res, ref, atol=0, rtol=1e-15)
 
 
 def test_ac_m():
@@ -121,7 +121,7 @@ def test_ac_m():
     #np.save(os.path.dirname(__file__)+"/data/"+os.path.basename(__file__)+"_"+myname+".npy", res)
     ref = get_reference_data(myname, __file__)
 
-    assert np.all(res==ref)
+    assert np.allclose(res, ref, atol=0, rtol=1e-15)
 
 
 def test_ac_copy():
