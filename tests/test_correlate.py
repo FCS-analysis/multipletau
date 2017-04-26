@@ -24,7 +24,7 @@ from test_autocorrelate import get_reference_data
 def get_sample_arrays_cplx():
     a = [-4.3,   1,    9, -99.2, 13]
     b = [9921, 281, 23.5,   5.3, 77]
-    c = [  12,   0,    2,   1.3, 33]
+    c = [  12,   0,  2.1,   1.3, 33]
     d = [  32,  .1,   -2,   6.3, 88]
     l = [  33,  92,   47,    54, 99]
     r = [   0,   1,   12,     4,  0] 
@@ -96,12 +96,11 @@ def test_cc_normalize():
                                   copy=True,
                                   dtype=np.float_)
         res.append(r)
-    
     res = np.concatenate(res)
     #np.save(os.path.dirname(__file__)+"/data/"+os.path.basename(__file__)+"_"+myname+".npy", res)
     ref = get_reference_data(myname, __file__)
 
-    assert np.allclose(res, ref, atol=0, rtol=1e-14)
+    assert np.allclose(res, ref, atol=0, rtol=1e-15)
 
 
 def test_cc_m():
@@ -293,6 +292,7 @@ def test_cc_m_wrong():
 
 
 if __name__ == "__main__":
+    test_cc_normalize()
     # Run all tests
     loc = locals()
     for key in list(loc.keys()):
