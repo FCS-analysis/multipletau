@@ -138,7 +138,7 @@ def test_cc_m():
     #np.save(os.path.dirname(__file__)+"/data/"+os.path.basename(__file__)+"_"+myname+".npy", res)
     ref = get_reference_data(myname, __file__)
 
-    assert np.all(res==ref)
+    assert np.allclose(res, ref, atol=0, rtol=1e-15)
 
 
 def test_cc_copy():
@@ -201,10 +201,10 @@ def test_cc_dtype():
                                deltat=1,
                                normalize=True,
                                copy=True,
-                               dtype=np.uint)
+                               dtype=np.int_)
 
-    ri2 = multipletau.correlate(a=np.array(a, dtype=np.uint),
-                                v=np.array(a, dtype=np.uint),
+    ri2 = multipletau.correlate(a=np.array(a, dtype=np.int_),
+                                v=np.array(a, dtype=np.int_),
                                 m=16,
                                 deltat=1,
                                 normalize=True,
@@ -235,7 +235,7 @@ def test_cc_dtype2():
 
     print("this should issue a warning of unequal input dtypes, casting to float")
     rf2 = multipletau.correlate(a=a.real,
-                               v=np.array(a.imag, dtype=np.int),
+                               v=np.array(a.imag, dtype=np.int_),
                                m=16,
                                deltat=1,
                                normalize=True,
