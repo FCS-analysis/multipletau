@@ -1,3 +1,8 @@
+0.1.7
+- always use numpy dtypes
+- fix tests:
+    - take into account floating inaccuracies
+    - support i386 numpy dtypes
 0.1.6
 - also compute correlation for zero lag time (`G(tau==0)`)
 - support NumPy 1.11
