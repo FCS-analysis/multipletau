@@ -86,7 +86,7 @@ def test_ac_normalize():
     #np.save(os.path.dirname(__file__)+"/data/"+os.path.basename(__file__)+"_"+myname+".npy", res)
     ref = get_reference_data(myname, __file__)
 
-    assert np.allclose(res, ref, atol=0, rtol=1e-15)
+    assert np.allclose(res, ref, atol=0, rtol=1e-14)
 
 
 def test_ac_m():
