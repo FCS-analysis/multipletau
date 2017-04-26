@@ -21,6 +21,7 @@ import multipletau
 
 from test_autocorrelate import get_reference_data
 
+
 def get_sample_arrays_cplx():
     a = [-4.3,   1,    9, -99.2, 13]
     b = [9921, 281, 23.5,   5.3, 77]
@@ -38,106 +39,6 @@ def get_sample_arrays_cplx():
         arrs.append(arr)
     
     return arrs
-
-
-def test_cc_simple():
-    myframe = sys._getframe()
-    myname = myframe.f_code.co_name
-    print("running ", myname)
-    
-    arrs = get_sample_arrays_cplx()
-    
-    res = []
-    for a in arrs:
-        r = multipletau.correlate(a=a,
-                                  v=a,
-                                  m=16,
-                                  deltat=1,
-                                  normalize=False,
-                                  copy=True,
-                                  dtype=np.complex_)
-        res.append(r)
-    res = np.concatenate(res)
-
-    #np.save(os.path.dirname(__file__)+"/data/"+os.path.basename(__file__)+"_"+myname+".npy", res)
-    ref = get_reference_data(myname, __file__)
-
-    assert np.allclose(res, ref, atol=0, rtol=1e-15)
-
-    # also check result of autocorrelate
-    res2 = []
-    for a in arrs:
-        r = multipletau.autocorrelate(a=a,
-                                      m=16,
-                                      deltat=1,
-                                      normalize=False,
-                                      copy=True,
-                                      dtype=np.complex_)
-        res2.append(r)
-    res2 = np.concatenate(res2)
-
-    assert np.allclose(res, res2, atol=0, rtol=1e-15)
-
-
-def test_cc_normalize():
-    myframe = sys._getframe()
-    myname = myframe.f_code.co_name
-    print("running ", myname)
-    
-    arrs = get_sample_arrays_cplx()
-    
-    res = []
-    for a in arrs:
-        r = multipletau.correlate(a=a.real,
-                                  v=a.imag,
-                                  m=16,
-                                  deltat=1,
-                                  normalize=True,
-                                  copy=True,
-                                  dtype=np.float_)
-        res.append(r)
-    res = np.concatenate(res)
-    #np.save(os.path.dirname(__file__)+"/data/"+os.path.basename(__file__)+"_"+myname+".npy", res)
-    ref = get_reference_data(myname, __file__)
-
-    assert np.allclose(res, ref, atol=0, rtol=1e-14)
-
-
-def test_cc_m():
-    myframe = sys._getframe()
-    myname = myframe.f_code.co_name
-    print("running ", myname)
-    
-    arrs = get_sample_arrays_cplx()
-
-    ms = [4, 8, 10, 16, 20, 64, 128]
-    a = np.concatenate(arrs)
-
-    res = []    
-    for m in ms:
-        r = multipletau.correlate(a=a,
-                                  v=a,
-                                  m=m,
-                                  deltat=1,
-                                  normalize=False,
-                                  copy=True,
-                                  dtype=np.complex_)
-        res.append(r)
-
-        # test minimal length of array
-        _r2 = multipletau.correlate(a=a[:2*m],
-                                    v=a[:2*m],
-                                    m=m,
-                                    deltat=1,
-                                    normalize=False,
-                                    copy=True,
-                                    dtype=np.complex_)
-    
-    res = np.concatenate(res)
-    #np.save(os.path.dirname(__file__)+"/data/"+os.path.basename(__file__)+"_"+myname+".npy", res)
-    ref = get_reference_data(myname, __file__)
-
-    assert np.allclose(res, ref, atol=0, rtol=1e-15)
 
 
 def test_cc_copy():
@@ -176,7 +77,7 @@ def test_cc_copy():
     # make sure the copy function really changes something
     assert not np.all(arrs == refarrs)
 
-    
+
 def test_cc_dtype():
     myframe = sys._getframe()
     myname = myframe.f_code.co_name
@@ -242,6 +143,43 @@ def test_cc_dtype2():
     assert np.dtype(rf2.dtype) == np.dtype(np.float_)
 
 
+def test_cc_m():
+    myframe = sys._getframe()
+    myname = myframe.f_code.co_name
+    print("running ", myname)
+    
+    arrs = get_sample_arrays_cplx()
+
+    ms = [4, 8, 10, 16, 20, 64, 128]
+    a = np.concatenate(arrs)
+
+    res = []    
+    for m in ms:
+        r = multipletau.correlate(a=a,
+                                  v=a,
+                                  m=m,
+                                  deltat=1,
+                                  normalize=False,
+                                  copy=True,
+                                  dtype=np.complex_)
+        res.append(r)
+
+        # test minimal length of array
+        _r2 = multipletau.correlate(a=a[:2*m],
+                                    v=a[:2*m],
+                                    m=m,
+                                    deltat=1,
+                                    normalize=False,
+                                    copy=True,
+                                    dtype=np.complex_)
+    
+    res = np.concatenate(res)
+    #np.save(os.path.dirname(__file__)+"/data/"+os.path.basename(__file__)+"_"+myname+".npy", res)
+    ref = get_reference_data(myname, __file__)
+
+    assert np.allclose(res, ref, atol=0, rtol=1e-15)
+
+
 def test_cc_m_wrong():
     myframe = sys._getframe()
     myname = myframe.f_code.co_name
@@ -289,6 +227,69 @@ def test_cc_m_wrong():
     assert np.all(r1==r3)
     assert np.all(r1==r4)
     assert np.all(r1==r5)
+
+
+def test_cc_normalize():
+    myframe = sys._getframe()
+    myname = myframe.f_code.co_name
+    print("running ", myname)
+    
+    arrs = get_sample_arrays_cplx()
+    
+    res = []
+    for a in arrs:
+        r = multipletau.correlate(a=a.real,
+                                  v=a.imag,
+                                  m=16,
+                                  deltat=1,
+                                  normalize=True,
+                                  copy=True,
+                                  dtype=np.float_)
+        res.append(r)
+    res = np.concatenate(res)
+    #np.save(os.path.dirname(__file__)+"/data/"+os.path.basename(__file__)+"_"+myname+".npy", res)
+    ref = get_reference_data(myname, __file__)
+
+    assert np.allclose(res, ref, atol=0, rtol=1e-14)
+
+
+def test_cc_simple():
+    myframe = sys._getframe()
+    myname = myframe.f_code.co_name
+    print("running ", myname)
+    
+    arrs = get_sample_arrays_cplx()
+    
+    res = []
+    for a in arrs:
+        r = multipletau.correlate(a=a,
+                                  v=a,
+                                  m=16,
+                                  deltat=1,
+                                  normalize=False,
+                                  copy=True,
+                                  dtype=np.complex_)
+        res.append(r)
+    res = np.concatenate(res)
+
+    #np.save(os.path.dirname(__file__)+"/data/"+os.path.basename(__file__)+"_"+myname+".npy", res)
+    ref = get_reference_data(myname, __file__)
+
+    assert np.allclose(res, ref, atol=0, rtol=1e-15)
+
+    # also check result of autocorrelate
+    res2 = []
+    for a in arrs:
+        r = multipletau.autocorrelate(a=a,
+                                      m=16,
+                                      deltat=1,
+                                      normalize=False,
+                                      copy=True,
+                                      dtype=np.complex_)
+        res2.append(r)
+    res2 = np.concatenate(res2)
+
+    assert np.allclose(res, res2, atol=0, rtol=1e-15)
 
 
 if __name__ == "__main__":

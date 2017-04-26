@@ -41,89 +41,6 @@ def get_sample_arrays():
     return arrs
 
 
-def test_ac_simple():
-    myframe = sys._getframe()
-    myname = myframe.f_code.co_name
-    print("running ", myname)
-    
-    arrs = get_sample_arrays()
-    
-    res = []
-    for a in arrs:
-        r = multipletau.autocorrelate(a=a,
-                                      m=16,
-                                      deltat=1,
-                                      normalize=False,
-                                      copy=True,
-                                      dtype=np.float_)
-        res.append(r)
-    
-    res = np.concatenate(res)
-    #np.save(os.path.dirname(__file__)+"/data/"+os.path.basename(__file__)+"_"+myname+".npy", res)
-    ref = get_reference_data(myname, __file__)
-
-    assert np.allclose(res, ref, atol=0, rtol=1e-15)
-
-
-def test_ac_normalize():
-    myframe = sys._getframe()
-    myname = myframe.f_code.co_name
-    print("running ", myname)
-    
-    arrs = get_sample_arrays()
-    
-    res = []
-    for a in arrs:
-        r = multipletau.autocorrelate(a=a,
-                                      m=16,
-                                      deltat=1,
-                                      normalize=True,
-                                      copy=True,
-                                      dtype=np.float_)
-        res.append(r)
-    
-    res = np.concatenate(res)
-    #np.save(os.path.dirname(__file__)+"/data/"+os.path.basename(__file__)+"_"+myname+".npy", res)
-    ref = get_reference_data(myname, __file__)
-
-    assert np.allclose(res, ref, atol=0, rtol=1e-14)
-
-
-def test_ac_m():
-    myframe = sys._getframe()
-    myname = myframe.f_code.co_name
-    print("running ", myname)
-    
-    arrs = get_sample_arrays()
-
-    ms = [8, 16, 32, 64, 128]
-    a = np.concatenate(arrs)
-
-    res = []    
-    for m in ms:
-        r = multipletau.autocorrelate(a=a,
-                                      m=m,
-                                      deltat=1,
-                                      normalize=False,
-                                      copy=True,
-                                      dtype=np.float_)
-        res.append(r)
-
-        # test minimal length of array
-        _r2 = multipletau.autocorrelate(a=a[:2*m],
-                                        m=m,
-                                        deltat=1,
-                                        normalize=False,
-                                        copy=True,
-                                        dtype=np.float_)
-    
-    res = np.concatenate(res)
-    #np.save(os.path.dirname(__file__)+"/data/"+os.path.basename(__file__)+"_"+myname+".npy", res)
-    ref = get_reference_data(myname, __file__)
-
-    assert np.allclose(res, ref, atol=0, rtol=1e-15)
-
-
 def test_ac_copy():
     myframe = sys._getframe()
     myname = myframe.f_code.co_name
@@ -160,7 +77,7 @@ def test_ac_copy():
     # make sure the copy function really changes something
     assert not np.all(arrs == refarrs)
 
-    
+
 def test_ac_dtype():
     myframe = sys._getframe()
     myname = myframe.f_code.co_name
@@ -195,6 +112,41 @@ def test_ac_dtype():
     assert ri2.dtype == np.dtype(np.float_), "if wrong dtype, dtype should default to np.float_"
     assert np.all(rf == ri), "result should be the same, because input us the same"
     assert np.all(rf == ri2), "result should be the same, because input us the same"
+
+
+def test_ac_m():
+    myframe = sys._getframe()
+    myname = myframe.f_code.co_name
+    print("running ", myname)
+    
+    arrs = get_sample_arrays()
+
+    ms = [8, 16, 32, 64, 128]
+    a = np.concatenate(arrs)
+
+    res = []    
+    for m in ms:
+        r = multipletau.autocorrelate(a=a,
+                                      m=m,
+                                      deltat=1,
+                                      normalize=False,
+                                      copy=True,
+                                      dtype=np.float_)
+        res.append(r)
+
+        # test minimal length of array
+        _r2 = multipletau.autocorrelate(a=a[:2*m],
+                                        m=m,
+                                        deltat=1,
+                                        normalize=False,
+                                        copy=True,
+                                        dtype=np.float_)
+    
+    res = np.concatenate(res)
+    #np.save(os.path.dirname(__file__)+"/data/"+os.path.basename(__file__)+"_"+myname+".npy", res)
+    ref = get_reference_data(myname, __file__)
+
+    assert np.allclose(res, ref, atol=0, rtol=1e-15)
 
 
 def test_ac_m_wrong():
@@ -243,6 +195,54 @@ def test_ac_m_wrong():
     assert np.all(r1==r3)
     assert np.all(r1==r4)
     assert np.all(r1==r5)
+
+
+def test_ac_normalize():
+    myframe = sys._getframe()
+    myname = myframe.f_code.co_name
+    print("running ", myname)
+    
+    arrs = get_sample_arrays()
+    
+    res = []
+    for a in arrs:
+        r = multipletau.autocorrelate(a=a,
+                                      m=16,
+                                      deltat=1,
+                                      normalize=True,
+                                      copy=True,
+                                      dtype=np.float_)
+        res.append(r)
+    
+    res = np.concatenate(res)
+    #np.save(os.path.dirname(__file__)+"/data/"+os.path.basename(__file__)+"_"+myname+".npy", res)
+    ref = get_reference_data(myname, __file__)
+
+    assert np.allclose(res, ref, atol=0, rtol=1e-14)
+
+
+def test_ac_simple():
+    myframe = sys._getframe()
+    myname = myframe.f_code.co_name
+    print("running ", myname)
+    
+    arrs = get_sample_arrays()
+    
+    res = []
+    for a in arrs:
+        r = multipletau.autocorrelate(a=a,
+                                      m=16,
+                                      deltat=1,
+                                      normalize=False,
+                                      copy=True,
+                                      dtype=np.float_)
+        res.append(r)
+    
+    res = np.concatenate(res)
+    #np.save(os.path.dirname(__file__)+"/data/"+os.path.basename(__file__)+"_"+myname+".npy", res)
+    ref = get_reference_data(myname, __file__)
+
+    assert np.allclose(res, ref, atol=0, rtol=1e-15)
 
 
 if __name__ == "__main__":
