@@ -1,4 +1,5 @@
 0.1.7
+- code cleanup with pep8 and autopep8 
 - always use numpy dtypes
 - fix tests:
     - take into account floating inaccuracies
