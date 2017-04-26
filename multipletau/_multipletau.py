@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-""" 
+"""
 A multiple-τ algorithm for Python 2.7 and 3.x.
 
 Copyright (c) 2014 Paul Müller
@@ -11,7 +11,7 @@ met:
 
   1. Redistributions of source code must retain the above copyright
      notice, this list of conditions and the following disclaimer.
-   
+
   2. Redistributions in binary form must reproduce the above copyright
      notice, this list of conditions and the following disclaimer in
      the documentation and/or other materials provided with the
@@ -43,15 +43,15 @@ __all__ = ["autocorrelate", "correlate", "correlate_numpy"]
 
 def autocorrelate(a, m=16, deltat=1, normalize=False,
                   copy=True, dtype=None):
-    """ 
+    """
     Autocorrelation of a 1-dimensional sequence on a log2-scale.
 
-    This computes the correlation similar to 
+    This computes the correlation similar to
     :py:func:`numpy.correlate` for positive :math:`k` on a base 2
     logarithmic scale.
 
         :func:`numpy.correlate(a, a, mode="full")[len(a)-1:]`
-    
+
         :math:`z_k = \Sigma_n a_n a_{n+k}`
 
 
@@ -88,10 +88,11 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     curve decaying to zero.
 
     For experiments like e.g. fluorescence correlation spectroscopy,
-    the signal can be normalized to :math:`M-k` by invoking ``normalize = True``.           
+    the signal can be normalized to :math:`M-k`
+    by invoking ``normalize = True``.
 
-    For normalizing according to the behavior of :py:func:`numpy.correlate`,
-    use ``normalize = False``.
+    For normalizing according to the behavior
+    of :py:func:`numpy.correlate`, use ``normalize = False``.
 
     For complex arrays, this method falls back to the method
     :func:`correlate`.
@@ -134,9 +135,9 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     trace = np.array(a, dtype=dtype, copy=copy)
 
     # Check parameters
-    if m//2 != m/2:
+    if m // 2 != m / 2:
         mold = m
-        m = np.int_((m//2 + 1) * 2)
+        m = np.int_((m // 2 + 1) * 2)
         warnings.warn("Invalid value of m={}. Using m={} instead"
                       .format(mold, m))
     else:
@@ -148,12 +149,12 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     # The integer k defines how many times we can average over
     # two neighboring array elements in order to obtain an array of
     # length just larger than m.
-    k = np.int_(np.floor(np.log2(N/m)))
+    k = np.int_(np.floor(np.log2(N / m)))
 
     # In the base2 multiple-tau scheme, the length of the correlation
     # array is (only taking into account values that are computed from
     # traces that are just larger than m):
-    lenG = m + k*(m//2) + 1
+    lenG = m + k * (m // 2) + 1
 
     G = np.zeros((lenG, 2), dtype=dtype)
 
@@ -166,13 +167,13 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     if normalize:
         trace -= traceavg
         assert traceavg != 0, "Cannot normalize: Average of `a` is zero!"
-    
+
     # Otherwise the following for-loop will fail:
-    assert N >= 2*m, "len(a) must be larger than 2m!"
+    assert N >= 2 * m, "len(a) must be larger than 2m!"
 
     # Calculate autocorrelation function for first m+1 bins
     # Discrete convolution of m elements
-    for n in range(0, m+1):
+    for n in range(0, m + 1):
         G[n, 0] = deltat * n
         # This is the computationally intensive step
         G[n, 1] = np.sum(trace[:N - n] * trace[n:])
@@ -181,7 +182,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     # Now that we calculated the first m elements of G, let us
     # go on with the next m/2 elements.
     # Check if len(trace) is even:
-    if N%2 == 1:
+    if N % 2 == 1:
         N -= 1
     # Add up every second element
     trace = (trace[:N:2] + trace[1:N:2]) / 2
@@ -189,9 +190,9 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     # Start iteration for each m/2 values
     for step in range(1, k + 1):
         # Get the next m/2 values via correlation of the trace
-        for n in range(1, m//2 + 1):
-            npmd2 = n + m//2
-            idx = m + n + (step - 1) * m//2
+        for n in range(1, m // 2 + 1):
+            npmd2 = n + m // 2
+            idx = m + n + (step - 1) * m // 2
             if len(trace[:N - npmd2]) == 0:
                 # This is a shortcut that stops the iteration once the
                 # length of the trace is too small to compute a corre-
@@ -223,7 +224,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
                 normstat[idx] = N - npmd2
                 normnump[idx] = N
         # Check if len(trace) is even:
-        if N%2 == 1:
+        if N % 2 == 1:
             N -= 1
         # Add up every second element
         trace = (trace[:N:2] + trace[1:N:2]) / 2
@@ -239,7 +240,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
 
 def correlate(a, v, m=16, deltat=1, normalize=False,
               copy=True, dtype=None):
-    """ 
+    """
     Cross-correlation of two 1-dimensional sequences
     on a log2-scale.
 
@@ -251,9 +252,9 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
 
         :math:`z_k = \Sigma_n a_n v_{n+k}`
 
-    Note that only the correlation in the positive direction is computed.
-    To obtain the correlation for negative lag times swap the input variables
-    ``a`` and ``v``.
+    Note that only the correlation in the positive direction is
+    computed. To obtain the correlation for negative lag times
+    swap the input variables ``a`` and ``v``.
 
     Parameters
     ----------
@@ -277,23 +278,24 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     Returns
     -------
     cross_correlation : ndarray of shape (N,2)
-        the lag time (1st column) and the cross-correlation (2nd column).
+        the lag time (column 1) and the cross-correlation (column2).
 
 
     Notes
     -----
     .. versionchanged :: 0.1.6
-       Compute the correlation for zero lag time and correctly normalize
-       the correlation for a complex input sequence `v`.
+       Compute the correlation for zero lag time and correctly
+       normalize the correlation for a complex input sequence `v`.
 
     The algorithm computes the correlation with the convention of the
     curve decaying to zero.
 
     For experiments like e.g. fluorescence correlation spectroscopy,
-    the signal can be normalized to :math:`M-k` by invoking ``normalize = True``.           
+    the signal can be normalized to :math:`M-k`
+    by invoking ``normalize = True``.
 
-    For normalizing according to the behavior of :py:func:`numpy.correlate`,
-    use ``normalize = False``.
+    For normalizing according to the behavior of
+    :py:func:`numpy.correlate`, use ``normalize = False``.
 
 
     Examples
@@ -322,7 +324,8 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
         if dtype != dtype2:
             if dtype.kind == "c" or dtype2.kind == "c":
                 # The user might try to combine complex64 and float128.
-                warnings.warn("Input dtypes not equal; casting to np.complex_!")
+                warnings.warn(
+                    "Input dtypes not equal; casting to np.complex_!")
                 dtype = np.dtype(np.complex_)
             else:
                 warnings.warn("Input dtypes not equal; casting to np.float_!")
@@ -330,7 +333,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     else:
         dtype = np.dtype(dtype)
 
-    if not dtype.kind in ["c", "f"]:
+    if dtype.kind not in ["c", "f"]:
         warnings.warn("Input dtype is not float; casting to np.float_!")
         dtype = np.dtype(np.float_)
 
@@ -350,26 +353,25 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
         np.conjugate(trace1, out=trace1)
 
     # Check parameters
-    if m//2 != m/2:
+    if m // 2 != m / 2:
         mold = m
-        m = np.int_(m//2 + 1) * 2
+        m = np.int_(m // 2 + 1) * 2
         warnings.warn("Invalid value of m={}. Using m={} instead"
                       .format(mold, m))
     else:
         m = np.int_(m)
-
 
     N = N0 = trace1.shape[0]
     # Find out the length of the correlation function.
     # The integer k defines how many times we can average over
     # two neighboring array elements in order to obtain an array of
     # length just larger than m.
-    k = np.int_(np.floor(np.log2(N/m)))
+    k = np.int_(np.floor(np.log2(N / m)))
 
     # In the base2 multiple-tau scheme, the length of the correlation
     # array is (only taking into account values that are computed from
     # traces that are just larger than m):
-    lenG = m + k * m//2 + 1
+    lenG = m + k * m // 2 + 1
 
     G = np.zeros((lenG, 2), dtype=dtype)
     normstat = np.zeros(lenG, dtype=dtype)
@@ -381,7 +383,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
         trace2 -= traceavg2
 
     # Otherwise the following for-loop will fail:
-    assert N >= 2*m, "len(a) must be larger than 2m!"
+    assert N >= 2 * m, "len(a) must be larger than 2m!"
 
     # Calculate autocorrelation function for first m+1 bins
     for n in range(0, m + 1):
@@ -390,7 +392,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
         normstat[n] = N - n
         normnump[n] = N
     # Check if len(trace) is even:
-    if N%2 == 1:
+    if N % 2 == 1:
         N -= 1
     # Add up every second element
     trace1 = (trace1[:N:2] + trace1[1:N:2]) / 2
@@ -399,9 +401,9 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
 
     for step in range(1, k + 1):
         # Get the next m/2 values of the trace
-        for n in range(1, m//2 + 1):
-            npmd2 = (n + m//2)
-            idx = m + n + (step - 1) * m//2
+        for n in range(1, m // 2 + 1):
+            npmd2 = (n + m // 2)
+            idx = m + n + (step - 1) * m // 2
             if len(trace1[:N - npmd2]) == 0:
                 # Abort
                 G = G[:idx - 1]
@@ -416,7 +418,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
                 normnump[idx] = N
 
         # Check if len(trace) is even:
-        if N%2 == 1:
+        if N % 2 == 1:
             N -= 1
         # Add up every second element
         trace1 = (trace1[:N:2] + trace1[1:N:2]) / 2
@@ -457,7 +459,7 @@ def correlate_numpy(a, v, deltat=1, normalize=False,
     Returns
     -------
     cross_correlation : ndarray of shape (N,2)
-        the lag time (1st column) and the cross-correlation (2nd column).
+        the lag time (column 1) and the cross-correlation (column 2).
 
 
     Notes
@@ -485,7 +487,7 @@ def correlate_numpy(a, v, deltat=1, normalize=False,
         N = len(Gd)
         m = N - np.arange(N)
         Gd /= m * avg * vvg
-    
+
     G = np.zeros((len(Gd), 2), dtype=dtype)
     G[:, 1] = Gd
     G[:, 0] = np.arange(len(Gd)) * deltat
