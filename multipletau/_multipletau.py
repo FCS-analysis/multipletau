@@ -136,11 +136,11 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     # Check parameters
     if m//2 != m/2:
         mold = m
-        m = np.int((m//2 + 1) * 2)
+        m = np.int_((m//2 + 1) * 2)
         warnings.warn("Invalid value of m={}. Using m={} instead"
                       .format(mold, m))
     else:
-        m = np.int(m)
+        m = np.int_(m)
 
     N = N0 = trace.shape[0]
 
@@ -148,7 +148,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     # The integer k defines how many times we can average over
     # two neighboring array elements in order to obtain an array of
     # length just larger than m.
-    k = np.int(np.floor(np.log2(N/m)))
+    k = np.int_(np.floor(np.log2(N/m)))
 
     # In the base2 multiple-tau scheme, the length of the correlation
     # array is (only taking into account values that are computed from
@@ -352,11 +352,11 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     # Check parameters
     if m//2 != m/2:
         mold = m
-        m = np.int(m//2 + 1) * 2
+        m = np.int_(m//2 + 1) * 2
         warnings.warn("Invalid value of m={}. Using m={} instead"
                       .format(mold, m))
     else:
-        m = np.int(m)
+        m = np.int_(m)
 
 
     N = N0 = trace1.shape[0]
@@ -364,7 +364,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     # The integer k defines how many times we can average over
     # two neighboring array elements in order to obtain an array of
     # length just larger than m.
-    k = np.int(np.floor(np.log2(N/m)))
+    k = np.int_(np.floor(np.log2(N/m)))
 
     # In the base2 multiple-tau scheme, the length of the correlation
     # array is (only taking into account values that are computed from
