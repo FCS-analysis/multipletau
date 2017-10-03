@@ -21,7 +21,8 @@ operations on arrays). Install ``multipletau`` from the Python package index:
 
 Documentation
 -------------
-A full code reference including examples is available `here <http://FCS-analysis.github.io/multipletau/>`__.
+
+The documentation, including the reference and examples, is available on `readthedocs.io <https://multipletau.readthedocs.io/en/stable/>`__.
 
 
 Usage
