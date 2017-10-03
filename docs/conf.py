@@ -30,7 +30,7 @@ sys.path.insert(0, pdir)
 # include extenstions
 sys.path.append(op.abspath('extensions'))
 
-# Mock all dependencies of qpimage
+# Mock all dependencies
 install_requires = ["numpy"]
 
 for mod_name in install_requires:
