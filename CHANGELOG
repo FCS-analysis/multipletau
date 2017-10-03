@@ -1,3 +1,5 @@
+0.1.9
+- include docs in sdist
 0.1.8
 - update documentation and example files
 - move documentation to readthedocs.io
