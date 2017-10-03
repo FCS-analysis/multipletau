@@ -1,6 +1,6 @@
 include CHANGELOG
 include LICENSE
 include README.rst
-recursive-include examples *.py
+recursive-include examples *.py *.jpg
 recursive-include doc *.py *.md *.rst
 recursive-include tests *.py *.md test_*.npy
