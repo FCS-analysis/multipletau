@@ -1,10 +1,10 @@
 multipletau documentation
 =========================
+To install the requirements for building the documentation, run
 
-Install [numpydoc](https://pypi.python.org/pypi/numpydoc):
-
-    pip install numpydoc
+    pip install -r requirements.txt
 
 To compile the documentation, run
 
-    python setup.py build_sphinx
+    sphinx-build . _build
+

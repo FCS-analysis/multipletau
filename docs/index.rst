@@ -1,5 +1,5 @@
-multipletau reference
-=====================
+multipletau documentation
+=========================
 
 General
 :::::::
