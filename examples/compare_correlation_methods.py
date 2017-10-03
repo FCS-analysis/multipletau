@@ -10,8 +10,6 @@ This example illustrates the differences between the
 This example requires ``noise_generator.py`` to be present in the
 current working directory.
 """
-from __future__ import print_function
-
 from matplotlib import pylab as plt
 import numpy as np
 
