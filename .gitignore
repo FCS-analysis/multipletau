@@ -46,3 +46,9 @@ doc/_build/**
 *.in~
 *.txt~
 *.txt~
+
+docs/_build
+.cache
+.eggs
+.env
+_version_save.py

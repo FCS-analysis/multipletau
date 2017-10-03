@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 u"""
-This package provides a multiple-τ algorithm for Python 2.7 and
-Python 3.x and requires the package :py:mod:`numpy`.
+Multipletau provides a multiple-τ algorithm for Python 2.7 and
+Python 3.x with :py:mod:`numpy` as its sole dependency.
 
 Multipe-τ correlation is computed on a logarithmic scale (less
 data points are computed) and is thus much faster than conventional
@@ -71,8 +71,8 @@ The package is straightforward to use. Here is a quick example:
            [   8.        ,  386.39500297]])
 
 """
-from ._multipletau import *
-from ._version import version as __version__
+from .core import autocorrelate, correlate, correlate_numpy  # noqa: F401
+from ._version import version as __version__  # noqa: F401
 
 __author__ = u"Paul Müller"
 __license__ = "BSD (3 clause)"

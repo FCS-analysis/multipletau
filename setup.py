@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# To create a distribution package for pip or easy-install:
-# python setup.py sdist
 from os.path import exists, dirname, realpath
 from setuptools import setup
 import sys
@@ -13,13 +11,8 @@ description = 'A multiple-tau algorithm for Python/NumPy.'
 name = 'multipletau'
 year = "2013"
 
-
 sys.path.insert(0, realpath(dirname(__file__))+"/"+name)
-try:
-    from _version import version
-except:
-    version = "unknown"
-
+from _version import version
 
 if __name__ == "__main__":
     setup(
@@ -33,20 +26,19 @@ if __name__ == "__main__":
         license="BSD (3 clause)",
         description=description,
         long_description=open('README.rst').read() if exists('README.rst') else '',
-        install_requires=["NumPy >= 1.5.1"],
-        keywords=["multiple", "tau", "FCS", "correlation", "spectroscopy",
+        install_requires=["numpy >= 1.5.1"],
+        keywords=["multiple tau", "correlation", "spectroscopy",
                   "fluorescence"],
         extras_require={'doc': ['sphinx']},
         setup_requires=['pytest-runner'],
         tests_require=["pytest"],
         classifiers= [
             'Operating System :: OS Independent',
-            'Programming Language :: Python :: 2.7',
-            'Programming Language :: Python :: 3.3',
-            'Programming Language :: Python :: 3.4',
+            'Programming Language :: Python :: 2',
+            'Programming Language :: Python :: 3',
             'Topic :: Scientific/Engineering :: Visualization',
             'Intended Audience :: Science/Research'
-                     ],
+            ],
         platforms=['ALL']
         )
 

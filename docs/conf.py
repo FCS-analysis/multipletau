@@ -12,22 +12,29 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys
-import os
-
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
+#
+# import os
+# import sys
+# sys.path.insert(0, os.path.abspath('.'))
 
+# Get version number from qpimage._version file
+import mock
+import os.path as op
+import sys
+# include parent directory
+pdir = op.dirname(op.dirname(op.abspath(__file__)))
+sys.path.insert(0, pdir)
+# include extenstions
+sys.path.append(op.abspath('extensions'))
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.abspath(
-                    os.path.dirname(__file__)), '../')))
+# Mock all dependencies of qpimage
+install_requires = ["numpy"]
 
-sys.path.append(os.path.abspath('extensions'))
-
-# include examples
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+"/../examples"))
+for mod_name in install_requires:
+    sys.modules[mod_name] = mock.Mock()
 
 
 # There should be a file "setup.py" that has the property "version"
@@ -35,6 +42,15 @@ from setup import author, authors, description, name, version, year
 projectname = name
 projectdescription = description
 
+# http://www.sphinx-doc.org/en/stable/ext/autodoc.html#confval-autodoc_member_order
+# Order class attributes and functions in separate blocks
+autodoc_member_order = 'bysource'
+autodoc_mock_imports = install_requires
+
+# Display link to GitHub repo instead of doc on rtfd
+rst_prolog = """
+:github_url: https://github.com/FCS-analysis/multipletau
+"""
 
 # -- General configuration ------------------------------------------------
 
@@ -44,34 +60,14 @@ projectdescription = description
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-#extensions = [
-#    'sphinx.ext.autodoc',
-#    'sphinx.ext.doctest',
-#    'sphinx.ext.coverage',
-#    'sphinx.ext.pngmath',
-#    'sphinx.ext.viewcode',
-#]
 
-
-extensions = [
-#              'matplotlib.sphinxext.mathmpl',
-#              'matplotlib.sphinxext.only_directives',
-#              'matplotlib.sphinxext.plot_directive',
-#              'sphinx.ext.viewcode',
-#              'ipython_directive',
-              'sphinx.ext.intersphinx',
+extensions = ['sphinx.ext.intersphinx',
               'sphinx.ext.autosummary',
               'sphinx.ext.autodoc',
-#              'sphinx.ext.doctest',
-#              'ipython_console_highlighting',
-#              'sphinx.ext.pngmath',
               'sphinx.ext.mathjax',
-#              'sphinx.ext.viewcode',
-#              'sphinx.ext.todo',
-#              'inheritance_diagram',
-              'numpydoc',
-              'myviewcode',  
-#              'hidden_code_block',
+              'sphinx.ext.viewcode',
+              'sphinx.ext.napoleon',
+              'fancy_include',
               ]
 
 
@@ -142,12 +138,7 @@ release = version
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'classic'
-
-# Theme options are theme-specific and customize the look and feel of a theme
-# further.  For a list of options available for each theme, see the
-# documentation.
-html_theme_options = {"stickysidebar": True}
+html_theme = 'default'
 
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []
@@ -305,10 +296,6 @@ texinfo_documents = [
 # -----------------------------------------------------------------------------
 # intersphinx
 # -----------------------------------------------------------------------------
-_python_doc_base = 'http://docs.python.org/2.7'
-intersphinx_mapping = {
-    _python_doc_base: None,
-    'http://docs.scipy.org/doc/numpy': None,
-    'http://docs.scipy.org/doc/scipy/reference': None,
-}
-
+intersphinx_mapping = {"python": ('https://docs.python.org/', None),
+                       "numpy": ('http://docs.scipy.org/doc/numpy', None),
+                       }

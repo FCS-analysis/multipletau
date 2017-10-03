@@ -1,134 +1,104 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-""" 
-Comparison of correlation methods
----------------------------------
-Comparison between the :py:mod:`multipletau` correlation methods
-(:py:func:`multipletau.autocorrelate`, :py:func:`multipletau.correlate`) and :py:func:`numpy.correlate`.
+"""Comparison of correlation methods
 
-.. image:: ../examples/compare_correlation_methods.png
-   :align:   center
+This example illustrates the differences between the
+:py:mod:`multipletau` correlation methods
+(:py:func:`multipletau.autocorrelate`,
+:py:func:`multipletau.correlate`) and :py:func:`numpy.correlate`.
 
-Download the 
-:download:`full example <../examples/compare_correlation_methods.py>`.    
+This example requires ``noise_generator.py`` to be present in the
+current working directory.
 """
 from __future__ import print_function
 
+from matplotlib import pylab as plt
 import numpy as np
-import os
-from os.path import abspath, dirname, join
-import sys
-import time
 
-sys.path.insert(0, dirname(dirname(abspath(__file__))))
-
-from noise_generator import noise_exponential, noise_cross_exponential
 from multipletau import autocorrelate, correlate, correlate_numpy
 
-
-def compare_corr():
-    ## Starting parameters
-    N = np.int(np.pi*1e3)
-    countrate = 250. * 1e-3 # in Hz
-    taudiff = 55. # in us
-    deltat = 2e-6 # time discretization [s]
-    normalize = True
-
-    # time factor
-    taudiff *= deltat
-
-    if N < 1e5:
-        do_np_corr = True
-    else:
-        do_np_corr = False
-
-    ## Autocorrelation
-    print("Creating noise for autocorrelation")
-    data = noise_exponential(N, taudiff, deltat=deltat)
-    data -= np.average(data)
-    if normalize:
-        data += countrate
-    # multipletau
-    print("Performing autocorrelation (multipletau).")
-    G = autocorrelate(data, deltat=deltat, normalize=normalize)
-    # numpy.correlate for comparison
-    if do_np_corr:
-        print("Performing autocorrelation (numpy).")
-        Gd = correlate_numpy(data, data, deltat=deltat,
-                             normalize=normalize)
-    else:
-        Gd = G
-    
-    ## Cross-correlation
-    print("Creating noise for cross-correlation")
-    a, v = noise_cross_exponential(N, taudiff, deltat=deltat)
-    a -= np.average(a)
-    v -= np.average(v)
-    if normalize:
-        a += countrate
-        v += countrate
-    Gccforw = correlate(a, v, deltat=deltat, normalize=normalize) # forward
-    Gccback = correlate(v, a, deltat=deltat, normalize=normalize) # backward
-    if do_np_corr:
-        print("Performing cross-correlation (numpy).")
-        Gdccforw = correlate_numpy(a, v, deltat=deltat, normalize=normalize)
-    
-    ## Calculate the model curve for cross-correlation
-    xcc = Gd[:,0]
-    ampcc = np.correlate(a-np.average(a), v-np.average(v), mode="valid")
-    if normalize:
-        ampcc /= len(a) * countrate**2
-    ycc = ampcc*np.exp(-xcc/taudiff)
-
-    ## Calculate the model curve for autocorrelation
-    x = Gd[:,0]
-    amp = np.correlate(data-np.average(data), data-np.average(data),
-                       mode="valid")
-    if normalize:
-        amp /= len(data) * countrate**2
-    y = amp*np.exp(-x/taudiff)
+from noise_generator import noise_exponential, noise_cross_exponential
 
 
-    ## Plotting
-    # AC
-    fig = plt.figure()
-    fig.canvas.set_window_title('testing multipletau')
-    ax = fig.add_subplot(2,1,1)
-    ax.set_xscale('log')
-    if do_np_corr:
-        plt.plot(Gd[:,0], Gd[:,1] , "-", color="gray", label="correlate (numpy)")
-    plt.plot(x, y, "g-", label="input model")
-    plt.plot(G[:,0], G[:,1], "-",  color="#B60000", label="autocorrelate")
-    plt.xlabel("lag channel")
-    plt.ylabel("autocorrelation")
-    plt.legend(loc=0, fontsize='small')
-    plt.ylim( -amp*.2, amp*1.2)
-    plt.xlim( Gd[0,0], Gd[-1,0])
+# starting parameters
+N = np.int(np.pi * 1e3)
+countrate = 250. * 1e-3  # in Hz
+taudiff = 55.  # in us
+deltat = 2e-6  # time discretization [s]
+normalize = True
 
-    # CC
-    ax = fig.add_subplot(2,1,2)
-    ax.set_xscale('log')
-    if do_np_corr:
-        plt.plot(Gdccforw[:,0], Gdccforw[:,1] , "-", color="gray", label="forward (numpy)")
-    plt.plot(xcc, ycc, "g-", label="input model")
-    plt.plot(Gccforw[:,0], Gccforw[:,1], "-", color="#B60000", label="forward")
-    plt.plot(Gccback[:,0], Gccback[:,1], "-", color="#5D00B6", label="backward")
-    plt.xlabel("lag channel")
-    plt.ylabel("cross-correlation")
-    plt.legend(loc=0, fontsize='small')
-    plt.ylim( -ampcc*.2, ampcc*1.2)
-    plt.xlim( Gd[0,0], Gd[-1,0])
-    plt.tight_layout()
+# time factor
+taudiff *= deltat
 
-    savename = __file__[:-3]+".png"
-    if os.path.exists(savename):
-        savename = __file__[:-3]+time.strftime("_%Y-%m-%d_%H-%M-%S.png")
+# create noise for autocorrelation
+data = noise_exponential(N, taudiff, deltat=deltat)
+data -= np.average(data)
+if normalize:
+    data += countrate
+# perform autocorrelation (multipletau)
+gac_mt = autocorrelate(data, deltat=deltat, normalize=normalize)
+# numpy.correlate for comparison
+gac_np = correlate_numpy(data, data, deltat=deltat,
+                         normalize=normalize)
+# calculate model curve for autocorrelation
+x = gac_np[:, 0]
+amp = np.correlate(data - np.average(data), data - np.average(data),
+                   mode="valid")
+if normalize:
+    amp /= len(data) * countrate**2
+y = amp * np.exp(-x / taudiff)
 
-    plt.savefig(savename)
-    print("Saved output to", savename)
+# create noise for cross-correlation
+a, v = noise_cross_exponential(N, taudiff, deltat=deltat)
+a -= np.average(a)
+v -= np.average(v)
+if normalize:
+    a += countrate
+    v += countrate
+gcc_forw_mt = correlate(a, v, deltat=deltat, normalize=normalize)  # forward
+gcc_back_mt = correlate(v, a, deltat=deltat, normalize=normalize)  # backward
+# numpy.correlate for comparison
+gcc_forw_np = correlate_numpy(a, v, deltat=deltat, normalize=normalize)
+# calculate the model curve for cross-correlation
+xcc = gac_np[:, 0]
+ampcc = np.correlate(a - np.average(a), v - np.average(v), mode="valid")
+if normalize:
+    ampcc /= len(a) * countrate**2
+ycc = ampcc * np.exp(-xcc / taudiff)
 
+# plotting
+fig = plt.figure(figsize=(8, 5))
+fig.canvas.set_window_title('comparing multipletau')
 
-if __name__ == '__main__':
-    # move mpl import to main so travis automated doc build does not complain
-    from matplotlib import pylab as plt
-    compare_corr()
+# autocorrelation
+ax1 = fig.add_subplot(211)
+ax1.plot(gac_np[:, 0], gac_np[:, 1], "-",
+         color="gray", label="correlate (numpy)")
+ax1.plot(x, y, "g-", label="input model")
+ax1.plot(gac_mt[:, 0], gac_mt[:, 1], "-",
+         color="#B60000", label="autocorrelate")
+ax1.legend(loc=0, fontsize='small')
+ax1.set_xlabel("lag channel")
+ax1.set_ylabel("autocorrelation")
+ax1.set_xscale('log')
+ax1.set_xlim(x.min(), x.max())
+ax1.set_ylim(-y.max()*.2, y.max()*1.1)
+
+# cross-correlation
+ax2 = fig.add_subplot(212)
+ax2.plot(gcc_forw_np[:, 0], gcc_forw_np[:, 1], "-",
+         color="gray", label="forward (numpy)")
+ax2.plot(xcc, ycc, "g-", label="input model")
+ax2.plot(gcc_forw_mt[:, 0], gcc_forw_mt[:, 1], "-",
+         color="#B60000", label="forward")
+ax2.plot(gcc_back_mt[:, 0], gcc_back_mt[:, 1], "-",
+         color="#5D00B6", label="backward")
+ax2.set_xlabel("lag channel")
+ax2.set_ylabel("cross-correlation")
+ax2.legend(loc=0, fontsize='small')
+ax2.set_xscale('log')
+ax2.set_xlim(x.min(), x.max())
+ax2.set_ylim(-ycc.max()*.2, ycc.max()*1.1)
+
+plt.tight_layout()
+plt.show()

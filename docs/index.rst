@@ -16,7 +16,6 @@ Summary:
     correlate
     correlate_numpy
 
-For a quick overview, see :ref:`genindex`.
 
 Autocorrelation
 ---------------
@@ -33,6 +32,6 @@ Cross-correlation (NumPy)
 
 Examples
 ========
-.. automodule:: compare_correlation_methods
-   :members:
+.. fancy_include:: compare_correlation_methods.py
+
 
