@@ -10,9 +10,9 @@ correlation on a linear scale such as `numpy.correlate <http://docs.scipy.org/do
 
 Installation
 ------------
-``multipletau`` supports Python 2.6+ and Python 3.3+ with a common codebase.
+Multipletau supports Python 2.6+ and Python 3.3+ with a common codebase.
 The only requirement for ``multipletau`` is `NumPy <http://www.numpy.org/>`__ (for fast
-operations on arrays). Install ``multipletau`` from the Python package index:
+operations on arrays). Install multipletau from the Python package index:
 
 ::
 

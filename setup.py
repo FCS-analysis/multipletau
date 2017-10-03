@@ -27,9 +27,7 @@ if __name__ == "__main__":
         description=description,
         long_description=open('README.rst').read() if exists('README.rst') else '',
         install_requires=["numpy >= 1.5.1"],
-        keywords=["multiple tau", "correlation", "spectroscopy",
-                  "fluorescence"],
-        extras_require={'doc': ['sphinx']},
+        keywords=["multiple tau", "fluorescence correlation spectroscopy"],
         setup_requires=['pytest-runner'],
         tests_require=["pytest"],
         classifiers= [
