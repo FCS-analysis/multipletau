@@ -1,28 +1,28 @@
 0.1.9
-- include docs in sdist
+ - include docs in sdist
 0.1.8
-- update documentation and example files
-- move documentation to readthedocs.io
+ - update documentation and example files
+ - move documentation to readthedocs.io
 0.1.7
-- code cleanup with pep8 and autopep8 
-- always use numpy dtypes
-- fix tests:
+ - code cleanup with pep8 and autopep8 
+ - always use numpy dtypes
+ - fix tests:
     - take into account floating inaccuracies
     - support i386 numpy dtypes
 0.1.6
-- also compute correlation for zero lag time (`G(tau==0)`)
-- support NumPy 1.11
-- add tests to complete code coverage
-- bugfixes:
+ - also compute correlation for zero lag time (`G(tau==0)`)
+ - support NumPy 1.11
+ - add tests to complete code coverage
+ - bugfixes:
   - wrong normalization for cplx array `v` in `correlate` if `normalize==True`
   - wrong normalization in `correlate_numpy` if `normalize==False`
 0.1.5
-- update documentation
-- support Python 3
+ - update documentation
+ - support Python 3
 0.1.4
-- integer and boolean input types are now automatically converted to floats
-- `multipletau.correlate` now works with complex data types
-- `multipletau.correlate` now checks if input data are same objects
-- documentation now contains examples
+ - integer and boolean input types are now automatically converted to floats
+ - `multipletau.correlate` now works with complex data types
+ - `multipletau.correlate` now checks if input data are same objects
+ - documentation now contains examples
 0.1.3
-- first non-cython implementation
+ - first non-cython implementation
