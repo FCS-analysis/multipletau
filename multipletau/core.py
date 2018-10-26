@@ -60,36 +60,36 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
 
         :func:`numpy.correlate(a, a, mode="full")[len(a)-1:]`
 
-        :math:`z_k = \Sigma_n a_n a_{n+k}`
+        :math:`z_k = \\Sigma_n a_n a_{n+k}`
 
 
     Parameters
     ----------
-    a : array-like
+    a: array-like
         input sequence
-    m : even integer
+    m: even integer
         defines the number of points on one level, must be an
         even integer
-    deltat : float
+    deltat: float
         distance between bins
-    normalize : bool
+    normalize: bool
         normalize the result to the square of the average input
         signal and the factor :math:`M-k`.
-    copy : bool
+    copy: bool
         copy input array, set to ``False`` to save memory
-    dtype : object to be converted to a data type object
+    dtype: object to be converted to a data type object
         The data type of the returned array and of the accumulator
         for the multiple-tau computation.
 
 
     Returns
     -------
-    autocorrelation : ndarray of shape (N,2)
+    autocorrelation: ndarray of shape (N,2)
         the lag time (1st column) and the autocorrelation (2nd column).
 
     Notes
     -----
-    .. versionchanged :: 0.1.6
+    .. versionchanged:: 0.1.6
        Compute the correlation for zero lag time.
 
     The algorithm computes the correlation with the convention of the
@@ -259,7 +259,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
 
         :func:`numpy.correlate(a, v, mode="full")[len(a)-1:]`
 
-        :math:`z_k = \Sigma_n a_n v_{n+k}`
+        :math:`z_k = \\Sigma_n a_n v_{n+k}`
 
     Note that only the correlation in the positive direction is
     computed. To obtain the correlation for negative lag times
@@ -267,32 +267,32 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
 
     Parameters
     ----------
-    a, v : array-like
+    a, v: array-like
         input sequences with equal length
-    m : even integer
+    m: even integer
         defines the number of points on one level, must be an
         even integer
-    deltat : float
+    deltat: float
         distance between bins
-    normalize : bool
+    normalize: bool
         normalize the result to the square of the average input
         signal and the factor :math:`M-k`.
-    copy : bool
+    copy: bool
         copy input array, set to ``False`` to save memory
-    dtype : object to be converted to a data type object
+    dtype: object to be converted to a data type object
         The data type of the returned array and of the accumulator
         for the multiple-tau computation.
 
 
     Returns
     -------
-    cross_correlation : ndarray of shape (N,2)
+    cross_correlation: ndarray of shape (N,2)
         the lag time (column 1) and the cross-correlation (column2).
 
 
     Notes
     -----
-    .. versionchanged :: 0.1.6
+    .. versionchanged:: 0.1.6
        Compute the correlation for zero lag time and correctly
        normalize the correlation for a complex input sequence `v`.
 
@@ -454,29 +454,29 @@ def correlate_numpy(a, v, deltat=1, normalize=False,
 
     Parameters
     ----------
-    a, v : array-like
+    a, v: array-like
         input sequences
-    deltat : float
+    deltat: float
         distance between bins
-    normalize : bool
+    normalize: bool
         normalize the result to the square of the average input signal
         and the factor :math:`M-k`. The resulting curve follows
         the convention of decaying to zero for large lag times.
-    copy : bool
+    copy: bool
         copy input array, set to ``False`` to save memory
-    dtype : object to be converted to a data type object
+    dtype: object to be converted to a data type object
         The data type of the returned array.
 
 
     Returns
     -------
-    cross_correlation : ndarray of shape (N,2)
+    cross_correlation: ndarray of shape (N,2)
         the lag time (column 1) and the cross-correlation (column 2).
 
 
     Notes
     -----
-    .. versionchanged :: 0.1.6
+    .. versionchanged:: 0.1.6
        Removed false normalization when `normalize==False`.
     """
     ab = np.array(a, dtype=dtype, copy=copy)
