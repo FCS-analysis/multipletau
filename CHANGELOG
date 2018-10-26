@@ -1,3 +1,6 @@
+0.2.0
+ - tests: filter warnings and check with flake8
+ - implement unique warning classes
 0.1.9
  - include docs in sdist
 0.1.8

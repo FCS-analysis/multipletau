@@ -41,6 +41,14 @@ import warnings
 __all__ = ["autocorrelate", "correlate", "correlate_numpy"]
 
 
+class DtypeWarning(UserWarning):
+    pass
+
+
+class InvalidMWarning(UserWarning):
+    pass
+
+
 def autocorrelate(a, m=16, deltat=1, normalize=False,
                   copy=True, dtype=None):
     """
@@ -127,7 +135,8 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
                          copy=copy,
                          dtype=dtype)
     elif dtype.kind != "f":
-        warnings.warn("Input dtype is not float; casting to np.float_!")
+        warnings.warn("Input dtype is not float; casting to np.float_!",
+                      DtypeWarning)
         dtype = np.dtype(np.float_)
 
     # If copy is false and dtype is the same as the input array,
@@ -139,7 +148,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
         mold = m
         m = np.int_((m // 2 + 1) * 2)
         warnings.warn("Invalid value of m={}. Using m={} instead"
-                      .format(mold, m))
+                      .format(mold, m), InvalidMWarning)
     else:
         m = np.int_(m)
 
@@ -325,16 +334,19 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
             if dtype.kind == "c" or dtype2.kind == "c":
                 # The user might try to combine complex64 and float128.
                 warnings.warn(
-                    "Input dtypes not equal; casting to np.complex_!")
+                    "Input dtypes not equal; casting to np.complex_!",
+                    InvalidMWarning)
                 dtype = np.dtype(np.complex_)
             else:
-                warnings.warn("Input dtypes not equal; casting to np.float_!")
+                warnings.warn("Input dtypes not equal; casting to np.float_!",
+                              InvalidMWarning)
                 dtype = np.dtype(np.float_)
     else:
         dtype = np.dtype(dtype)
 
     if dtype.kind not in ["c", "f"]:
-        warnings.warn("Input dtype is not float; casting to np.float_!")
+        warnings.warn("Input dtype is not float; casting to np.float_!",
+                      InvalidMWarning)
         dtype = np.dtype(np.float_)
 
     trace1 = np.array(v, dtype=dtype, copy=copy)
@@ -357,7 +369,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
         mold = m
         m = np.int_(m // 2 + 1) * 2
         warnings.warn("Invalid value of m={}. Using m={} instead"
-                      .format(mold, m))
+                      .format(mold, m), InvalidMWarning)
     else:
         m = np.int_(m)
 

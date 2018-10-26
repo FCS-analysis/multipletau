@@ -1,20 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-""" Tests correlation-autocorrelation identity
-"""
+"""Test correlation-autocorrelation identity"""
 from __future__ import division, print_function
 
-import numpy as np
-import os
-from os.path import abspath, basename, dirname, join, split, exists
-import platform
 import sys
-import warnings
-import zipfile
 
-# Add parent directory to beginning of path variable
-DIR = dirname(abspath(__file__))
-sys.path = [split(DIR)[0]] + sys.path
+import numpy as np
 
 import multipletau
 
@@ -25,13 +16,13 @@ def test_ac_cc_m():
     myframe = sys._getframe()
     myname = myframe.f_code.co_name
     print("running ", myname)
-    
+
     arrs = get_sample_arrays()
 
     ms = [8, 16, 32, 64, 128]
     a = np.concatenate(arrs)
 
-    res = []    
+    res = []
     for m in ms:
         r = multipletau.autocorrelate(a=a,
                                       m=m,
@@ -42,7 +33,7 @@ def test_ac_cc_m():
         res.append(r)
     res = np.concatenate(res)
 
-    rescc = []    
+    rescc = []
     for m in ms:
         r = multipletau.correlate(a=a, v=a,
                                   m=m,
@@ -52,24 +43,24 @@ def test_ac_cc_m():
                                   dtype=np.float_)
         rescc.append(r)
         # test minimal length of array
-        _r2 = multipletau.correlate(a=a[:2*m], v=a[:2*m],
-                                    m=m,
-                                    deltat=1,
-                                    normalize=False,
-                                    copy=True,
-                                    dtype=np.float_)
-    
+        multipletau.correlate(a=a[:2*m], v=a[:2*m],
+                              m=m,
+                              deltat=1,
+                              normalize=False,
+                              copy=True,
+                              dtype=np.float_)
+
     rescc = np.concatenate(rescc)
-    assert np.all(res==rescc)
+    assert np.all(res == rescc)
 
 
 def test_ac_cc_normalize():
     myframe = sys._getframe()
     myname = myframe.f_code.co_name
     print("running ", myname)
-    
+
     arrs = get_sample_arrays()
-    
+
     res = []
     for a in arrs:
         r = multipletau.autocorrelate(a=a,
@@ -79,7 +70,7 @@ def test_ac_cc_normalize():
                                       copy=True,
                                       dtype=np.float_)
         res.append(r)
-    
+
     res = np.concatenate(res)
 
     rescc = []
@@ -91,19 +82,19 @@ def test_ac_cc_normalize():
                                   copy=True,
                                   dtype=np.float_)
         rescc.append(r)
-    
+
     rescc = np.concatenate(rescc)
 
-    assert np.all(res==rescc)
+    assert np.all(res == rescc)
 
 
 def test_ac_cc_simple():
     myframe = sys._getframe()
     myname = myframe.f_code.co_name
     print("running ", myname)
-    
+
     arrs = get_sample_arrays()
-    
+
     rescc = []
     for a in arrs:
         r = multipletau.correlate(a=a, v=a,
@@ -113,7 +104,7 @@ def test_ac_cc_simple():
                                   copy=True,
                                   dtype=np.float_)
         rescc.append(r)
-    
+
     rescc = np.concatenate(rescc)
 
     resac = []
@@ -125,10 +116,10 @@ def test_ac_cc_simple():
                                       copy=True,
                                       dtype=np.float_)
         resac.append(r)
-    
+
     resac = np.concatenate(resac)
-    
-    assert np.all(resac==rescc)
+
+    assert np.all(resac == rescc)
 
 
 if __name__ == "__main__":
