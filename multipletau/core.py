@@ -91,8 +91,9 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
 
     Returns
     -------
-    autocorrelation: ndarray of shape (N,2)
-        the lag time (1st column) and the autocorrelation (2nd column).
+    autocorrelation: ndarray of shape (N,3)
+        the lag time (1st column), the autocorrelation (2nd column) and the
+        number of measurements in each bin (3rd column).
 
     Notes
     -----
@@ -177,7 +178,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     # traces that are just larger than m):
     lenG = m + k * (m // 2) + 1
 
-    G = np.zeros((lenG, 2), dtype=dtype)
+    G = np.zeros((lenG, 3), dtype=dtype)
 
     normstat = np.zeros(lenG, dtype=dtype)
     normnump = np.zeros(lenG, dtype=dtype)
@@ -244,6 +245,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
                                    trace[npmd2:])
                 normstat[idx] = N - npmd2
                 normnump[idx] = N
+                G[idx, 2] = normstat[idx]
         # Check if len(trace) is even:
         if N % 2 == 1:
             N -= 1
