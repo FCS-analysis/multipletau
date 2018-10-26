@@ -50,7 +50,7 @@ class InvalidMWarning(UserWarning):
 
 
 def autocorrelate(a, m=16, deltat=1, normalize=False,
-                  copy=True, dtype=None):
+                  copy=True, dtype=None, compress="average"):
     """
     Autocorrelation of a 1-dimensional sequence on a log2-scale.
 
@@ -80,6 +80,13 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     dtype: object to be converted to a data type object
         The data type of the returned array and of the accumulator
         for the multiple-tau computation.
+    compress: string
+        "average" (default): average two measurements when pushing to the next
+        level of the correlator.
+        "first": use only the first value when pushing to the next level of the
+        correlator.
+        "second": use only the second value when pushing to the next level of
+        the correlator.
 
 
     Returns
@@ -118,6 +125,11 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     """
     assert isinstance(copy, bool)
     assert isinstance(normalize, bool)
+
+    compress_values = ["average", "first", "second"]
+    assert any( compress in s for s in compress_values), \
+            "Unvalid string of compress. Possible values are " + \
+            ','.join(compress_values)
 
     if dtype is None:
         dtype = np.dtype(a[0].__class__)
@@ -236,7 +248,13 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
         if N % 2 == 1:
             N -= 1
         # Add up every second element
-        trace = (trace[:N:2] + trace[1:N:2]) / 2
+        if compress == compress_values[0]:
+            trace = (trace[:N:2] + trace[1:N:2]) / 2
+        else if compress == compress_values[1]:
+            trace = trace[:N:2]
+        else if compress == compress_values[2]:
+            trace = trace[1:N:2]
+
         N //= 2
 
     if normalize:
