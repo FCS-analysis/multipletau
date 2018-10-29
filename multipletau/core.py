@@ -49,8 +49,8 @@ class InvalidMWarning(UserWarning):
     pass
 
 
-def autocorrelate(a, m=16, deltat=1, normalize=False,
-                  copy=True, dtype=None, compress="average"):
+def autocorrelate(a, m=16, deltat=1, normalize=False, copy=True, dtype=None,
+                  compress="average", return_sum=False):
     """
     Autocorrelation of a 1-dimensional sequence on a log2-scale.
 
@@ -87,13 +87,17 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
         correlator.
         "second": use only the second value when pushing to the next level of
         the correlator.
+            See https://doi.org/10.1063/1.3491098 for a discussion on the
+            effect of averaging.
+    return_sum: bool
+        return the exact sum :math:`z_k = \\Sigma_n a_n a_{n+k}`. In addition
+        :math:`M-k` is returned as a second ndarray of shape (N)
 
 
     Returns
     -------
-    autocorrelation: ndarray of shape (N,3)
-        the lag time (1st column), the autocorrelation (2nd column) and the
-        number of measurements in each bin (3rd column).
+    autocorrelation: ndarray of shape (N,2)
+        the lag time (1st column) and the autocorrelation (2nd column).
 
     Notes
     -----
@@ -126,6 +130,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     """
     assert isinstance(copy, bool)
     assert isinstance(normalize, bool)
+    assert not (normalize and return_sum), "Can not normalize and return sum"
 
     compress_values = ["average", "first", "second"]
     assert any( compress in s for s in compress_values), \
@@ -178,7 +183,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     # traces that are just larger than m):
     lenG = m + k * (m // 2) + 1
 
-    G = np.zeros((lenG, 3), dtype=dtype)
+    G = np.zeros((lenG, 2), dtype=dtype)
 
     normstat = np.zeros(lenG, dtype=dtype)
     normnump = np.zeros(lenG, dtype=dtype)
@@ -260,16 +265,17 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
 
     if normalize:
         G[:, 1] /= traceavg**2 * normstat
-    else:
+    elif not return_sum:
         G[:, 1] *= N0 / normnump
 
-    G[:, 2] = normstat
+    if return_sum:
+        return G, normstat
+    else:
+        return G
 
-    return G
 
-
-def correlate(a, v, m=16, deltat=1, normalize=False,
-              copy=True, dtype=None, compress="average"):
+def correlate(a, v, m=16, deltat=1, normalize=False, copy=True, dtype=None,
+              compress="average", return_sum=False):
     """
     Cross-correlation of two 1-dimensional sequences
     on a log2-scale.
@@ -310,13 +316,15 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
         correlator.
         "second": use only the second value when pushing to the next level of
         the correlator.
+    return_sum: bool
+        return the exact sum :math:`z_k = \\Sigma_n a_n a_{n+k}`. In addition
+        :math:`M-k` is returned as a second ndarray of shape (N)
 
 
     Returns
     -------
-    cross_correlation: ndarray of shape (N,3)
-        the lag time (1st column), the cross-correlation (2nd column) and the
-        number of measurements in each bin (3rd column).
+    cross_correlation: ndarray of shape (N,2)
+        the lag time (1st column), the cross-correlation (2nd column).
 
 
     Notes
@@ -349,6 +357,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     """
     assert isinstance(copy, bool)
     assert isinstance(normalize, bool)
+    assert not (normalize and return_sum), "Can not normalize and return sum"
 
     compress_values = ["average", "first", "second"]
     assert any( compress in s for s in compress_values), \
@@ -420,7 +429,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     # traces that are just larger than m):
     lenG = m + k * m // 2 + 1
 
-    G = np.zeros((lenG, 3), dtype=dtype)
+    G = np.zeros((lenG, 2), dtype=dtype)
     normstat = np.zeros(lenG, dtype=dtype)
     normnump = np.zeros(lenG, dtype=dtype)
 
@@ -481,12 +490,13 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
 
     if normalize:
         G[:, 1] /= traceavg1 * traceavg2 * normstat
-    else:
+    elif not return_sum:
         G[:, 1] *= N0 / normnump
 
-    G[:, 2] = normstat
-
-    return G
+    if return_sum:
+        return G, normstat
+    else:
+        return G
 
 
 def correlate_numpy(a, v, deltat=1, normalize=False,
