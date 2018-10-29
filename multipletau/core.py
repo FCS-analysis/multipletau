@@ -245,16 +245,15 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
                                    trace[npmd2:])
                 normstat[idx] = N - npmd2
                 normnump[idx] = N
-                G[idx, 2] = normstat[idx]
         # Check if len(trace) is even:
         if N % 2 == 1:
             N -= 1
         # Add up every second element
         if compress == compress_values[0]:
             trace = (trace[:N:2] + trace[1:N:2]) / 2
-        else if compress == compress_values[1]:
+        elif compress == compress_values[1]:
             trace = trace[:N:2]
-        else if compress == compress_values[2]:
+        elif compress == compress_values[2]:
             trace = trace[1:N:2]
 
         N //= 2
@@ -263,6 +262,8 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
         G[:, 1] /= traceavg**2 * normstat
     else:
         G[:, 1] *= N0 / normnump
+
+    G[:, 2] = normstat
 
     return G
 
