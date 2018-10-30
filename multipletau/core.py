@@ -50,7 +50,7 @@ class InvalidMWarning(UserWarning):
 
 
 def autocorrelate(a, m=16, deltat=1, normalize=False, copy=True, dtype=None,
-                  compress="average", return_sum=False):
+                  compress="average", ret_sum=False):
     """
     Autocorrelation of a 1-dimensional sequence on a log2-scale.
 
@@ -80,25 +80,34 @@ def autocorrelate(a, m=16, deltat=1, normalize=False, copy=True, dtype=None,
     dtype: object to be converted to a data type object
         The data type of the returned array and of the accumulator
         for the multiple-tau computation.
-    compress: string
-        * `"average"` (default): average two measurements when pushing to the next
-          level of the correlator.
-        * `"first"`: use only the first value when pushing to the next level of the
-          correlator.
-        * `"second"`: use only the second value when pushing to the next level of
-          the correlator.
-        * See https://doi.org/10.1063/1.3491098 for a discussion on the
-          effect of averaging.
+    compress: str
+        strategy for propagating values to the next register
 
-    return_sum: bool
+        - `"average"` (default): average two measurements when pushing
+          to the next level of the correlator.
+        - `"first"`: use only the first value when pushing to the next
+          level of the correlator.
+        - `"second"`: use only the second value when pushing to the
+          next level of the correlator.
+
+        Using only the first or the second values during propagation
+        completely removes the systematic error at the cost of
+        increasing the statistical error.
+        See https://doi.org/10.1063/1.3491098 for a discussion on the
+        effect of averaging.
+    ret_sum: bool
         return the exact sum :math:`z_k = \\Sigma_n a_n a_{n+k}`. In addition
-        :math:`M-k` is returned as a second ndarray of shape (N)
+        :math:`M-k` is returned as an array of length N.
 
 
     Returns
     -------
     autocorrelation: ndarray of shape (N,2)
         the lag time (1st column) and the autocorrelation (2nd column).
+    count: ndarray of length N
+        only returned if `ret_sum` is True; the value of :math:`M-k`
+        for each row in `autocorrelation`.
+
 
     Notes
     -----
@@ -110,10 +119,10 @@ def autocorrelate(a, m=16, deltat=1, normalize=False, copy=True, dtype=None,
 
     For experiments like e.g. fluorescence correlation spectroscopy,
     the signal can be normalized to :math:`M-k`
-    by invoking ``normalize = True``.
+    by invoking ``normalize=True``.
 
     For normalizing according to the behavior
-    of :py:func:`numpy.correlate`, use ``normalize = False``.
+    of :py:func:`numpy.correlate`, use ``normalize=False``.
 
     For complex arrays, this method falls back to the method
     :func:`correlate`.
@@ -131,12 +140,13 @@ def autocorrelate(a, m=16, deltat=1, normalize=False, copy=True, dtype=None,
     """
     assert isinstance(copy, bool)
     assert isinstance(normalize, bool)
-    assert not (normalize and return_sum), "Can not normalize and return sum"
+    msg = "'normalize' and 'ret_sum' must not both be true"
+    assert not (normalize and ret_sum), msg
 
     compress_values = ["average", "first", "second"]
-    assert any( compress in s for s in compress_values), \
-            "Unvalid string of compress. Possible values are " + \
-            ','.join(compress_values)
+    assert any(compress in s for s in compress_values), \
+        "Unvalid string of compress. Possible values are " + \
+        ','.join(compress_values)
 
     if dtype is None:
         dtype = np.dtype(a[0].__class__)
@@ -271,17 +281,17 @@ def autocorrelate(a, m=16, deltat=1, normalize=False, copy=True, dtype=None,
 
     if normalize:
         G[:, 1] /= traceavg**2 * normstat
-    elif not return_sum:
+    elif not ret_sum:
         G[:, 1] *= N0 / normnump
 
-    if return_sum:
+    if ret_sum:
         return G, normstat
     else:
         return G
 
 
 def correlate(a, v, m=16, deltat=1, normalize=False, copy=True, dtype=None,
-              compress="average", return_sum=False):
+              compress="average", ret_sum=False):
     """
     Cross-correlation of two 1-dimensional sequences
     on a log2-scale.
@@ -315,24 +325,33 @@ def correlate(a, v, m=16, deltat=1, normalize=False, copy=True, dtype=None,
     dtype: object to be converted to a data type object
         The data type of the returned array and of the accumulator
         for the multiple-tau computation.
-    compress: string
-        * `"average"` (default): average two measurements when pushing to the next
+    compress: str
+        strategy for propagating values to the next register
+
+        - `"average"` (default): average two measurements when pushing
+          to the next level of the correlator.
+        - `"first"`: use only the first value when pushing to the next
           level of the correlator.
-        * `"first"`: use only the first value when pushing to the next level of the
-          correlator.
-        * `"second"`: use only the second value when pushing to the next level of
-          the correlator.
-        * See https://doi.org/10.1063/1.3491098 for a discussion on the
-          effect of averaging.
-    return_sum: bool
-        return the exact sum :math:`z_k = \\Sigma_n a_n a_{n+k}`. In addition
-        :math:`M-k` is returned as a second ndarray of shape (N)
+        - `"second"`: use only the second value when pushing to the
+          next level of the correlator.
+
+        Using only the first or the second values during propagation
+        completely removes the systematic error at the cost of
+        increasing the statistical error.
+        See https://doi.org/10.1063/1.3491098 for a discussion on the
+        effect of averaging.
+    ret_sum: bool
+        return the exact sum :math:`z_k = \\Sigma_n a_n v_{n+k}`. In addition
+        :math:`M-k` is returned as an array of length N.
 
 
     Returns
     -------
     cross_correlation: ndarray of shape (N,2)
         the lag time (1st column), the cross-correlation (2nd column).
+    count: ndarray of length N
+        only returned if `ret_sum` is True; the value of :math:`M-k`
+        for each row in `autocorrelation`.
 
 
     Notes
@@ -346,10 +365,10 @@ def correlate(a, v, m=16, deltat=1, normalize=False, copy=True, dtype=None,
 
     For experiments like e.g. fluorescence correlation spectroscopy,
     the signal can be normalized to :math:`M-k`
-    by invoking ``normalize = True``.
+    by invoking ``normalize=True``.
 
     For normalizing according to the behavior of
-    :py:func:`numpy.correlate`, use ``normalize = False``.
+    :py:func:`numpy.correlate`, use ``normalize=False``.
 
 
     Examples
@@ -365,12 +384,13 @@ def correlate(a, v, m=16, deltat=1, normalize=False, copy=True, dtype=None,
     """
     assert isinstance(copy, bool)
     assert isinstance(normalize, bool)
-    assert not (normalize and return_sum), "Can not normalize and return sum"
+    msg = "'normalize' and 'ret_sum' must not both be true"
+    assert not (normalize and ret_sum), msg
 
     compress_values = ["average", "first", "second"]
-    assert any( compress in s for s in compress_values), \
-            "Unvalid string of compress. Possible values are " + \
-            ','.join(compress_values)
+    assert any(compress in s for s in compress_values), \
+        "Unvalid string of compress. Possible values are " + \
+        ','.join(compress_values)
 
     # See `autocorrelation` for better documented code.
     traceavg1 = np.average(v)
@@ -505,10 +525,10 @@ def correlate(a, v, m=16, deltat=1, normalize=False, copy=True, dtype=None,
 
     if normalize:
         G[:, 1] /= traceavg1 * traceavg2 * normstat
-    elif not return_sum:
+    elif not ret_sum:
         G[:, 1] *= N0 / normnump
 
-    if return_sum:
+    if ret_sum:
         return G, normstat
     else:
         return G

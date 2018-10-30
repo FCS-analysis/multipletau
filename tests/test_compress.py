@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-"""basic tests also available in the function docs"""
+"""test strategies for propagating values to the next level"""
 import numpy as np
 
 from multipletau import autocorrelate, correlate
@@ -14,6 +14,7 @@ def test_ac_compress_average():
                      [4.00000000e+00,   2.03775000e+04],
                      [8.00000000e+00,   1.50612000e+04]])
     assert np.allclose(soll, ist)
+
 
 def test_cc_compress_average():
     ist = correlate(range(42), range(1, 43), m=2, dtype=np.float_,
@@ -40,7 +41,7 @@ def test_ac_compress_first():
 
 def test_cc_compress_first():
     ist = correlate(range(42), range(1, 43), m=2, dtype=np.float_,
-                        compress="first")
+                    compress="first")
     soll = np.array([[0.00000e+00, 2.46820e+04],
                      [1.00000e+00, 2.38210e+04],
                      [2.00000e+00, 2.29600e+04],
@@ -64,7 +65,7 @@ def test_ac_compress_second():
 
 def test_cc_compress_second():
     ist = correlate(range(42), range(1, 43), m=2, dtype=np.float_,
-                        compress="second")
+                    compress="second")
     soll = np.array([[0.00000e+00, 2.46820e+04],
                      [1.00000e+00, 2.38210e+04],
                      [2.00000e+00, 2.29600e+04],

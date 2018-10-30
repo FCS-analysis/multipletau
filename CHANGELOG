@@ -1,3 +1,8 @@
+0.3.0
+ - feat: add option to choose the strategy for propagating values to
+   the next register (#14)
+ - feat: add option to return the pure sum and the internal normalization
+   count (#14)
 0.2.0
  - tests: filter warnings and check with flake8
  - implement unique warning classes
