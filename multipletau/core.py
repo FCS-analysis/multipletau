@@ -49,8 +49,8 @@ class InvalidMWarning(UserWarning):
     pass
 
 
-def autocorrelate(a, m=16, deltat=1, normalize=False,
-                  copy=True, dtype=None):
+def autocorrelate(a, m=16, deltat=1, normalize=False, copy=True, dtype=None,
+                  compress="average", return_sum=False):
     """
     Autocorrelation of a 1-dimensional sequence on a log2-scale.
 
@@ -80,6 +80,19 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     dtype: object to be converted to a data type object
         The data type of the returned array and of the accumulator
         for the multiple-tau computation.
+    compress: string
+        * `"average"` (default): average two measurements when pushing to the next
+          level of the correlator.
+        * `"first"`: use only the first value when pushing to the next level of the
+          correlator.
+        * `"second"`: use only the second value when pushing to the next level of
+          the correlator.
+        * See https://doi.org/10.1063/1.3491098 for a discussion on the
+          effect of averaging.
+
+    return_sum: bool
+        return the exact sum :math:`z_k = \\Sigma_n a_n a_{n+k}`. In addition
+        :math:`M-k` is returned as a second ndarray of shape (N)
 
 
     Returns
@@ -118,6 +131,12 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     """
     assert isinstance(copy, bool)
     assert isinstance(normalize, bool)
+    assert not (normalize and return_sum), "Can not normalize and return sum"
+
+    compress_values = ["average", "first", "second"]
+    assert any( compress in s for s in compress_values), \
+            "Unvalid string of compress. Possible values are " + \
+            ','.join(compress_values)
 
     if dtype is None:
         dtype = np.dtype(a[0].__class__)
@@ -193,8 +212,13 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
     # Check if len(trace) is even:
     if N % 2 == 1:
         N -= 1
-    # Add up every second element
-    trace = (trace[:N:2] + trace[1:N:2]) / 2
+    # compress every second element
+    if compress == compress_values[0]:
+        trace = (trace[:N:2] + trace[1:N:2]) / 2
+    elif compress == compress_values[1]:
+        trace = trace[:N:2]
+    elif compress == compress_values[2]:
+        trace = trace[1:N:2]
     N //= 2
     # Start iteration for each m/2 values
     for step in range(1, k + 1):
@@ -235,20 +259,29 @@ def autocorrelate(a, m=16, deltat=1, normalize=False,
         # Check if len(trace) is even:
         if N % 2 == 1:
             N -= 1
-        # Add up every second element
-        trace = (trace[:N:2] + trace[1:N:2]) / 2
+        # compress every second element
+        if compress == compress_values[0]:
+            trace = (trace[:N:2] + trace[1:N:2]) / 2
+        elif compress == compress_values[1]:
+            trace = trace[:N:2]
+        elif compress == compress_values[2]:
+            trace = trace[1:N:2]
+
         N //= 2
 
     if normalize:
         G[:, 1] /= traceavg**2 * normstat
-    else:
+    elif not return_sum:
         G[:, 1] *= N0 / normnump
 
-    return G
+    if return_sum:
+        return G, normstat
+    else:
+        return G
 
 
-def correlate(a, v, m=16, deltat=1, normalize=False,
-              copy=True, dtype=None):
+def correlate(a, v, m=16, deltat=1, normalize=False, copy=True, dtype=None,
+              compress="average", return_sum=False):
     """
     Cross-correlation of two 1-dimensional sequences
     on a log2-scale.
@@ -282,12 +315,24 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     dtype: object to be converted to a data type object
         The data type of the returned array and of the accumulator
         for the multiple-tau computation.
+    compress: string
+        * `"average"` (default): average two measurements when pushing to the next
+          level of the correlator.
+        * `"first"`: use only the first value when pushing to the next level of the
+          correlator.
+        * `"second"`: use only the second value when pushing to the next level of
+          the correlator.
+        * See https://doi.org/10.1063/1.3491098 for a discussion on the
+          effect of averaging.
+    return_sum: bool
+        return the exact sum :math:`z_k = \\Sigma_n a_n a_{n+k}`. In addition
+        :math:`M-k` is returned as a second ndarray of shape (N)
 
 
     Returns
     -------
     cross_correlation: ndarray of shape (N,2)
-        the lag time (column 1) and the cross-correlation (column2).
+        the lag time (1st column), the cross-correlation (2nd column).
 
 
     Notes
@@ -320,6 +365,13 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     """
     assert isinstance(copy, bool)
     assert isinstance(normalize, bool)
+    assert not (normalize and return_sum), "Can not normalize and return sum"
+
+    compress_values = ["average", "first", "second"]
+    assert any( compress in s for s in compress_values), \
+            "Unvalid string of compress. Possible values are " + \
+            ','.join(compress_values)
+
     # See `autocorrelation` for better documented code.
     traceavg1 = np.average(v)
     traceavg2 = np.average(a)
@@ -406,9 +458,16 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
     # Check if len(trace) is even:
     if N % 2 == 1:
         N -= 1
-    # Add up every second element
-    trace1 = (trace1[:N:2] + trace1[1:N:2]) / 2
-    trace2 = (trace2[:N:2] + trace2[1:N:2]) / 2
+    # compress every second element
+    if compress == compress_values[0]:
+        trace1 = (trace1[:N:2] + trace1[1:N:2]) / 2
+        trace2 = (trace2[:N:2] + trace2[1:N:2]) / 2
+    elif compress == compress_values[1]:
+        trace1 = trace1[:N:2]
+        trace2 = trace2[:N:2]
+    elif compress == compress_values[2]:
+        trace1 = trace1[1:N:2]
+        trace2 = trace2[1:N:2]
     N //= 2
 
     for step in range(1, k + 1):
@@ -432,17 +491,27 @@ def correlate(a, v, m=16, deltat=1, normalize=False,
         # Check if len(trace) is even:
         if N % 2 == 1:
             N -= 1
-        # Add up every second element
-        trace1 = (trace1[:N:2] + trace1[1:N:2]) / 2
-        trace2 = (trace2[:N:2] + trace2[1:N:2]) / 2
+        # compress every second element
+        if compress == compress_values[0]:
+            trace1 = (trace1[:N:2] + trace1[1:N:2]) / 2
+            trace2 = (trace2[:N:2] + trace2[1:N:2]) / 2
+        elif compress == compress_values[1]:
+            trace1 = trace1[:N:2]
+            trace2 = trace2[:N:2]
+        elif compress == compress_values[2]:
+            trace1 = trace1[1:N:2]
+            trace2 = trace2[1:N:2]
         N //= 2
 
     if normalize:
         G[:, 1] /= traceavg1 * traceavg2 * normstat
-    else:
+    elif not return_sum:
         G[:, 1] *= N0 / normnump
 
-    return G
+    if return_sum:
+        return G, normstat
+    else:
+        return G
 
 
 def correlate_numpy(a, v, deltat=1, normalize=False,
