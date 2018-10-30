@@ -211,8 +211,13 @@ def autocorrelate(a, m=16, deltat=1, normalize=False, copy=True, dtype=None,
     # Check if len(trace) is even:
     if N % 2 == 1:
         N -= 1
-    # Add up every second element
-    trace = (trace[:N:2] + trace[1:N:2]) / 2
+    # compress every second element
+    if compress == compress_values[0]:
+        trace = (trace[:N:2] + trace[1:N:2]) / 2
+    elif compress == compress_values[1]:
+        trace = trace[:N:2]
+    elif compress == compress_values[2]:
+        trace = trace[1:N:2]
     N //= 2
     # Start iteration for each m/2 values
     for step in range(1, k + 1):
@@ -253,7 +258,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False, copy=True, dtype=None,
         # Check if len(trace) is even:
         if N % 2 == 1:
             N -= 1
-        # Add up every second element
+        # compress every second element
         if compress == compress_values[0]:
             trace = (trace[:N:2] + trace[1:N:2]) / 2
         elif compress == compress_values[1]:
@@ -450,9 +455,16 @@ def correlate(a, v, m=16, deltat=1, normalize=False, copy=True, dtype=None,
     # Check if len(trace) is even:
     if N % 2 == 1:
         N -= 1
-    # Add up every second element
-    trace1 = (trace1[:N:2] + trace1[1:N:2]) / 2
-    trace2 = (trace2[:N:2] + trace2[1:N:2]) / 2
+    # compress every second element
+    if compress == compress_values[0]:
+        trace1 = (trace1[:N:2] + trace1[1:N:2]) / 2
+        trace2 = (trace2[:N:2] + trace2[1:N:2]) / 2
+    elif compress == compress_values[1]:
+        trace1 = trace1[:N:2]
+        trace2 = trace2[:N:2]
+    elif compress == compress_values[2]:
+        trace1 = trace1[1:N:2]
+        trace2 = trace2[1:N:2]
     N //= 2
 
     for step in range(1, k + 1):
@@ -476,7 +488,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False, copy=True, dtype=None,
         # Check if len(trace) is even:
         if N % 2 == 1:
             N -= 1
-        # Add up every second element
+        # compress every second element
         if compress == compress_values[0]:
             trace1 = (trace1[:N:2] + trace1[1:N:2]) / 2
             trace2 = (trace2[:N:2] + trace2[1:N:2]) / 2
