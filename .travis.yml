@@ -1,18 +1,29 @@
+notifications:
+  email: false
 language: python
 python:
 - '2.7'
 - '3.4'
 - '3.5'
 - '3.6'
-notifications:
-  email: false
+env:
+  matrix:
+  - TEST="PYTEST"
+  - TEST="FLAKE8"
 install:
 - travis_retry pip install -e .
 - travis_retry pip install coverage codecov
 - pip freeze
 script:
-- coverage run --source=multipletau ./setup.py test
-- coverage report -m
+- if [ "${TEST}" == "PYTEST" ]; then
+       coverage run --source=drymass setup.py test;
+       coverage report -m;
+       codecov;
+  else
+       flake8 drymass;
+       flake8 examples;
+       flake8 tests;
+  fi;
 after_success:
 - codecov
 before_deploy:
