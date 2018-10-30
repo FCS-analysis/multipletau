@@ -12,6 +12,7 @@ env:
   - TEST="FLAKE8"
 install:
 - travis_retry pip install -e .
+- travis_retry pip install flake8
 - travis_retry pip install coverage codecov
 - pip freeze
 script:
