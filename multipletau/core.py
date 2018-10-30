@@ -81,14 +81,15 @@ def autocorrelate(a, m=16, deltat=1, normalize=False, copy=True, dtype=None,
         The data type of the returned array and of the accumulator
         for the multiple-tau computation.
     compress: string
-        "average" (default): average two measurements when pushing to the next
-        level of the correlator.
-        "first": use only the first value when pushing to the next level of the
-        correlator.
-        "second": use only the second value when pushing to the next level of
-        the correlator.
-            See https://doi.org/10.1063/1.3491098 for a discussion on the
-            effect of averaging.
+        * `"average"` (default): average two measurements when pushing to the next
+          level of the correlator.
+        * `"first"`: use only the first value when pushing to the next level of the
+          correlator.
+        * `"second"`: use only the second value when pushing to the next level of
+          the correlator.
+        * See https://doi.org/10.1063/1.3491098 for a discussion on the
+          effect of averaging.
+
     return_sum: bool
         return the exact sum :math:`z_k = \\Sigma_n a_n a_{n+k}`. In addition
         :math:`M-k` is returned as a second ndarray of shape (N)
@@ -315,12 +316,14 @@ def correlate(a, v, m=16, deltat=1, normalize=False, copy=True, dtype=None,
         The data type of the returned array and of the accumulator
         for the multiple-tau computation.
     compress: string
-        "average" (default): average two measurements when pushing to the next
-        level of the correlator.
-        "first": use only the first value when pushing to the next level of the
-        correlator.
-        "second": use only the second value when pushing to the next level of
-        the correlator.
+        * `"average"` (default): average two measurements when pushing to the next
+          level of the correlator.
+        * `"first"`: use only the first value when pushing to the next level of the
+          correlator.
+        * `"second"`: use only the second value when pushing to the next level of
+          the correlator.
+        * See https://doi.org/10.1063/1.3491098 for a discussion on the
+          effect of averaging.
     return_sum: bool
         return the exact sum :math:`z_k = \\Sigma_n a_n a_{n+k}`. In addition
         :math:`M-k` is returned as a second ndarray of shape (N)
