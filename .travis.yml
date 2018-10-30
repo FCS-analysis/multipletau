@@ -7,9 +7,8 @@ python:
 notifications:
   email: false
 install:
-- travis_retry pip install coverage
-- travis_retry pip install coveralls
 - travis_retry pip install -e .
+- travis_retry pip install coverage codecov
 - pip freeze
 script:
 - coverage run --source=multipletau ./setup.py test
