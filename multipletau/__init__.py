@@ -51,7 +51,7 @@ You can find out what version you are using by typing
 
     >>> import multipletau
     >>> multipletau.__version__
-    '0.1.4'
+    '0.3.0'
 
 
 Usage

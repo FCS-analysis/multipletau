@@ -34,7 +34,7 @@ for mod_name in install_requires:
 
 name = 'multipletau'
 github_project = 'FCS-analysis/' + name
-year = "2013"
+year = "2012"
 author = 'Paul Müller'
 authors = [author]
 description = 'A multiple-tau algorithm for Python/NumPy'

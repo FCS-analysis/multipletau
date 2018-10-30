@@ -9,7 +9,7 @@ author = u"Paul Müller"
 authors = [author]
 description = 'A multiple-tau algorithm for Python/NumPy'
 name = 'multipletau'
-year = "2013"
+year = "2012"
 
 sys.path.insert(0, realpath(dirname(__file__))+"/"+name)
 from _version import version
