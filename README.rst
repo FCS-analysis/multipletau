@@ -10,7 +10,7 @@ correlation on a linear scale such as `numpy.correlate <http://docs.scipy.org/do
 
 Installation
 ------------
-Multipletau supports Python 2.6+ and Python 3.3+ with a common codebase.
+Multipletau supports Python 2.7 and Python 3.3+ with a common codebase.
 The only requirement for ``multipletau`` is `NumPy <http://www.numpy.org/>`__ (for fast
 operations on arrays). Install multipletau from the Python package index:
 
@@ -56,7 +56,7 @@ You can find out what version you are using by typing (in a Python console):
 
     >>> import multipletau
     >>> multipletau.__version__
-    '0.1.4'
+    '0.3.0'
 
 
 
@@ -64,7 +64,7 @@ You can find out what version you are using by typing (in a Python console):
    :target: https://pypi.python.org/pypi/multipletau
 .. |Tests Status| image:: http://img.shields.io/travis/FCS-analysis/multipletau.svg?label=tests
    :target: https://travis-ci.org/FCS-analysis/multipletau
-.. |Coverage Status| image:: https://img.shields.io/coveralls/FCS-analysis/multipletau.svg
-   :target: https://coveralls.io/r/FCS-analysis/multipletau
+.. |Coverage Status| image:: https://img.shields.io/codecov/c/github/FCS-analysis/multipletau/master.svg
+   :target: https://codecov.io/gh/FCS-analysis/multipletau
 .. |Docs Status| image:: https://readthedocs.org/projects/multipletau/badge/?version=latest
    :target: https://readthedocs.org/projects/multipletau/builds/

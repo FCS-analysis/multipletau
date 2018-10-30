@@ -9,11 +9,22 @@ notifications:
 install:
 - travis_retry pip install coverage
 - travis_retry pip install coveralls
-- python setup.py develop
+- travis_retry pip install -e .
 - pip freeze
 script:
 - coverage run --source=multipletau ./setup.py test
 - coverage report -m
 after_success:
-- coveralls --verbose
-
+- codecov
+before_deploy:
+- python setup.py sdist
+- python setup.py bdist_wheel
+deploy:
+  provider: pypi
+  user: "ci_fcs"
+  password:
+    secure: "Jy2l/O7RqtekxbkKEwpj0S188WzcfXnzpOCKZNPu9FUpwxFlY52/IcAJoU4i8v4H00u+sv0qo4tNl4zei4yPVMAjQmW8eQv+6uusfjnrvyTve+wsCeos7tWDfD+vi/YO+k++hIdS8hK+OyrUwce/nBynANXE3vixw27ge2X2JTQ="
+  on:
+    tags: true
+  skip_cleanup: true
+  skip_existing: true
