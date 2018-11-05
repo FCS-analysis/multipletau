@@ -1,3 +1,5 @@
+0.3.2
+ - fix: multipletau package not available when building the docs
 0.3.1
  - fix: detect correct version when building the docs from source tar ball
 0.3.0
