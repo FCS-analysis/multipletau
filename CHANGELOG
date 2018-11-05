@@ -1,3 +1,5 @@
+0.3.1
+ - fix: detect correct version when building the docs from source tar ball
 0.3.0
  - feat: add option to choose the strategy for propagating values to
    the next register (#14)
