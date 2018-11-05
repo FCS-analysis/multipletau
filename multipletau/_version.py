@@ -109,6 +109,16 @@ if True:  # pragma: no cover
     except BaseException:
         pass
 
+    # 1.5. Prefer SOURCE_DATE_EPOCH if set. See <https://reproducible-builds.org/specs/source-date-epoch/>
+    try:
+        longversion = time.strftime(
+            "%Y.%m.%d-%H-%M-%S",
+            time.gmtime(float(os.environ['SOURCE_DATE_EPOCH']))
+        )
+        print("Using SOURCE_DATE_EPOCH as version: {}".format(longversion))
+    except KeyError:
+        pass
+
     # 2. previously created version file
     if longversion == "":
         # Either this is this is not a git repository or we are in the
