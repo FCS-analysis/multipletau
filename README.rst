@@ -3,7 +3,7 @@ multipletau
 
 |PyPI Version| |Tests Status| |Coverage Status| |Docs Status|
 
-Multipe-tau correlation is computed on a logarithmic scale (less
+Multiple-tau correlation is computed on a logarithmic scale (less
 data points are computed) and is thus much faster than conventional
 correlation on a linear scale such as `numpy.correlate <http://docs.scipy.org/doc/numpy/reference/generated/numpy.correlate.html>`__. 
 

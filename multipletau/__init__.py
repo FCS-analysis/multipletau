@@ -4,7 +4,7 @@ u"""
 Multipletau provides a multiple-τ algorithm for Python 2.7 and
 Python 3.x with :py:mod:`numpy` as its sole dependency.
 
-Multipe-τ correlation is computed on a logarithmic scale (less
+Multiple-τ correlation is computed on a logarithmic scale (less
 data points are computed) and is thus much faster than conventional
 correlation on a linear scale such as  :py:func:`numpy.correlate`.
 
