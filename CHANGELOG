@@ -1,3 +1,7 @@
+0.3.3
+ - fix: add constant `ZERO_CUTOFF` that defines when a trace average is
+   treated as zero
+ - enh: replace asserts with raises (#15)
 0.3.2
  - fix: multipletau package not available when building the docs
 0.3.1

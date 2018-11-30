@@ -41,6 +41,11 @@ import warnings
 __all__ = ["autocorrelate", "correlate", "correlate_numpy"]
 
 
+#: Defines the cutoff when the absolute mean trace divided by the median
+#: of the absolute value of the trace is treated as zero.
+ZERO_CUTOFF = 1e-15
+
+
 class DtypeWarning(UserWarning):
     pass
 
@@ -138,15 +143,18 @@ def autocorrelate(a, m=16, deltat=1, normalize=False, copy=True, dtype=None,
            [  4.00000000e+00,   2.03775000e+04],
            [  8.00000000e+00,   1.50612000e+04]])
     """
-    assert isinstance(copy, bool)
-    assert isinstance(normalize, bool)
-    msg = "'normalize' and 'ret_sum' must not both be true"
-    assert not (normalize and ret_sum), msg
-
+    if not isinstance(normalize, bool):
+        raise ValueError("`normalize` must be boolean!")
+    if not isinstance(copy, bool):
+        raise ValueError("`copy` must be boolean!")
+    if not isinstance(ret_sum, bool):
+        raise ValueError("`ret_sum` must be boolean!")
+    if normalize and ret_sum:
+        raise ValueError("'normalize' and 'ret_sum' must not both be True!")
     compress_values = ["average", "first", "second"]
-    assert any(compress in s for s in compress_values), \
-        "Unvalid string of compress. Possible values are " + \
-        ','.join(compress_values)
+    if compress not in compress_values:
+        raise ValueError("Invalid value for `compress`! Possible values "
+                         "are '{}'.".format(','.join(compress_values)))
 
     if dtype is None:
         dtype = np.dtype(a[0].__class__)
@@ -204,10 +212,12 @@ def autocorrelate(a, m=16, deltat=1, normalize=False, copy=True, dtype=None,
     # We use the fluctuation of the signal around the mean
     if normalize:
         trace -= traceavg
-        assert traceavg != 0, "Cannot normalize: Average of `a` is zero!"
+        if np.abs(traceavg) / np.median(np.abs(trace)) < ZERO_CUTOFF:
+            raise ValueError("Cannot normalize: Average of `a` is zero!")
 
     # Otherwise the following for-loop will fail:
-    assert N >= 2 * m, "len(a) must be larger than 2m!"
+    if N < 2 * m:
+        raise ValueError("`len(a)` must be >= `2m`!")
 
     # Calculate autocorrelation function for first m+1 bins
     # Discrete convolution of m elements
@@ -382,22 +392,27 @@ def correlate(a, v, m=16, deltat=1, normalize=False, copy=True, dtype=None,
            [  8.00000000e+00,   1.58508000e+04]])
 
     """
-    assert isinstance(copy, bool)
-    assert isinstance(normalize, bool)
-    msg = "'normalize' and 'ret_sum' must not both be true"
-    assert not (normalize and ret_sum), msg
-
+    if not isinstance(normalize, bool):
+        raise ValueError("`normalize` must be boolean!")
+    if not isinstance(copy, bool):
+        raise ValueError("`copy` must be boolean!")
+    if not isinstance(ret_sum, bool):
+        raise ValueError("`ret_sum` must be boolean!")
+    if normalize and ret_sum:
+        raise ValueError("'normalize' and 'ret_sum' must not both be True!")
     compress_values = ["average", "first", "second"]
-    assert any(compress in s for s in compress_values), \
-        "Unvalid string of compress. Possible values are " + \
-        ','.join(compress_values)
+    if compress not in compress_values:
+        raise ValueError("Invalid value for `compress`! Possible values "
+                         "are '{}'.".format(','.join(compress_values)))
 
     # See `autocorrelation` for better documented code.
     traceavg1 = np.average(v)
     traceavg2 = np.average(a)
     if normalize:
-        assert traceavg1 != 0, "Cannot normalize: Average of `v` is zero!"
-        assert traceavg2 != 0, "Cannot normalize: Average of `a` is zero!"
+        if np.abs(traceavg1) / np.median(np.abs(v)) < ZERO_CUTOFF:
+            raise ValueError("Cannot normalize: Average of `v` is zero!")
+        if np.abs(traceavg2) / np.median(np.abs(a)) < ZERO_CUTOFF:
+            raise ValueError("Cannot normalize: Average of `a` is zero!")
 
     if dtype is None:
         dtype = np.dtype(v[0].__class__)
@@ -430,7 +445,8 @@ def correlate(a, v, m=16, deltat=1, normalize=False, copy=True, dtype=None,
 
     trace2 = np.array(a, dtype=dtype, copy=copy)
 
-    assert trace1.shape[0] == trace2.shape[0], "`a`,`v` must have same length!"
+    if trace1.size != trace2.size:
+        raise ValueError("`a` and `v` must have same length!")
 
     # Complex data
     if dtype.kind == "c":
@@ -467,7 +483,8 @@ def correlate(a, v, m=16, deltat=1, normalize=False, copy=True, dtype=None,
         trace2 -= traceavg2
 
     # Otherwise the following for-loop will fail:
-    assert N >= 2 * m, "len(a) must be larger than 2m!"
+    if N < 2 * m:
+        raise ValueError("`len(a)` must be >= `2m`!")
 
     # Calculate autocorrelation function for first m+1 bins
     for n in range(0, m + 1):
@@ -571,7 +588,8 @@ def correlate_numpy(a, v, deltat=1, normalize=False,
     ab = np.array(a, dtype=dtype, copy=copy)
     vb = np.array(v, dtype=dtype, copy=copy)
 
-    assert ab.shape[0] == vb.shape[0], "`a`,`v` must have same length!"
+    if ab.size != vb.size:
+        raise ValueError("`a` and `v` must have same length!")
 
     avg = np.average(ab)
     vvg = np.average(vb)
@@ -579,8 +597,10 @@ def correlate_numpy(a, v, deltat=1, normalize=False,
     if normalize:
         ab -= avg
         vb -= vvg
-        assert avg != 0, "Cannot normalize: Average of `a` is zero!"
-        assert vvg != 0, "Cannot normalize: Average of `v` is zero!"
+        if np.abs(avg) / np.median(np.abs(ab)) < ZERO_CUTOFF:
+            raise ValueError("Cannot normalize: Average of `a` is zero!")
+        if np.abs(vvg) / np.median(np.abs(vb)) < ZERO_CUTOFF:
+            raise ValueError("Cannot normalize: Average of `v` is zero!")
 
     Gd = np.correlate(ab, vb, mode="full")[len(ab) - 1:]
 

@@ -29,6 +29,9 @@ Cross-correlation (NumPy)
 -------------------------
 .. autofunction:: correlate_numpy
 
+Constants
+---------
+.. autodata:: multipletau.core.ZERO_CUTOFF
 
 Examples
 ========
