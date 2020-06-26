@@ -63,7 +63,7 @@ You can find out what version you are using by typing (in a Python console):
 .. |PyPI Version| image:: https://img.shields.io/pypi/v/multipletau.svg
    :target: https://pypi.python.org/pypi/multipletau
 .. |Tests Status| image:: https://img.shields.io/travis/FCS-analysis/multipletau.svg?label=tests
-   :target: https://travis-ci.org/FCS-analysis/multipletau
+   :target: https://travis-ci.com/FCS-analysis/multipletau
 .. |Coverage Status| image:: https://img.shields.io/codecov/c/github/FCS-analysis/multipletau/master.svg
    :target: https://codecov.io/gh/FCS-analysis/multipletau
 .. |Docs Status| image:: https://readthedocs.org/projects/multipletau/badge/?version=latest
