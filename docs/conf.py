@@ -17,9 +17,11 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
-import mock
 import os.path as op
 import sys
+from unittest import mock
+
+
 # include parent directory
 pdir = op.dirname(op.dirname(op.abspath(__file__)))
 sys.path.insert(0, pdir) 
