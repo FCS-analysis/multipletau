@@ -72,7 +72,7 @@ The package is straightforward to use. Here is a quick example:
 
 """
 from .core import autocorrelate, correlate, correlate_numpy  # noqa: F401
-from ._version import version as __version__  # noqa: F401
+from ._version import __version__, __version_tuple__  # noqa: F401
 
 __author__ = u"Paul Müller"
 __license__ = "BSD (3 clause)"
