@@ -1,0 +1,47 @@
+[build-system]
+requires = [
+    # for version management
+    "setuptools>=45", "setuptools_scm[toml]>=6.2"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "multipletau"
+authors = [
+    # In alphabetical order.
+    {name = "André Scholich"},
+    {name = "Alexandre Detiste"},
+    {name = "Chris Lamb"},
+    {name = "Pascal Hebbeker"},
+    {name = "Paul Müller"},
+]
+maintainers = [
+    {name = "Paul Müller", email="dev@craban.de"},
+]
+description = "A multiple-tau algorithm for Python/NumPy"
+readme = "README.rst"
+requires-python = ">=3.6, <4"
+keywords = ["multiple tau",
+            "fluorescence correlation spectroscopy"]
+classifiers = [
+    'Operating System :: OS Independent',
+    'Programming Language :: Python :: 3',
+    'Topic :: Scientific/Engineering :: Visualization',
+    'Intended Audience :: Science/Research',
+]
+license = {text = "BSD (3 clause)"}
+dependencies = [
+    "numpy>=1.5.1",
+  ]
+dynamic = ["version"]
+
+[project.urls]
+source = "https://github.com/FCS-analysis/multipletau"
+tracker = "https://github.com/FCS-analysis/multipletau/issues"
+documentation = "https://multipletau.readthedocs.io/en/stable/"
+changelog = "https://multipletau.readthedocs.io/en/stable/sec_changelog.html"
+
+
+[tool.setuptools_scm]
+write_to = "src/multipletau/_version.py"
+version_scheme = "post-release"

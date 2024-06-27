@@ -51,4 +51,6 @@ docs/_build
 .cache
 .eggs
 .env
-_version_save.py
+_version.py
+
+.idea
