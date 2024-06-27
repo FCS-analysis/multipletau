@@ -12,7 +12,6 @@ jobs:
       matrix:
         python-version: ['3.8', '3.11']
         os: [macos-latest, ubuntu-latest, windows-latest]
-        extras: ['all', 'none']
 
     steps:
     - uses: actions/checkout@v3
