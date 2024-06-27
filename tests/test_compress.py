@@ -7,7 +7,7 @@ from multipletau import autocorrelate, correlate
 
 
 def test_ac_compress_average():
-    ist = autocorrelate(range(42), m=2, dtype=np.float_, compress="average")
+    ist = autocorrelate(range(42), m=2, dtype=np.float64, compress="average")
     soll = np.array([[0.00000000e+00,   2.38210000e+04],
                      [1.00000000e+00,   2.29600000e+04],
                      [2.00000000e+00,   2.21000000e+04],
@@ -17,7 +17,7 @@ def test_ac_compress_average():
 
 
 def test_cc_compress_average():
-    ist = correlate(range(42), range(1, 43), m=2, dtype=np.float_,
+    ist = correlate(range(42), range(1, 43), m=2, dtype=np.float64,
                     compress="average")
     soll = np.array([[0.00000000e+00,   2.46820000e+04],
                      [1.00000000e+00,   2.38210000e+04],
@@ -28,7 +28,7 @@ def test_cc_compress_average():
 
 
 def test_ac_compress_first():
-    ist = autocorrelate(range(42), m=2, dtype=np.float_,
+    ist = autocorrelate(range(42), m=2, dtype=np.float64,
                         compress="first")
     soll = np.array([[0.00000e+00, 2.38210e+04],
                      [1.00000e+00, 2.29600e+04],
@@ -40,7 +40,7 @@ def test_ac_compress_first():
 
 
 def test_cc_compress_first():
-    ist = correlate(range(42), range(1, 43), m=2, dtype=np.float_,
+    ist = correlate(range(42), range(1, 43), m=2, dtype=np.float64,
                     compress="first")
     soll = np.array([[0.00000e+00, 2.46820e+04],
                      [1.00000e+00, 2.38210e+04],
@@ -52,7 +52,7 @@ def test_cc_compress_first():
 
 
 def test_ac_compress_second():
-    ist = autocorrelate(range(42), m=2, dtype=np.float_,
+    ist = autocorrelate(range(42), m=2, dtype=np.float64,
                         compress="second")
     soll = np.array([[0.00000e+00, 2.38210e+04],
                      [1.00000e+00, 2.29600e+04],
@@ -64,7 +64,7 @@ def test_ac_compress_second():
 
 
 def test_cc_compress_second():
-    ist = correlate(range(42), range(1, 43), m=2, dtype=np.float_,
+    ist = correlate(range(42), range(1, 43), m=2, dtype=np.float64,
                     compress="second")
     soll = np.array([[0.00000e+00, 2.46820e+04],
                      [1.00000e+00, 2.38210e+04],

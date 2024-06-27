@@ -1,4 +1,5 @@
 0.4.0
+ - ref: support NumPy 2
  - setup: migrate to GitHub Actions
  - setup: migrate to pyproject.toml
  - docs: remove dependency on old mock standalone library (#19)

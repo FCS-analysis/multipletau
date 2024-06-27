@@ -7,7 +7,7 @@ from multipletau import autocorrelate, correlate
 
 
 def test_ac_return_sum():
-    ist, ist_count = autocorrelate(range(42), m=2, dtype=np.float_,
+    ist, ist_count = autocorrelate(range(42), m=2, dtype=np.float64,
                                    ret_sum=True)
     soll = np.array([[0.000000e+00, 2.382100e+04],
                      [1.000000e+00, 2.296000e+04],
@@ -20,7 +20,7 @@ def test_ac_return_sum():
 
 
 def test_cc_compress_average():
-    ist, ist_count = correlate(range(42), range(1, 43), m=2, dtype=np.float_,
+    ist, ist_count = correlate(range(42), range(1, 43), m=2, dtype=np.float64,
                                ret_sum=True)
     soll = np.array([[0.000000e+00, 2.468200e+04],
                      [1.000000e+00, 2.382100e+04],

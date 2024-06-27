@@ -84,7 +84,7 @@ def test_cc_dtype():
                                deltat=1,
                                normalize=True,
                                copy=True,
-                               dtype=np.float_)
+                               dtype=np.float64)
 
     ri = multipletau.correlate(a=a,
                                v=a,
@@ -103,9 +103,9 @@ def test_cc_dtype():
                                 dtype=None)
 
     assert ri.dtype == np.dtype(
-        np.float_), "if wrong dtype, dtype should default to np.float_"
+        np.float64), "if wrong dtype, dtype should default to np.float64"
     assert ri2.dtype == np.dtype(
-        np.float_), "if wrong dtype, dtype should default to np.float_"
+        np.float64), "if wrong dtype, dtype should default to np.float64"
     assert np.all(
         rf == ri), "result should be the same, because input us the same"
     assert np.all(
@@ -126,7 +126,7 @@ def test_cc_dtype2():
                                deltat=1,
                                normalize=True,
                                copy=True)
-    assert np.dtype(rf.dtype) == np.dtype(np.complex_)
+    assert np.dtype(rf.dtype) == np.dtype(np.complex128)
 
     rf2 = multipletau.correlate(a=a.real,
                                 v=np.array(a.imag, dtype=np.int_),
@@ -134,7 +134,7 @@ def test_cc_dtype2():
                                 deltat=1,
                                 normalize=True,
                                 copy=True)
-    assert np.dtype(rf2.dtype) == np.dtype(np.float_)
+    assert np.dtype(rf2.dtype) == np.dtype(np.float64)
 
 
 def test_cc_m():
@@ -155,7 +155,7 @@ def test_cc_m():
                                   deltat=1,
                                   normalize=False,
                                   copy=True,
-                                  dtype=np.complex_)
+                                  dtype=np.complex128)
         res.append(r)
 
         # test minimal length of array
@@ -165,7 +165,7 @@ def test_cc_m():
                               deltat=1,
                               normalize=False,
                               copy=True,
-                              dtype=np.complex_)
+                              dtype=np.complex128)
 
     res = np.concatenate(res)
     # np.save(os.path.dirname(__file__)
@@ -240,7 +240,7 @@ def test_cc_normalize():
                                   deltat=1,
                                   normalize=True,
                                   copy=True,
-                                  dtype=np.float_)
+                                  dtype=np.float64)
         res.append(r)
     res = np.concatenate(res)
     # np.save(os.path.dirname(__file__)
@@ -265,7 +265,7 @@ def test_cc_simple():
                                   deltat=1,
                                   normalize=False,
                                   copy=True,
-                                  dtype=np.complex_)
+                                  dtype=np.complex128)
         res.append(r)
     res = np.concatenate(res)
 
@@ -283,7 +283,7 @@ def test_cc_simple():
                                       deltat=1,
                                       normalize=False,
                                       copy=True,
-                                      dtype=np.complex_)
+                                      dtype=np.complex128)
         res2.append(r)
     res2 = np.concatenate(res2)
 

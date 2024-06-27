@@ -136,7 +136,7 @@ def autocorrelate(a, m=16, deltat=1, normalize=False, copy=True, dtype=None,
     Examples
     --------
     >>> from multipletau import autocorrelate
-    >>> autocorrelate(range(42), m=2, dtype=np.float_)
+    >>> autocorrelate(range(42), m=2, dtype=np.float64)
     array([[  0.00000000e+00,   2.38210000e+04],
            [  1.00000000e+00,   2.29600000e+04],
            [  2.00000000e+00,   2.21000000e+04],
@@ -172,9 +172,9 @@ def autocorrelate(a, m=16, deltat=1, normalize=False, copy=True, dtype=None,
                          copy=copy,
                          dtype=dtype)
     elif dtype.kind != "f":
-        warnings.warn("Input dtype is not float; casting to np.float_!",
+        warnings.warn("Input dtype is not float; casting to np.float64!",
                       DtypeWarning)
-        dtype = np.dtype(np.float_)
+        dtype = np.dtype(np.float64)
 
     # If copy is false and dtype is the same as the input array,
     # then this line does not have an effect:
@@ -384,7 +384,7 @@ def correlate(a, v, m=16, deltat=1, normalize=False, copy=True, dtype=None,
     Examples
     --------
     >>> from multipletau import correlate
-    >>> correlate(range(42), range(1,43), m=2, dtype=np.float_)
+    >>> correlate(range(42), range(1,43), m=2, dtype=np.float64)
     array([[  0.00000000e+00,   2.46820000e+04],
            [  1.00000000e+00,   2.38210000e+04],
            [  2.00000000e+00,   2.29600000e+04],
@@ -421,20 +421,20 @@ def correlate(a, v, m=16, deltat=1, normalize=False, copy=True, dtype=None,
             if dtype.kind == "c" or dtype2.kind == "c":
                 # The user might try to combine complex64 and float128.
                 warnings.warn(
-                    "Input dtypes not equal; casting to np.complex_!",
+                    "Input dtypes not equal; casting to np.complex128!",
                     InvalidMWarning)
-                dtype = np.dtype(np.complex_)
+                dtype = np.dtype(np.complex128)
             else:
-                warnings.warn("Input dtypes not equal; casting to np.float_!",
+                warnings.warn("Input dtypes not equal; casting to np.float64!",
                               InvalidMWarning)
-                dtype = np.dtype(np.float_)
+                dtype = np.dtype(np.float64)
     else:
         dtype = np.dtype(dtype)
 
     if dtype.kind not in ["c", "f"]:
-        warnings.warn("Input dtype is not float; casting to np.float_!",
+        warnings.warn("Input dtype is not float; casting to np.float64!",
                       InvalidMWarning)
-        dtype = np.dtype(np.float_)
+        dtype = np.dtype(np.float64)
 
     trace1 = np.array(v, dtype=dtype, copy=copy)
 
