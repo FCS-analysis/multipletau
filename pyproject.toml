@@ -43,5 +43,5 @@ changelog = "https://multipletau.readthedocs.io/en/stable/sec_changelog.html"
 
 
 [tool.setuptools_scm]
-write_to = "src/multipletau/_version.py"
+write_to = "multipletau/_version.py"
 version_scheme = "post-release"
