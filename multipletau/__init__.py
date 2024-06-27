@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 u"""
-Multipletau provides a multiple-τ algorithm for Python 2.7 and
-Python 3.x with :py:mod:`numpy` as its sole dependency.
+Multipletau provides a multiple-τ algorithm Python 3.x with
+:py:mod:`numpy` as its sole dependency.
 
 Multiple-τ correlation is computed on a logarithmic scale (less
 data points are computed) and is thus much faster than conventional

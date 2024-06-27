@@ -1,3 +1,5 @@
+0.4.1
+ - docs: remove Python 2 reference
 0.4.0
  - ref: support NumPy 2
  - setup: migrate to GitHub Actions
