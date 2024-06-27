@@ -23,7 +23,7 @@ Recommended literature
 
 Obtaining multipletau
 ---------------------
-If you have Python and :py:mod:`numpy` installed, simply run
+If you have Python and :py:mod:`numpy` installed, simply run::
 
    pip install multipletau
 

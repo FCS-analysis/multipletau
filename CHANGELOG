@@ -3,6 +3,7 @@
  - setup: migrate to GitHub Actions
  - setup: migrate to pyproject.toml
  - docs: remove dependency on old mock standalone library (#19)
+ - docs: overhaul and add changelog
 0.3.3
  - fix: add constant `ZERO_CUTOFF` that defines when a trace average is
    treated as zero
