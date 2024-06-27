@@ -39,7 +39,7 @@ dynamic = ["version"]
 source = "https://github.com/FCS-analysis/multipletau"
 tracker = "https://github.com/FCS-analysis/multipletau/issues"
 documentation = "https://multipletau.readthedocs.io/en/stable/"
-changelog = "https://multipletau.readthedocs.io/en/stable/sec_changelog.html"
+changelog = "https://multipletau.readthedocs.io/en/stable/index.html#changelog"
 
 
 [tool.setuptools_scm]
